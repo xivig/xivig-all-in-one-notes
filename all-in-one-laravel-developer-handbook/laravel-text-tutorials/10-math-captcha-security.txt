@@ -1,0 +1,494 @@
+================================================================================
+          LARAVEL SECURE MATHEMATICAL CAPTCHA & ANTI-SPAM DEFENSE
+================================================================================
+
+This tutorial provides a complete, production-ready guide to implementing a secure,
+accessible, and zero-dependency mathematical CAPTCHA system in Laravel 11/12/13.
+
+It fixes the infamous "12+" math CAPTCHA glitch, removes fragile GD library font
+dependencies by using sharp vector SVG rendering, protects against automated bots
+using session-encrypted answers and hidden honeypot traps, and includes an AJAX
+one-click refresh button.
+
+--------------------------------------------------------------------------------
+TABLE OF CONTENTS
+--------------------------------------------------------------------------------
+1. Architecture & The "12+" Glitch Fix
+2. Generating the MathCaptchaService (Zero-Dependency SVG Engine)
+3. Creating the Custom Validation Rule (App\Rules\MathCaptchaRule)
+4. Building the MathCaptchaController & Dynamic AJAX Refresh Endpoint
+5. Building the Reusable Blade Component (<x-math-captcha />)
+6. Integrating Hidden Anti-Bot Honeypot Protection
+7. Controller Implementation & Form Request Validation
+8. Integrating into Login, Registration & Contact Forms
+9. Unit & Feature Testing (Pest & PHPUnit)
+
+
+================================================================================
+1. ARCHITECTURE & THE "12+" GLITCH FIX
+================================================================================
+Traditional math CAPTCHA packages (like older mews/captcha math drivers) suffer
+from a well-known bug where challenges like "12 + " or " + 5" appear with missing
+operands. This happens when the random generator encounters a null or 0 index
+during operand array slicing.
+
+Our modern solution provides:
+- Guaranteed non-zero operands (1 to 20 for addition/subtraction, 1 to 9 for multiplication).
+- Safe subtraction (first operand is always greater than or equal to the second, preventing negative results).
+- Zero-dependency SVG challenge generator: renders the mathematical challenge directly into crisp vector SVG markup. No `php-gd` or custom `.ttf` font files required on the server.
+- Cryptographically hashed and session-encrypted answers with a 5-minute time-to-live (TTL).
+- Reusable Blade components with one-click AJAX refresh without clearing the user's form inputs.
+
+
+================================================================================
+2. GENERATING THE MATHCAPTCHASERVICE (ZERO-DEPENDENCY SVG ENGINE)
+================================================================================
+Create `app/Services/MathCaptchaService.php`:
+
+```php
+<?php
+
+namespace App\Services;
+
+use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Str;
+
+class MathCaptchaService
+{
+    protected const SESSION_KEY = 'secure_math_captcha';
+    protected const TTL_MINUTES = 5;
+
+    /**
+     * Generate a new math challenge with safe operands.
+     */
+    public function generate(): array
+    {
+        $operators = ['+', '-', '×'];
+        $operator = $operators[array_rand($operators)];
+
+        if ($operator === '+') {
+            $a = random_int(2, 19);
+            $b = random_int(1, 15);
+            $answer = $a + $b;
+        } elseif ($operator === '-') {
+            $a = random_int(10, 25);
+            $b = random_int(1, $a); // Ensures non-negative result
+            $answer = $a - $b;
+        } else { // Multiplication
+            $a = random_int(2, 9);
+            $b = random_int(2, 9);
+            $answer = $a * $b;
+        }
+
+        $token = Str::random(32);
+        $payload = [
+            'answer' => $answer,
+            'expires_at' => now()->addMinutes(self::TTL_MINUTES)->timestamp,
+        ];
+
+        // Store encrypted payload in session indexed by token
+        $stored = Session::get(self::SESSION_KEY, []);
+        $stored[$token] = Crypt::encryptString(json_encode($payload));
+        Session::put(self::SESSION_KEY, $stored);
+
+        $question = "{$a} {$operator} {$b} = ?";
+        $svg = $this->renderSvg($question);
+
+        return [
+            'token' => $token,
+            'question' => $question,
+            'svg' => $svg,
+        ];
+    }
+
+    /**
+     * Validate the user-supplied answer against the token.
+     */
+    public function validate(?string $token, ?string $userInput): bool
+    {
+        if (empty($token) || $userInput === null || $userInput === '') {
+            return false;
+        }
+
+        $stored = Session::get(self::SESSION_KEY, []);
+        if (!isset($stored[$token])) {
+            return false;
+        }
+
+        try {
+            $payload = json_decode(Crypt::decryptString($stored[$token]), true);
+        } catch (\Throwable $e) {
+            return false;
+        }
+
+        // Invalidate token after single evaluation (prevent replay attacks)
+        unset($stored[$token]);
+        Session::put(self::SESSION_KEY, $stored);
+
+        // Check expiration
+        if (now()->timestamp > ($payload['expires_at'] ?? 0)) {
+            return false;
+        }
+
+        return (int) trim($userInput) === (int) $payload['answer'];
+    }
+
+    /**
+     * Render a lightweight, crisp vector SVG challenge with noise lines.
+     */
+    protected function renderSvg(string $text): string
+    {
+        $width = 160;
+        $height = 44;
+
+        // Generate subtle decorative background distortion lines
+        $lines = '';
+        for ($i = 0; $i < 3; $i++) {
+            $x1 = random_int(0, 40);
+            $y1 = random_int(5, 35);
+            $x2 = random_int(120, 160);
+            $y2 = random_int(5, 35);
+            $opacity = random_int(20, 40) / 100;
+            $lines .= "<line x1='{$x1}' y1='{$y1}' x2='{$x2}' y2='{$y2}' stroke='#94a3b8' stroke-width='1.5' stroke-dasharray='4' opacity='{$opacity}' />";
+        }
+
+        return <<<SVG
+        <svg xmlns="http://www.w3.org/2000/svg" width="{$width}" height="{$height}" viewBox="0 0 {$width} {$height}" class="rounded-lg shadow-inner bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 select-none">
+            <rect width="100%" height="100%" fill="none" />
+            {$lines}
+            <text x="50%" y="58%" dominant-baseline="middle" text-anchor="middle" font-family="ui-monospace, monospace" font-size="20" font-weight="700" fill="#4f46e5" letter-spacing="2">
+                {$text}
+            </text>
+        </svg>
+        SVG;
+    }
+}
+```
+
+
+================================================================================
+3. CREATING THE CUSTOM VALIDATION RULE (App\Rules\MathCaptchaRule)
+================================================================================
+Create `app/Rules/MathCaptchaRule.php`:
+php artisan make:rule MathCaptchaRule
+
+```php
+<?php
+
+namespace App\Rules;
+
+use App\Services\MathCaptchaService;
+use Closure;
+use Illuminate\Contracts\Validation\DataAwareRule;
+use Illuminate\Contracts\Validation\ValidationRule;
+
+class MathCaptchaRule implements ValidationRule, DataAwareRule
+{
+    protected array $data = [];
+
+    public function setData(array $data): static
+    {
+        $this->data = $data;
+        return $this;
+    }
+
+    public function validate(string $attribute, mixed $value, Closure $fail): void
+    {
+        $token = $this->data['captcha_token'] ?? null;
+        $service = app(MathCaptchaService::class);
+
+        if (!$service->validate($token, (string) $value)) {
+            $fail('The mathematical security answer is incorrect or has expired. Please try again.');
+        }
+    }
+}
+```
+
+
+================================================================================
+4. BUILDING THE CONTROLLER & DYNAMIC AJAX REFRESH ENDPOINT
+================================================================================
+Create `app/Http/Controllers/MathCaptchaController.php`:
+php artisan make:controller MathCaptchaController
+
+```php
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Services\MathCaptchaService;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+
+class MathCaptchaController extends Controller
+{
+    public function refresh(MathCaptchaService $service): JsonResponse
+    {
+        $challenge = $service->generate();
+
+        return response()->json([
+            'token' => $challenge['token'],
+            'svg' => $challenge['svg'],
+        ]);
+    }
+}
+```
+
+Register route in `routes/web.php`:
+```php
+use App\Http\Controllers\MathCaptchaController;
+
+// AJAX CAPTCHA refresh route (rate limited to 20 requests per minute)
+Route::middleware('throttle:20,1')->get('/captcha/refresh', [MathCaptchaController::class, 'refresh'])
+    ->name('captcha.refresh');
+```
+
+
+================================================================================
+5. BUILDING THE REUSABLE BLADE COMPONENT (<x-math-captcha />)
+================================================================================
+Create `resources/views/components/math-captcha.blade.php`:
+
+```html
+@props(['name' => 'captcha_answer'])
+
+@php
+    $challenge = app(\App\Services\MathCaptchaService::class)->generate();
+@endphp
+
+<div x-data="mathCaptcha('{{ $challenge['token'] }}', '{{ route('captcha.refresh') }}')" class="space-y-3">
+    <label class="block text-sm font-semibold text-gray-700 dark:text-gray-200">
+        Security Question: Solve Math Problem
+    </label>
+
+    <div class="flex items-center space-x-3">
+        <!-- SVG Container -->
+        <div id="captcha-svg-container" x-html="svg" class="shrink-0 flex items-center">
+            {!! $challenge['svg'] !!}
+        </div>
+
+        <!-- Hidden Token Input -->
+        <input type="hidden" name="captcha_token" :value="token" value="{{ $challenge['token'] }}">
+
+        <!-- Refresh Button -->
+        <button type="button" @click="refreshCaptcha()"
+                title="Refresh Math Challenge"
+                class="p-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 hover:border-indigo-500 transition shadow-sm">
+            <svg class="w-5 h-5" :class="{'animate-spin text-indigo-600': loading}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+            </svg>
+        </button>
+    </div>
+
+    <!-- User Input Field -->
+    <div>
+        <input type="number"
+               name="{{ $name }}"
+               id="{{ $name }}"
+               required
+               autocomplete="off"
+               placeholder="Enter answer"
+               class="w-full sm:w-48 px-3.5 py-2.5 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 shadow-sm" />
+
+        @error($name)
+            <p class="mt-1.5 text-xs text-red-600 dark:text-red-400 font-medium">{{ $message }}</p>
+        @enderror
+    </div>
+</div>
+
+<script>
+    function mathCaptcha(initialToken, refreshUrl) {
+        return {
+            token: initialToken,
+            svg: null,
+            loading: false,
+            refreshCaptcha() {
+                if (this.loading) return;
+                this.loading = true;
+                fetch(refreshUrl, {
+                    headers: { 'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest' }
+                })
+                .then(res => res.json())
+                .then(data => {
+                    this.token = data.token;
+                    this.svg = data.svg;
+                    this.loading = false;
+                })
+                .catch(() => { this.loading = false; });
+            }
+        };
+    }
+</script>
+```
+
+
+================================================================================
+6. INTEGRATING HIDDEN ANTI-BOT HONEYPOT PROTECTION
+================================================================================
+Bots automatically fill every form field they find. A Honeypot field is invisible
+to human users but exposed to bots. If the field contains any text on submission,
+the request is dropped immediately.
+
+Create `resources/views/components/honeypot.blade.php`:
+```html
+<div style="display:none !important; position:absolute; left:-9999px;">
+    <label for="website_url">Leave this field blank</label>
+    <input type="text" name="website_url" id="website_url" tabindex="-1" autocomplete="off" value="">
+</div>
+```
+
+Create Honeypot Middleware:
+php artisan make:middleware VerifyHoneypot
+
+In `app/Http/Middleware/VerifyHoneypot.php`:
+```php
+<?php
+
+namespace App\Http\Middleware;
+
+use Closure;
+use Illuminate\Http\Request;
+
+class VerifyHoneypot
+{
+    public function handle(Request $request, Closure $next)
+    {
+        if ($request->isMethod('POST') && !empty($request->input('website_url'))) {
+            // Silently abort or reject bot without revealing the defense
+            abort(422, 'Spam detected.');
+        }
+
+        return $next($request);
+    }
+}
+```
+
+
+================================================================================
+7. CONTROLLER IMPLEMENTATION & FORM VALIDATION
+================================================================================
+In your Form Request or Controller validation:
+
+```php
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Rules\MathCaptchaRule;
+use Illuminate\Http\Request;
+
+class ContactController extends Controller
+{
+    public function submit(Request $request)
+    {
+        $validated = $request->validate([
+            'name' => ['required', 'string', 'max:100'],
+            'email' => ['required', 'email', 'max:150'],
+            'message' => ['required', 'string', 'min:10', 'max:2000'],
+            'captcha_answer' => ['required', new MathCaptchaRule],
+        ]);
+
+        // Proceed to send email or store lead
+        return back()->with('success', 'Message sent securely!');
+    }
+}
+```
+
+
+================================================================================
+8. INTEGRATING INTO LOGIN, REGISTRATION & CONTACT FORMS
+================================================================================
+Simply drop `<x-honeypot />` and `<x-math-captcha />` into any Blade form:
+
+```html
+<form action="{{ route('contact.submit') }}" method="POST" class="space-y-6">
+    @csrf
+    
+    <!-- Hidden Anti-Bot Honeypot -->
+    <x-honeypot />
+
+    <div>
+        <label class="block text-sm font-medium">Your Name</label>
+        <input type="text" name="name" required class="w-full mt-1 p-2 border rounded">
+    </div>
+
+    <div>
+        <label class="block text-sm font-medium">Your Email</label>
+        <input type="email" name="email" required class="w-full mt-1 p-2 border rounded">
+    </div>
+
+    <div>
+        <label class="block text-sm font-medium">Message</label>
+        <textarea name="message" rows="4" required class="w-full mt-1 p-2 border rounded"></textarea>
+    </div>
+
+    <!-- Reusable Math CAPTCHA Component with One-Click Refresh -->
+    <x-math-captcha />
+
+    <button type="submit" class="px-6 py-2.5 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700">
+        Submit Message
+    </button>
+</form>
+```
+
+
+================================================================================
+9. UNIT & FEATURE TESTING (PEST & PHPUNIT)
+================================================================================
+Create unit test in `tests/Unit/MathCaptchaServiceTest.php`:
+php artisan make:test MathCaptchaServiceTest --unit
+
+```php
+<?php
+
+namespace Tests\Unit;
+
+use App\Services\MathCaptchaService;
+use Tests\TestCase;
+
+class MathCaptchaServiceTest extends TestCase
+{
+    public function test_it_generates_challenge_with_valid_token_and_svg(): void
+    {
+        $service = app(MathCaptchaService::class);
+        $challenge = $service->generate();
+
+        $this->assertNotEmpty($challenge['token']);
+        $this->assertNotEmpty($challenge['question']);
+        $this->assertStringContainsString('<svg', $challenge['svg']);
+        $this->assertStringContainsString('=', $challenge['question']);
+    }
+
+    public function test_it_validates_correct_answer(): void
+    {
+        $service = app(MathCaptchaService::class);
+        $challenge = $service->generate();
+
+        // Extract operands
+        preg_match('/(\d+)\s+([\+\-×])\s+(\d+)/u', $challenge['question'], $matches);
+        $a = (int) $matches[1];
+        $op = $matches[2];
+        $b = (int) $matches[3];
+
+        $expected = match ($op) {
+            '+' => $a + $b,
+            '-' => $a - $b,
+            '×' => $a * $b,
+        };
+
+        $isValid = $service->validate($challenge['token'], (string) $expected);
+        $this->assertTrue($isValid);
+    }
+
+    public function test_it_rejects_incorrect_answer(): void
+    {
+        $service = app(MathCaptchaService::class);
+        $challenge = $service->generate();
+
+        $isValid = $service->validate($challenge['token'], '9999');
+        $this->assertFalse($isValid);
+    }
+}
+```
+================================================================================

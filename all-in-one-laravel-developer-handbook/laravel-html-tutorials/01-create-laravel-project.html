@@ -1,0 +1,1156 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laravel Project Creation &amp; Setup Guide - Laravel Master Docs</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: '#f9322c',
+                        darkbg: '#0b0f19',
+                        darkpanel: '#111827',
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" />
+    <style>
+        /* Custom scrollbar */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 5px;
+            height: 5px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: rgba(156, 163, 175, 0.25);
+            border-radius: 9999px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: rgba(156, 163, 175, 0.45);
+        }
+        /* Ensure maximum readable width for code & tables */
+        .prose {
+            max-width: 100% !important;
+        }
+        .prose p, .prose li {
+            line-height: 1.8;
+        }
+        pre[class*="language-"] {
+            margin: 0;
+            background: transparent;
+        }
+        code[class*="language-"] {
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-900 dark:bg-[#0b0f19] dark:text-gray-100 min-h-screen flex flex-col font-sans transition-colors duration-200 antialiased">
+    <!-- Top Reading Progress Indicator -->
+    <div id="scroll-progress" class="fixed top-0 left-0 h-[3px] bg-gradient-to-r from-red-500 via-indigo-500 to-cyan-400 z-50 transition-all duration-75" style="width: 0%"></div>
+
+    <!-- Header / Navbar -->
+    <header class="sticky top-0 z-40 bg-white/90 dark:bg-[#0b0f19]/90 backdrop-blur-md border-b border-gray-200 dark:border-gray-800 transition-colors">
+        <div class="max-w-[1780px] w-full mx-auto px-4 sm:px-6 lg:px-8 xl:px-10 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <button onclick="toggleSidebar()" class="lg:hidden p-2 rounded-lg text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800 transition" aria-label="Toggle navigation">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+                </button>
+                <a href="index.html" class="flex items-center space-x-3">
+                    <span class="text-2xl drop-shadow-sm">🔴</span>
+                    <span class="font-extrabold text-lg sm:text-xl tracking-tight bg-gradient-to-r from-red-600 via-pink-600 to-indigo-600 bg-clip-text text-transparent">Laravel Master Docs</span>
+                </a>
+                <span class="hidden sm:inline-flex items-center px-2.5 py-0.5 text-xs font-semibold rounded-full bg-red-100 text-red-700 dark:bg-red-950/80 dark:text-red-300 border border-red-200 dark:border-red-900/40">Laravel 13</span>
+            </div>
+
+            <div class="flex items-center space-x-4">
+                <a href="index.html" class="text-xs sm:text-sm font-medium text-gray-600 hover:text-indigo-600 dark:text-gray-300 dark:hover:text-indigo-400 flex items-center space-x-1.5 transition">
+                    <span>📚</span>
+                    <span class="hidden md:inline">Browse All</span> <span>Tutorials</span>
+                </a>
+                <!-- Dark Mode Toggle -->
+                <button onclick="toggleDarkMode()" class="p-2 rounded-xl bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 transition" title="Toggle Dark/Light Mode">
+                    <span id="theme-icon">🌙</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Elite Wide Container -->
+    <div class="max-w-[1780px] w-full mx-auto px-4 sm:px-6 lg:px-8 xl:px-10 flex-1 flex gap-8 xl:gap-10">
+        <!-- Sidebar Navigation (Desktop & Mobile Drawer) -->
+        <aside id="sidebar" class="fixed inset-y-0 left-0 z-30 w-72 bg-white dark:bg-[#0b0f19] border-r border-gray-200 dark:border-gray-800 transform -translate-x-full lg:translate-x-0 lg:static lg:w-72 pt-20 lg:pt-6 pb-10 transition-transform duration-200 ease-in-out overflow-y-auto shrink-0 custom-scrollbar">
+            <div class="px-3 mb-6">
+                <div class="flex items-center justify-between px-3 mb-3">
+                    <p class="text-[11px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider">Tutorial Chapters (15)</p>
+                    <span class="text-[10px] px-2 py-0.5 rounded-full bg-indigo-50 dark:bg-indigo-950 text-indigo-600 dark:text-indigo-400 font-semibold">100% Complete</span>
+                </div>
+                <div class="space-y-1">
+                    
+        <a href="01-create-laravel-project.html" class="flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs sm:text-sm transition-all duration-150 bg-indigo-50 dark:bg-indigo-950/70 text-indigo-600 dark:text-indigo-400 font-semibold border-r-2 border-indigo-600 shadow-sm">
+            <span class="text-base shrink-0">🚀</span>
+            <span class="truncate">Laravel Project Creation & Setup Guide</span>
+        </a>
+
+        <a href="02-workflow-command-playbook.html" class="flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs sm:text-sm transition-all duration-150 text-gray-600 dark:text-gray-400 hover:bg-gray-100/80 dark:hover:bg-gray-800/60 hover:text-gray-900 dark:hover:text-white">
+            <span class="text-base shrink-0">⚡</span>
+            <span class="truncate">Full-Cycle Command Playbook</span>
+        </a>
+
+        <a href="03-laravel-100-tips.html" class="flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs sm:text-sm transition-all duration-150 text-gray-600 dark:text-gray-400 hover:bg-gray-100/80 dark:hover:bg-gray-800/60 hover:text-gray-900 dark:hover:text-white">
+            <span class="text-base shrink-0">💡</span>
+            <span class="truncate">Laravel 100 Pro Tips Masterclass</span>
+        </a>
+
+        <a href="04-admin-multi-auth-fortify.html" class="flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs sm:text-sm transition-all duration-150 text-gray-600 dark:text-gray-400 hover:bg-gray-100/80 dark:hover:bg-gray-800/60 hover:text-gray-900 dark:hover:text-white">
+            <span class="text-base shrink-0">🛡️</span>
+            <span class="truncate">Admin Multi-Auth (Fortify & Jetstream)</span>
+        </a>
+
+        <a href="05-admin-login-step-by-step.html" class="flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs sm:text-sm transition-all duration-150 text-gray-600 dark:text-gray-400 hover:bg-gray-100/80 dark:hover:bg-gray-800/60 hover:text-gray-900 dark:hover:text-white">
+            <span class="text-base shrink-0">🔐</span>
+            <span class="truncate">Admin Login & Dashboard (16 Steps)</span>
+        </a>
+
+        <a href="06-multi-auth-master-system.html" class="flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs sm:text-sm transition-all duration-150 text-gray-600 dark:text-gray-400 hover:bg-gray-100/80 dark:hover:bg-gray-800/60 hover:text-gray-900 dark:hover:text-white">
+            <span class="text-base shrink-0">👥</span>
+            <span class="truncate">Multi-Authentication Master System & OTP</span>
+        </a>
+
+        <a href="07-dynamic-menu-crud.html" class="flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs sm:text-sm transition-all duration-150 text-gray-600 dark:text-gray-400 hover:bg-gray-100/80 dark:hover:bg-gray-800/60 hover:text-gray-900 dark:hover:text-white">
+            <span class="text-base shrink-0">📋</span>
+            <span class="truncate">Dynamic Menu Builder & Admin CRUD</span>
+        </a>
+
+        <a href="08-scaffolding-breeze-cms.html" class="flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs sm:text-sm transition-all duration-150 text-gray-600 dark:text-gray-400 hover:bg-gray-100/80 dark:hover:bg-gray-800/60 hover:text-gray-900 dark:hover:text-white">
+            <span class="text-base shrink-0">🏗️</span>
+            <span class="truncate">App Scaffolding, Breeze & Dynamic CMS</span>
+        </a>
+
+        <a href="09-qa-deployment-checklist.html" class="flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs sm:text-sm transition-all duration-150 text-gray-600 dark:text-gray-400 hover:bg-gray-100/80 dark:hover:bg-gray-800/60 hover:text-gray-900 dark:hover:text-white">
+            <span class="text-base shrink-0">✅</span>
+            <span class="truncate">Project QA & Production Checklist</span>
+        </a>
+
+        <a href="10-math-captcha-security.html" class="flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs sm:text-sm transition-all duration-150 text-gray-600 dark:text-gray-400 hover:bg-gray-100/80 dark:hover:bg-gray-800/60 hover:text-gray-900 dark:hover:text-white">
+            <span class="text-base shrink-0">🧮</span>
+            <span class="truncate">Secure Math CAPTCHA & Anti-Spam Defense</span>
+        </a>
+
+        <a href="11-seo-metadata-schema.html" class="flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs sm:text-sm transition-all duration-150 text-gray-600 dark:text-gray-400 hover:bg-gray-100/80 dark:hover:bg-gray-800/60 hover:text-gray-900 dark:hover:text-white">
+            <span class="text-base shrink-0">📈</span>
+            <span class="truncate">Production Technical SEO & Schema Markup</span>
+        </a>
+
+        <a href="12-restful-api-sanctum-resources.html" class="flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs sm:text-sm transition-all duration-150 text-gray-600 dark:text-gray-400 hover:bg-gray-100/80 dark:hover:bg-gray-800/60 hover:text-gray-900 dark:hover:text-white">
+            <span class="text-base shrink-0">🌐</span>
+            <span class="truncate">RESTful API Development & Sanctum Tokens</span>
+        </a>
+
+        <a href="13-eloquent-relationships-transactions.html" class="flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs sm:text-sm transition-all duration-150 text-gray-600 dark:text-gray-400 hover:bg-gray-100/80 dark:hover:bg-gray-800/60 hover:text-gray-900 dark:hover:text-white">
+            <span class="text-base shrink-0">🗄️</span>
+            <span class="truncate">Advanced Eloquent Relationships & Transactions</span>
+        </a>
+
+        <a href="14-queues-jobs-events-scheduling.html" class="flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs sm:text-sm transition-all duration-150 text-gray-600 dark:text-gray-400 hover:bg-gray-100/80 dark:hover:bg-gray-800/60 hover:text-gray-900 dark:hover:text-white">
+            <span class="text-base shrink-0">⏱️</span>
+            <span class="truncate">Queues, Asynchronous Jobs & Task Scheduling</span>
+        </a>
+
+        <a href="15-file-storage-uploads-media.html" class="flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs sm:text-sm transition-all duration-150 text-gray-600 dark:text-gray-400 hover:bg-gray-100/80 dark:hover:bg-gray-800/60 hover:text-gray-900 dark:hover:text-white">
+            <span class="text-base shrink-0">📁</span>
+            <span class="truncate">Secure File Uploads & Cloud Storage (S3)</span>
+        </a>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Article Container: WIDE & UNCONSTRAINED -->
+        <main class="flex-1 min-w-0 py-8 lg:px-4 w-full max-w-none">
+            <!-- Breadcrumbs -->
+            <nav class="flex items-center space-x-2 text-xs text-gray-500 dark:text-gray-400 mb-6">
+                <a href="index.html" class="hover:text-indigo-600 dark:hover:text-indigo-400 transition">Docs</a>
+                <span>/</span>
+                <span class="text-gray-800 dark:text-gray-200 font-medium truncate">Laravel Project Creation &amp; Setup Guide</span>
+            </nav>
+
+            <header class="mb-10 pb-6 border-b border-gray-200 dark:border-gray-800">
+                <div class="flex flex-wrap items-center gap-2 mb-3">
+                    <span class="px-3 py-1 rounded-full bg-indigo-100 text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300 text-xs font-bold uppercase tracking-wider">Step-by-Step Blueprint</span>
+                    <span class="px-3 py-1 rounded-full bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300 text-xs font-medium">Laravel 13 Verified</span>
+                </div>
+                <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-gray-900 dark:text-white mb-4 leading-tight">Laravel Project Creation &amp; Setup Guide</h1>
+                <p class="text-base sm:text-lg text-gray-600 dark:text-gray-300 max-w-4xl leading-relaxed">Complete production-ready walkthrough with high-resolution code snippets, database schemas, architectural patterns, and troubleshooting steps.</p>
+            </header>
+
+            <article class="prose dark:prose-invert max-w-none text-base">
+                <p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">LARAVEL PROJECT CREATION &amp; SETUP TUTORIAL</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">This tutorial guides you step-by-step through creating and configuring a fresh</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">Laravel project, setting up the environment, installing authentication starter</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">kits (Breeze &amp; Jetstream), compiling front-end assets, and troubleshooting common issues.</p>
+
+                <div id="section-1-prerequisites-system-requirements" class="scroll-mt-24 pt-10 pb-4 border-b border-gray-200 dark:border-gray-800">
+                    <div class="flex items-center space-x-3">
+                        <span class="px-2.5 py-1 text-xs font-bold rounded-md bg-red-100 text-red-700 dark:bg-red-950/80 dark:text-red-300 uppercase tracking-wider">Module 1</span>
+                        <h2 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white tracking-tight">PREREQUISITES &amp; SYSTEM REQUIREMENTS</h2>
+                    </div>
+                </div>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">Make sure your system has the following installed and accessible from your terminal:</p>
+
+                <h4 class="font-bold text-gray-800 dark:text-gray-200 mt-5 mb-1 text-sm md:text-base flex items-center space-x-2">
+                    <span class="text-indigo-600 dark:text-indigo-400 font-mono font-semibold">a)</span>
+                    <span>PHP (version 8.2 or higher recommended)</span>
+                </h4>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">Verify version:</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">php -v</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">Ensure common PHP extensions are enabled in your php.ini:</p>
+<ul class="my-3 space-y-2 pl-6 list-disc text-gray-700 dark:text-gray-300 text-sm md:text-base leading-relaxed">
+<li>pdo, pdo_mysql (or pdo_sqlite / pdo_pgsql)</li>
+<li>mbstring, openssl, tokenizer, xml, ctype, json, curl, fileinfo, bcmath</li>
+</ul>
+
+                <h4 class="font-bold text-gray-800 dark:text-gray-200 mt-5 mb-1 text-sm md:text-base flex items-center space-x-2">
+                    <span class="text-indigo-600 dark:text-indigo-400 font-mono font-semibold">b)</span>
+                    <span>Composer (PHP dependency manager)</span>
+                </h4>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">Verify version:</p>
+
+    <div class="relative my-6 group rounded-xl overflow-hidden border border-slate-800 shadow-2xl bg-[#0c1017]">
+        <div class="flex items-center justify-between px-4 py-2.5 bg-[#161b22] border-b border-slate-800/80 text-xs text-slate-400 font-mono select-none">
+            <div class="flex items-center space-x-2">
+                <span class="w-3 h-3 rounded-full bg-[#ff5f56] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#ffbd2e] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#27c93f] inline-block shadow-sm"></span>
+                <span class="ml-2 uppercase font-semibold text-indigo-400 tracking-wider text-[11px]">bash</span>
+            </div>
+            <button onclick="copyCode(this)" class="px-2.5 py-1 rounded-md bg-slate-800/90 hover:bg-slate-700 text-slate-200 transition flex items-center space-x-1.5 shadow-sm font-sans text-xs">
+                <svg class="w-3.5 h-3.5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                <span>Copy</span>
+            </button>
+        </div>
+        <pre class="p-4 sm:p-5 overflow-x-auto text-[13.5px] leading-relaxed custom-scrollbar"><code class="language-bash text-slate-100">   composer -v</code></pre>
+    </div>
+
+                <h4 class="font-bold text-gray-800 dark:text-gray-200 mt-5 mb-1 text-sm md:text-base flex items-center space-x-2">
+                    <span class="text-indigo-600 dark:text-indigo-400 font-mono font-semibold">c)</span>
+                    <span>Node.js &amp; NPM (for compiling front-end assets with Vite)</span>
+                </h4>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">Verify version:</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">node -v</p>
+
+    <div class="relative my-6 group rounded-xl overflow-hidden border border-slate-800 shadow-2xl bg-[#0c1017]">
+        <div class="flex items-center justify-between px-4 py-2.5 bg-[#161b22] border-b border-slate-800/80 text-xs text-slate-400 font-mono select-none">
+            <div class="flex items-center space-x-2">
+                <span class="w-3 h-3 rounded-full bg-[#ff5f56] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#ffbd2e] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#27c93f] inline-block shadow-sm"></span>
+                <span class="ml-2 uppercase font-semibold text-indigo-400 tracking-wider text-[11px]">bash</span>
+            </div>
+            <button onclick="copyCode(this)" class="px-2.5 py-1 rounded-md bg-slate-800/90 hover:bg-slate-700 text-slate-200 transition flex items-center space-x-1.5 shadow-sm font-sans text-xs">
+                <svg class="w-3.5 h-3.5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                <span>Copy</span>
+            </button>
+        </div>
+        <pre class="p-4 sm:p-5 overflow-x-auto text-[13.5px] leading-relaxed custom-scrollbar"><code class="language-bash text-slate-100">   npm -v</code></pre>
+    </div>
+
+                <h4 class="font-bold text-gray-800 dark:text-gray-200 mt-5 mb-1 text-sm md:text-base flex items-center space-x-2">
+                    <span class="text-indigo-600 dark:text-indigo-400 font-mono font-semibold">d)</span>
+                    <span>Database Server:</span>
+                </h4>
+<ul class="my-3 space-y-2 pl-6 list-disc text-gray-700 dark:text-gray-300 text-sm md:text-base leading-relaxed">
+<li>MySQL / MariaDB (e.g., via XAMPP, WampServer, Laragon, or standalone)</li>
+<li>OR SQLite (built into PHP, zero configuration)</li>
+</ul>
+
+                <div id="section-2-methods-to-create-a-laravel-project" class="scroll-mt-24 pt-10 pb-4 border-b border-gray-200 dark:border-gray-800">
+                    <div class="flex items-center space-x-3">
+                        <span class="px-2.5 py-1 text-xs font-bold rounded-md bg-red-100 text-red-700 dark:bg-red-950/80 dark:text-red-300 uppercase tracking-wider">Module 2</span>
+                        <h2 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white tracking-tight">METHODS TO CREATE A LARAVEL PROJECT</h2>
+                    </div>
+                </div>
+
+            <h3 class="text-lg font-bold text-gray-800 dark:text-gray-100 mt-6 mb-2 flex items-center space-x-2">
+                <span class="px-2 py-0.5 rounded text-xs font-semibold bg-gray-200 dark:bg-gray-800 text-gray-700 dark:text-gray-300">METHOD 1</span>
+                <span>Using Composer (Recommended without global installer)</span>
+            </h3>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">Open terminal in your desired projects directory (e.g., C:/xampp/htdocs or E:/projects)</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">and run:</p>
+
+    <div class="relative my-6 group rounded-xl overflow-hidden border border-slate-800 shadow-2xl bg-[#0c1017]">
+        <div class="flex items-center justify-between px-4 py-2.5 bg-[#161b22] border-b border-slate-800/80 text-xs text-slate-400 font-mono select-none">
+            <div class="flex items-center space-x-2">
+                <span class="w-3 h-3 rounded-full bg-[#ff5f56] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#ffbd2e] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#27c93f] inline-block shadow-sm"></span>
+                <span class="ml-2 uppercase font-semibold text-indigo-400 tracking-wider text-[11px]">bash</span>
+            </div>
+            <button onclick="copyCode(this)" class="px-2.5 py-1 rounded-md bg-slate-800/90 hover:bg-slate-700 text-slate-200 transition flex items-center space-x-1.5 shadow-sm font-sans text-xs">
+                <svg class="w-3.5 h-3.5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                <span>Copy</span>
+            </button>
+        </div>
+        <pre class="p-4 sm:p-5 overflow-x-auto text-[13.5px] leading-relaxed custom-scrollbar"><code class="language-bash text-slate-100">composer create-project laravel/laravel project_name</code></pre>
+    </div>
+<ul class="my-3 space-y-2 pl-6 list-disc text-gray-700 dark:text-gray-300 text-sm md:text-base leading-relaxed">
+<li>To specify a specific Laravel version (e.g., Laravel 11):</li>
+</ul>
+
+    <div class="relative my-6 group rounded-xl overflow-hidden border border-slate-800 shadow-2xl bg-[#0c1017]">
+        <div class="flex items-center justify-between px-4 py-2.5 bg-[#161b22] border-b border-slate-800/80 text-xs text-slate-400 font-mono select-none">
+            <div class="flex items-center space-x-2">
+                <span class="w-3 h-3 rounded-full bg-[#ff5f56] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#ffbd2e] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#27c93f] inline-block shadow-sm"></span>
+                <span class="ml-2 uppercase font-semibold text-indigo-400 tracking-wider text-[11px]">bash</span>
+            </div>
+            <button onclick="copyCode(this)" class="px-2.5 py-1 rounded-md bg-slate-800/90 hover:bg-slate-700 text-slate-200 transition flex items-center space-x-1.5 shadow-sm font-sans text-xs">
+                <svg class="w-3.5 h-3.5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                <span>Copy</span>
+            </button>
+        </div>
+        <pre class="p-4 sm:p-5 overflow-x-auto text-[13.5px] leading-relaxed custom-scrollbar"><code class="language-bash text-slate-100">composer create-project laravel/laravel:^11.0 project_name</code></pre>
+    </div>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">Once installed, enter your project directory:</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">cd project_name</p>
+
+            <h3 class="text-lg font-bold text-gray-800 dark:text-gray-100 mt-6 mb-2 flex items-center space-x-2">
+                <span class="px-2 py-0.5 rounded text-xs font-semibold bg-gray-200 dark:bg-gray-800 text-gray-700 dark:text-gray-300">METHOD 2</span>
+                <span>Using the Laravel Installer CLI</span>
+            </h3>
+
+            <div id="step-1-install-the-laravel-installer-globally-once-on-your-machine" class="scroll-mt-24 pt-10 pb-4 border-b border-gray-200 dark:border-gray-800">
+                <div class="flex items-center space-x-3">
+                    <span class="px-2.5 py-1 text-xs font-bold rounded-md bg-indigo-100 text-indigo-700 dark:bg-indigo-950/80 dark:text-indigo-300 uppercase tracking-wider">STEP 1</span>
+                    <h2 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white tracking-tight">Install the Laravel installer globally once on your machine:</h2>
+                </div>
+            </div>
+
+    <div class="relative my-6 group rounded-xl overflow-hidden border border-slate-800 shadow-2xl bg-[#0c1017]">
+        <div class="flex items-center justify-between px-4 py-2.5 bg-[#161b22] border-b border-slate-800/80 text-xs text-slate-400 font-mono select-none">
+            <div class="flex items-center space-x-2">
+                <span class="w-3 h-3 rounded-full bg-[#ff5f56] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#ffbd2e] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#27c93f] inline-block shadow-sm"></span>
+                <span class="ml-2 uppercase font-semibold text-indigo-400 tracking-wider text-[11px]">bash</span>
+            </div>
+            <button onclick="copyCode(this)" class="px-2.5 py-1 rounded-md bg-slate-800/90 hover:bg-slate-700 text-slate-200 transition flex items-center space-x-1.5 shadow-sm font-sans text-xs">
+                <svg class="w-3.5 h-3.5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                <span>Copy</span>
+            </button>
+        </div>
+        <pre class="p-4 sm:p-5 overflow-x-auto text-[13.5px] leading-relaxed custom-scrollbar"><code class="language-bash text-slate-100">composer global require laravel/installer</code></pre>
+    </div>
+
+            <div class="my-5 p-4 sm:p-5 rounded-xl border-l-4 border-amber-500 bg-amber-50/70 dark:bg-amber-950/30 text-amber-900 dark:text-amber-200 text-sm shadow-sm">
+                <div class="font-bold flex items-center space-x-2 mb-1.5">
+                    <span class="text-base">⚠️</span> <span class="uppercase tracking-wider text-xs">Architectural Note &amp; Best Practice</span>
+                </div>
+                <p class="leading-relaxed">* Note: Make sure Composer&#x27;s global bin directory is added to your system PATH:</p>
+            </div>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">Windows: %USERPROFILE%\AppData\Roaming\Composer\vendor\bin</p>
+
+            <div id="step-2-create-a-new-project" class="scroll-mt-24 pt-10 pb-4 border-b border-gray-200 dark:border-gray-800">
+                <div class="flex items-center space-x-3">
+                    <span class="px-2.5 py-1 text-xs font-bold rounded-md bg-indigo-100 text-indigo-700 dark:bg-indigo-950/80 dark:text-indigo-300 uppercase tracking-wider">STEP 2</span>
+                    <h2 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white tracking-tight">Create a new project:</h2>
+                </div>
+            </div>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">laravel new project_name</p>
+<ul class="my-3 space-y-2 pl-6 list-disc text-gray-700 dark:text-gray-300 text-sm md:text-base leading-relaxed">
+<li>The installer will ask interactive questions:</li>
+<li>Starter kit (None, Breeze, Jetstream)</li>
+<li>Preferred frontend stack (Blade, Livewire, Vue/Inertia, React/Inertia)</li>
+<li>Testing framework (Pest, PHPUnit)</li>
+<li>Database type (SQLite, MySQL, PostgreSQL, etc.)</li>
+</ul>
+
+            <div id="step-3-enter-your-project-directory" class="scroll-mt-24 pt-10 pb-4 border-b border-gray-200 dark:border-gray-800">
+                <div class="flex items-center space-x-3">
+                    <span class="px-2.5 py-1 text-xs font-bold rounded-md bg-indigo-100 text-indigo-700 dark:bg-indigo-950/80 dark:text-indigo-300 uppercase tracking-wider">STEP 3</span>
+                    <h2 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white tracking-tight">Enter your project directory:</h2>
+                </div>
+            </div>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">cd project_name</p>
+
+                <div id="section-3-essential-initial-configuration-env-key-database" class="scroll-mt-24 pt-10 pb-4 border-b border-gray-200 dark:border-gray-800">
+                    <div class="flex items-center space-x-3">
+                        <span class="px-2.5 py-1 text-xs font-bold rounded-md bg-red-100 text-red-700 dark:bg-red-950/80 dark:text-red-300 uppercase tracking-wider">Module 3</span>
+                        <h2 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white tracking-tight">ESSENTIAL INITIAL CONFIGURATION (.env, Key, Database)</h2>
+                    </div>
+                </div>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">1) Check Environment File (.env):</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">If <code class="px-1.5 py-0.5 rounded text-xs font-mono bg-indigo-50 text-indigo-700 dark:bg-slate-800 dark:text-pink-400 font-semibold border border-indigo-100 dark:border-slate-700/60">.env</code> does not exist, copy <code class="px-1.5 py-0.5 rounded text-xs font-mono bg-indigo-50 text-indigo-700 dark:bg-slate-800 dark:text-pink-400 font-semibold border border-indigo-100 dark:border-slate-700/60">.env.example</code>:</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">cp .env.example .env</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">(On Windows cmd: copy .env.example .env)</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">2) Generate Application Encryption Key:</p>
+
+    <div class="relative my-6 group rounded-xl overflow-hidden border border-slate-800 shadow-2xl bg-[#0c1017]">
+        <div class="flex items-center justify-between px-4 py-2.5 bg-[#161b22] border-b border-slate-800/80 text-xs text-slate-400 font-mono select-none">
+            <div class="flex items-center space-x-2">
+                <span class="w-3 h-3 rounded-full bg-[#ff5f56] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#ffbd2e] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#27c93f] inline-block shadow-sm"></span>
+                <span class="ml-2 uppercase font-semibold text-indigo-400 tracking-wider text-[11px]">bash</span>
+            </div>
+            <button onclick="copyCode(this)" class="px-2.5 py-1 rounded-md bg-slate-800/90 hover:bg-slate-700 text-slate-200 transition flex items-center space-x-1.5 shadow-sm font-sans text-xs">
+                <svg class="w-3.5 h-3.5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                <span>Copy</span>
+            </button>
+        </div>
+        <pre class="p-4 sm:p-5 overflow-x-auto text-[13.5px] leading-relaxed custom-scrollbar"><code class="language-bash text-slate-100">   php artisan key:generate</code></pre>
+    </div>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">3) Update General Settings in .env:</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">APP_NAME=&quot;My Laravel Project&quot;</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">APP_ENV=local</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">APP_DEBUG=true</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">APP_URL=http://127.0.0.1:8000</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">4) Setup Database Configuration in .env:</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">--- For MySQL (Default/Standard) ---</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">DB_CONNECTION=mysql</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">DB_HOST=127.0.0.1</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">DB_PORT=3306</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">DB_DATABASE=your_database_name</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">DB_USERNAME=root</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">DB_PASSWORD=your_password</p>
+<ul class="my-3 space-y-2 pl-6 list-disc text-gray-700 dark:text-gray-300 text-sm md:text-base leading-relaxed">
+<li>Create the database in phpMyAdmin or MySQL CLI before running migrations:</li>
+</ul>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">CREATE DATABASE your_database_name;</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">--- For SQLite (Quick Local Development) ---</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">DB_CONNECTION=sqlite</p>
+<ul class="my-3 space-y-2 pl-6 list-disc text-gray-700 dark:text-gray-300 text-sm md:text-base leading-relaxed">
+<li>In Laravel 11+, database/database.sqlite is automatically created if missing.</li>
+</ul>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">5) Create Storage Symbolic Link (for public file/image uploads):</p>
+
+    <div class="relative my-6 group rounded-xl overflow-hidden border border-slate-800 shadow-2xl bg-[#0c1017]">
+        <div class="flex items-center justify-between px-4 py-2.5 bg-[#161b22] border-b border-slate-800/80 text-xs text-slate-400 font-mono select-none">
+            <div class="flex items-center space-x-2">
+                <span class="w-3 h-3 rounded-full bg-[#ff5f56] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#ffbd2e] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#27c93f] inline-block shadow-sm"></span>
+                <span class="ml-2 uppercase font-semibold text-indigo-400 tracking-wider text-[11px]">bash</span>
+            </div>
+            <button onclick="copyCode(this)" class="px-2.5 py-1 rounded-md bg-slate-800/90 hover:bg-slate-700 text-slate-200 transition flex items-center space-x-1.5 shadow-sm font-sans text-xs">
+                <svg class="w-3.5 h-3.5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                <span>Copy</span>
+            </button>
+        </div>
+        <pre class="p-4 sm:p-5 overflow-x-auto text-[13.5px] leading-relaxed custom-scrollbar"><code class="language-bash text-slate-100">   php artisan storage:link</code></pre>
+    </div>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">6) Run Initial Migrations:</p>
+
+    <div class="relative my-6 group rounded-xl overflow-hidden border border-slate-800 shadow-2xl bg-[#0c1017]">
+        <div class="flex items-center justify-between px-4 py-2.5 bg-[#161b22] border-b border-slate-800/80 text-xs text-slate-400 font-mono select-none">
+            <div class="flex items-center space-x-2">
+                <span class="w-3 h-3 rounded-full bg-[#ff5f56] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#ffbd2e] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#27c93f] inline-block shadow-sm"></span>
+                <span class="ml-2 uppercase font-semibold text-indigo-400 tracking-wider text-[11px]">bash</span>
+            </div>
+            <button onclick="copyCode(this)" class="px-2.5 py-1 rounded-md bg-slate-800/90 hover:bg-slate-700 text-slate-200 transition flex items-center space-x-1.5 shadow-sm font-sans text-xs">
+                <svg class="w-3.5 h-3.5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                <span>Copy</span>
+            </button>
+        </div>
+        <pre class="p-4 sm:p-5 overflow-x-auto text-[13.5px] leading-relaxed custom-scrollbar"><code class="language-bash text-slate-100">   php artisan migrate</code></pre>
+    </div>
+
+                <div id="section-4-starter-kits-authentication-setup-optional" class="scroll-mt-24 pt-10 pb-4 border-b border-gray-200 dark:border-gray-800">
+                    <div class="flex items-center space-x-3">
+                        <span class="px-2.5 py-1 text-xs font-bold rounded-md bg-red-100 text-red-700 dark:bg-red-950/80 dark:text-red-300 uppercase tracking-wider">Module 4</span>
+                        <h2 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white tracking-tight">STARTER KITS &amp; AUTHENTICATION SETUP (OPTIONAL)</h2>
+                    </div>
+                </div>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">Choose a starter kit if your project requires user authentication, registration,</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">password resets, and dashboard.</p>
+
+            <h3 class="text-lg font-bold text-gray-800 dark:text-gray-100 mt-6 mb-2 flex items-center space-x-2">
+                <span class="px-2 py-0.5 rounded text-xs font-semibold bg-gray-200 dark:bg-gray-800 text-gray-700 dark:text-gray-300">OPTION A</span>
+                <span>Laravel Breeze (Simple, Clean, Recommended for Most Projects)</span>
+            </h3>
+
+                <div id="section-1-require-breeze-via-composer" class="scroll-mt-24 pt-10 pb-4 border-b border-gray-200 dark:border-gray-800">
+                    <div class="flex items-center space-x-3">
+                        <span class="px-2.5 py-1 text-xs font-bold rounded-md bg-red-100 text-red-700 dark:bg-red-950/80 dark:text-red-300 uppercase tracking-wider">Module 1</span>
+                        <h2 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white tracking-tight">Require Breeze via Composer:</h2>
+                    </div>
+                </div>
+
+    <div class="relative my-6 group rounded-xl overflow-hidden border border-slate-800 shadow-2xl bg-[#0c1017]">
+        <div class="flex items-center justify-between px-4 py-2.5 bg-[#161b22] border-b border-slate-800/80 text-xs text-slate-400 font-mono select-none">
+            <div class="flex items-center space-x-2">
+                <span class="w-3 h-3 rounded-full bg-[#ff5f56] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#ffbd2e] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#27c93f] inline-block shadow-sm"></span>
+                <span class="ml-2 uppercase font-semibold text-indigo-400 tracking-wider text-[11px]">bash</span>
+            </div>
+            <button onclick="copyCode(this)" class="px-2.5 py-1 rounded-md bg-slate-800/90 hover:bg-slate-700 text-slate-200 transition flex items-center space-x-1.5 shadow-sm font-sans text-xs">
+                <svg class="w-3.5 h-3.5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                <span>Copy</span>
+            </button>
+        </div>
+        <pre class="p-4 sm:p-5 overflow-x-auto text-[13.5px] leading-relaxed custom-scrollbar"><code class="language-bash text-slate-100">   composer require laravel/breeze --dev</code></pre>
+    </div>
+
+                <div id="section-2-run-breeze-install-command" class="scroll-mt-24 pt-10 pb-4 border-b border-gray-200 dark:border-gray-800">
+                    <div class="flex items-center space-x-3">
+                        <span class="px-2.5 py-1 text-xs font-bold rounded-md bg-red-100 text-red-700 dark:bg-red-950/80 dark:text-red-300 uppercase tracking-wider">Module 2</span>
+                        <h2 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white tracking-tight">Run Breeze Install Command:</h2>
+                    </div>
+                </div>
+
+    <div class="relative my-6 group rounded-xl overflow-hidden border border-slate-800 shadow-2xl bg-[#0c1017]">
+        <div class="flex items-center justify-between px-4 py-2.5 bg-[#161b22] border-b border-slate-800/80 text-xs text-slate-400 font-mono select-none">
+            <div class="flex items-center space-x-2">
+                <span class="w-3 h-3 rounded-full bg-[#ff5f56] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#ffbd2e] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#27c93f] inline-block shadow-sm"></span>
+                <span class="ml-2 uppercase font-semibold text-indigo-400 tracking-wider text-[11px]">bash</span>
+            </div>
+            <button onclick="copyCode(this)" class="px-2.5 py-1 rounded-md bg-slate-800/90 hover:bg-slate-700 text-slate-200 transition flex items-center space-x-1.5 shadow-sm font-sans text-xs">
+                <svg class="w-3.5 h-3.5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                <span>Copy</span>
+            </button>
+        </div>
+        <pre class="p-4 sm:p-5 overflow-x-auto text-[13.5px] leading-relaxed custom-scrollbar"><code class="language-bash text-slate-100">   php artisan breeze:install</code></pre>
+    </div>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">Select your preferred stack when prompted:</p>
+<ul class="my-3 space-y-2 pl-6 list-disc text-gray-700 dark:text-gray-300 text-sm md:text-base leading-relaxed">
+<li>blade (traditional Laravel blade views)</li>
+<li>livewire (dynamic UI without Vue/React)</li>
+<li>vue / inertia</li>
+<li>react / inertia</li>
+<li>api only</li>
+</ul>
+
+                <div id="section-3-run-migrations-and-build-assets" class="scroll-mt-24 pt-10 pb-4 border-b border-gray-200 dark:border-gray-800">
+                    <div class="flex items-center space-x-3">
+                        <span class="px-2.5 py-1 text-xs font-bold rounded-md bg-red-100 text-red-700 dark:bg-red-950/80 dark:text-red-300 uppercase tracking-wider">Module 3</span>
+                        <h2 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white tracking-tight">Run migrations and build assets:</h2>
+                    </div>
+                </div>
+
+    <div class="relative my-6 group rounded-xl overflow-hidden border border-slate-800 shadow-2xl bg-[#0c1017]">
+        <div class="flex items-center justify-between px-4 py-2.5 bg-[#161b22] border-b border-slate-800/80 text-xs text-slate-400 font-mono select-none">
+            <div class="flex items-center space-x-2">
+                <span class="w-3 h-3 rounded-full bg-[#ff5f56] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#ffbd2e] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#27c93f] inline-block shadow-sm"></span>
+                <span class="ml-2 uppercase font-semibold text-indigo-400 tracking-wider text-[11px]">bash</span>
+            </div>
+            <button onclick="copyCode(this)" class="px-2.5 py-1 rounded-md bg-slate-800/90 hover:bg-slate-700 text-slate-200 transition flex items-center space-x-1.5 shadow-sm font-sans text-xs">
+                <svg class="w-3.5 h-3.5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                <span>Copy</span>
+            </button>
+        </div>
+        <pre class="p-4 sm:p-5 overflow-x-auto text-[13.5px] leading-relaxed custom-scrollbar"><code class="language-bash text-slate-100">   php artisan migrate
+   npm install
+   npm run dev</code></pre>
+    </div>
+
+            <h3 class="text-lg font-bold text-gray-800 dark:text-gray-100 mt-6 mb-2 flex items-center space-x-2">
+                <span class="px-2 py-0.5 rounded text-xs font-semibold bg-gray-200 dark:bg-gray-800 text-gray-700 dark:text-gray-300">OPTION B</span>
+                <span>Laravel Jetstream (Advanced: 2FA, API Tokens, Teams, Profile Photos)</span>
+            </h3>
+
+                <div id="section-1-require-jetstream-via-composer" class="scroll-mt-24 pt-10 pb-4 border-b border-gray-200 dark:border-gray-800">
+                    <div class="flex items-center space-x-3">
+                        <span class="px-2.5 py-1 text-xs font-bold rounded-md bg-red-100 text-red-700 dark:bg-red-950/80 dark:text-red-300 uppercase tracking-wider">Module 1</span>
+                        <h2 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white tracking-tight">Require Jetstream via Composer:</h2>
+                    </div>
+                </div>
+
+    <div class="relative my-6 group rounded-xl overflow-hidden border border-slate-800 shadow-2xl bg-[#0c1017]">
+        <div class="flex items-center justify-between px-4 py-2.5 bg-[#161b22] border-b border-slate-800/80 text-xs text-slate-400 font-mono select-none">
+            <div class="flex items-center space-x-2">
+                <span class="w-3 h-3 rounded-full bg-[#ff5f56] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#ffbd2e] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#27c93f] inline-block shadow-sm"></span>
+                <span class="ml-2 uppercase font-semibold text-indigo-400 tracking-wider text-[11px]">bash</span>
+            </div>
+            <button onclick="copyCode(this)" class="px-2.5 py-1 rounded-md bg-slate-800/90 hover:bg-slate-700 text-slate-200 transition flex items-center space-x-1.5 shadow-sm font-sans text-xs">
+                <svg class="w-3.5 h-3.5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                <span>Copy</span>
+            </button>
+        </div>
+        <pre class="p-4 sm:p-5 overflow-x-auto text-[13.5px] leading-relaxed custom-scrollbar"><code class="language-bash text-slate-100">   composer require laravel/jetstream</code></pre>
+    </div>
+
+                <div id="section-2-install-jetstream-with-your-choice-of-stack" class="scroll-mt-24 pt-10 pb-4 border-b border-gray-200 dark:border-gray-800">
+                    <div class="flex items-center space-x-3">
+                        <span class="px-2.5 py-1 text-xs font-bold rounded-md bg-red-100 text-red-700 dark:bg-red-950/80 dark:text-red-300 uppercase tracking-wider">Module 2</span>
+                        <h2 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white tracking-tight">Install Jetstream with your choice of stack:</h2>
+                    </div>
+                </div>
+<ul class="my-3 space-y-2 pl-6 list-disc text-gray-700 dark:text-gray-300 text-sm md:text-base leading-relaxed">
+<li>Option 1: Livewire Stack:</li>
+</ul>
+
+    <div class="relative my-6 group rounded-xl overflow-hidden border border-slate-800 shadow-2xl bg-[#0c1017]">
+        <div class="flex items-center justify-between px-4 py-2.5 bg-[#161b22] border-b border-slate-800/80 text-xs text-slate-400 font-mono select-none">
+            <div class="flex items-center space-x-2">
+                <span class="w-3 h-3 rounded-full bg-[#ff5f56] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#ffbd2e] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#27c93f] inline-block shadow-sm"></span>
+                <span class="ml-2 uppercase font-semibold text-indigo-400 tracking-wider text-[11px]">bash</span>
+            </div>
+            <button onclick="copyCode(this)" class="px-2.5 py-1 rounded-md bg-slate-800/90 hover:bg-slate-700 text-slate-200 transition flex items-center space-x-1.5 shadow-sm font-sans text-xs">
+                <svg class="w-3.5 h-3.5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                <span>Copy</span>
+            </button>
+        </div>
+        <pre class="p-4 sm:p-5 overflow-x-auto text-[13.5px] leading-relaxed custom-scrollbar"><code class="language-bash text-slate-100">     php artisan jetstream:install livewire</code></pre>
+    </div>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">(Optional with Teams support):</p>
+
+    <div class="relative my-6 group rounded-xl overflow-hidden border border-slate-800 shadow-2xl bg-[#0c1017]">
+        <div class="flex items-center justify-between px-4 py-2.5 bg-[#161b22] border-b border-slate-800/80 text-xs text-slate-400 font-mono select-none">
+            <div class="flex items-center space-x-2">
+                <span class="w-3 h-3 rounded-full bg-[#ff5f56] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#ffbd2e] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#27c93f] inline-block shadow-sm"></span>
+                <span class="ml-2 uppercase font-semibold text-indigo-400 tracking-wider text-[11px]">bash</span>
+            </div>
+            <button onclick="copyCode(this)" class="px-2.5 py-1 rounded-md bg-slate-800/90 hover:bg-slate-700 text-slate-200 transition flex items-center space-x-1.5 shadow-sm font-sans text-xs">
+                <svg class="w-3.5 h-3.5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                <span>Copy</span>
+            </button>
+        </div>
+        <pre class="p-4 sm:p-5 overflow-x-auto text-[13.5px] leading-relaxed custom-scrollbar"><code class="language-bash text-slate-100">     php artisan jetstream:install livewire --teams</code></pre>
+    </div>
+<ul class="my-3 space-y-2 pl-6 list-disc text-gray-700 dark:text-gray-300 text-sm md:text-base leading-relaxed">
+<li>Option 2: Inertia (Vue 3) Stack:</li>
+</ul>
+
+    <div class="relative my-6 group rounded-xl overflow-hidden border border-slate-800 shadow-2xl bg-[#0c1017]">
+        <div class="flex items-center justify-between px-4 py-2.5 bg-[#161b22] border-b border-slate-800/80 text-xs text-slate-400 font-mono select-none">
+            <div class="flex items-center space-x-2">
+                <span class="w-3 h-3 rounded-full bg-[#ff5f56] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#ffbd2e] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#27c93f] inline-block shadow-sm"></span>
+                <span class="ml-2 uppercase font-semibold text-indigo-400 tracking-wider text-[11px]">bash</span>
+            </div>
+            <button onclick="copyCode(this)" class="px-2.5 py-1 rounded-md bg-slate-800/90 hover:bg-slate-700 text-slate-200 transition flex items-center space-x-1.5 shadow-sm font-sans text-xs">
+                <svg class="w-3.5 h-3.5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                <span>Copy</span>
+            </button>
+        </div>
+        <pre class="p-4 sm:p-5 overflow-x-auto text-[13.5px] leading-relaxed custom-scrollbar"><code class="language-bash text-slate-100">     php artisan jetstream:install inertia</code></pre>
+    </div>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">(Optional with Teams support):</p>
+
+    <div class="relative my-6 group rounded-xl overflow-hidden border border-slate-800 shadow-2xl bg-[#0c1017]">
+        <div class="flex items-center justify-between px-4 py-2.5 bg-[#161b22] border-b border-slate-800/80 text-xs text-slate-400 font-mono select-none">
+            <div class="flex items-center space-x-2">
+                <span class="w-3 h-3 rounded-full bg-[#ff5f56] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#ffbd2e] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#27c93f] inline-block shadow-sm"></span>
+                <span class="ml-2 uppercase font-semibold text-indigo-400 tracking-wider text-[11px]">bash</span>
+            </div>
+            <button onclick="copyCode(this)" class="px-2.5 py-1 rounded-md bg-slate-800/90 hover:bg-slate-700 text-slate-200 transition flex items-center space-x-1.5 shadow-sm font-sans text-xs">
+                <svg class="w-3.5 h-3.5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                <span>Copy</span>
+            </button>
+        </div>
+        <pre class="p-4 sm:p-5 overflow-x-auto text-[13.5px] leading-relaxed custom-scrollbar"><code class="language-bash text-slate-100">     php artisan jetstream:install inertia --teams</code></pre>
+    </div>
+
+                <div id="section-3-finalizing-jetstream-installation" class="scroll-mt-24 pt-10 pb-4 border-b border-gray-200 dark:border-gray-800">
+                    <div class="flex items-center space-x-3">
+                        <span class="px-2.5 py-1 text-xs font-bold rounded-md bg-red-100 text-red-700 dark:bg-red-950/80 dark:text-red-300 uppercase tracking-wider">Module 3</span>
+                        <h2 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white tracking-tight">Finalizing Jetstream Installation:</h2>
+                    </div>
+                </div>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">Install and build NPM dependencies, and migrate the database:</p>
+
+    <div class="relative my-6 group rounded-xl overflow-hidden border border-slate-800 shadow-2xl bg-[#0c1017]">
+        <div class="flex items-center justify-between px-4 py-2.5 bg-[#161b22] border-b border-slate-800/80 text-xs text-slate-400 font-mono select-none">
+            <div class="flex items-center space-x-2">
+                <span class="w-3 h-3 rounded-full bg-[#ff5f56] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#ffbd2e] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#27c93f] inline-block shadow-sm"></span>
+                <span class="ml-2 uppercase font-semibold text-indigo-400 tracking-wider text-[11px]">bash</span>
+            </div>
+            <button onclick="copyCode(this)" class="px-2.5 py-1 rounded-md bg-slate-800/90 hover:bg-slate-700 text-slate-200 transition flex items-center space-x-1.5 shadow-sm font-sans text-xs">
+                <svg class="w-3.5 h-3.5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                <span>Copy</span>
+            </button>
+        </div>
+        <pre class="p-4 sm:p-5 overflow-x-auto text-[13.5px] leading-relaxed custom-scrollbar"><code class="language-bash text-slate-100">   npm install
+   npm run build
+   php artisan migrate</code></pre>
+    </div>
+
+                <div id="section-4-customizing-application-logos-in-jetstream" class="scroll-mt-24 pt-10 pb-4 border-b border-gray-200 dark:border-gray-800">
+                    <div class="flex items-center space-x-3">
+                        <span class="px-2.5 py-1 text-xs font-bold rounded-md bg-red-100 text-red-700 dark:bg-red-950/80 dark:text-red-300 uppercase tracking-wider">Module 4</span>
+                        <h2 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white tracking-tight">Customizing Application Logos in Jetstream:</h2>
+                    </div>
+                </div>
+<ul class="my-3 space-y-2 pl-6 list-disc text-gray-700 dark:text-gray-300 text-sm md:text-base leading-relaxed">
+<li>If using Livewire, customize SVG icons in these Blade components:</li>
+<li>resources/views/components/application-logo.blade.php</li>
+<li>resources/views/components/application-mark.blade.php</li>
+<li>resources/views/components/authentication-card-logo.blade.php</li>
+<li>If using Inertia, customize SVG icons in these Vue components:</li>
+<li>resources/js/Components/ApplicationLogo.vue</li>
+<li>resources/js/Components/ApplicationMark.vue</li>
+<li>resources/js/Components/AuthenticationCardLogo.vue</li>
+<li>Rebuild assets after changing Vue/JS/CSS components:</li>
+</ul>
+
+    <div class="relative my-6 group rounded-xl overflow-hidden border border-slate-800 shadow-2xl bg-[#0c1017]">
+        <div class="flex items-center justify-between px-4 py-2.5 bg-[#161b22] border-b border-slate-800/80 text-xs text-slate-400 font-mono select-none">
+            <div class="flex items-center space-x-2">
+                <span class="w-3 h-3 rounded-full bg-[#ff5f56] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#ffbd2e] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#27c93f] inline-block shadow-sm"></span>
+                <span class="ml-2 uppercase font-semibold text-indigo-400 tracking-wider text-[11px]">bash</span>
+            </div>
+            <button onclick="copyCode(this)" class="px-2.5 py-1 rounded-md bg-slate-800/90 hover:bg-slate-700 text-slate-200 transition flex items-center space-x-1.5 shadow-sm font-sans text-xs">
+                <svg class="w-3.5 h-3.5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                <span>Copy</span>
+            </button>
+        </div>
+        <pre class="p-4 sm:p-5 overflow-x-auto text-[13.5px] leading-relaxed custom-scrollbar"><code class="language-bash text-slate-100">     npm run build</code></pre>
+    </div>
+
+                <div id="section-5-running-the-application" class="scroll-mt-24 pt-10 pb-4 border-b border-gray-200 dark:border-gray-800">
+                    <div class="flex items-center space-x-3">
+                        <span class="px-2.5 py-1 text-xs font-bold rounded-md bg-red-100 text-red-700 dark:bg-red-950/80 dark:text-red-300 uppercase tracking-wider">Module 5</span>
+                        <h2 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white tracking-tight">RUNNING THE APPLICATION</h2>
+                    </div>
+                </div>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">To run your Laravel application locally:</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">Terminal 1: Start Laravel Development Backend Server:</p>
+
+    <div class="relative my-6 group rounded-xl overflow-hidden border border-slate-800 shadow-2xl bg-[#0c1017]">
+        <div class="flex items-center justify-between px-4 py-2.5 bg-[#161b22] border-b border-slate-800/80 text-xs text-slate-400 font-mono select-none">
+            <div class="flex items-center space-x-2">
+                <span class="w-3 h-3 rounded-full bg-[#ff5f56] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#ffbd2e] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#27c93f] inline-block shadow-sm"></span>
+                <span class="ml-2 uppercase font-semibold text-indigo-400 tracking-wider text-[11px]">bash</span>
+            </div>
+            <button onclick="copyCode(this)" class="px-2.5 py-1 rounded-md bg-slate-800/90 hover:bg-slate-700 text-slate-200 transition flex items-center space-x-1.5 shadow-sm font-sans text-xs">
+                <svg class="w-3.5 h-3.5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                <span>Copy</span>
+            </button>
+        </div>
+        <pre class="p-4 sm:p-5 overflow-x-auto text-[13.5px] leading-relaxed custom-scrollbar"><code class="language-bash text-slate-100">php artisan serve</code></pre>
+    </div>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">Application will be available at:</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">http://127.0.0.1:8000</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">Terminal 2: Start Vite Development Server (for live CSS/JS hot reload):</p>
+
+    <div class="relative my-6 group rounded-xl overflow-hidden border border-slate-800 shadow-2xl bg-[#0c1017]">
+        <div class="flex items-center justify-between px-4 py-2.5 bg-[#161b22] border-b border-slate-800/80 text-xs text-slate-400 font-mono select-none">
+            <div class="flex items-center space-x-2">
+                <span class="w-3 h-3 rounded-full bg-[#ff5f56] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#ffbd2e] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#27c93f] inline-block shadow-sm"></span>
+                <span class="ml-2 uppercase font-semibold text-indigo-400 tracking-wider text-[11px]">bash</span>
+            </div>
+            <button onclick="copyCode(this)" class="px-2.5 py-1 rounded-md bg-slate-800/90 hover:bg-slate-700 text-slate-200 transition flex items-center space-x-1.5 shadow-sm font-sans text-xs">
+                <svg class="w-3.5 h-3.5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                <span>Copy</span>
+            </button>
+        </div>
+        <pre class="p-4 sm:p-5 overflow-x-auto text-[13.5px] leading-relaxed custom-scrollbar"><code class="language-bash text-slate-100">npm run dev</code></pre>
+    </div>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">When deploying or preparing for production, build optimized assets:</p>
+
+    <div class="relative my-6 group rounded-xl overflow-hidden border border-slate-800 shadow-2xl bg-[#0c1017]">
+        <div class="flex items-center justify-between px-4 py-2.5 bg-[#161b22] border-b border-slate-800/80 text-xs text-slate-400 font-mono select-none">
+            <div class="flex items-center space-x-2">
+                <span class="w-3 h-3 rounded-full bg-[#ff5f56] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#ffbd2e] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#27c93f] inline-block shadow-sm"></span>
+                <span class="ml-2 uppercase font-semibold text-indigo-400 tracking-wider text-[11px]">bash</span>
+            </div>
+            <button onclick="copyCode(this)" class="px-2.5 py-1 rounded-md bg-slate-800/90 hover:bg-slate-700 text-slate-200 transition flex items-center space-x-1.5 shadow-sm font-sans text-xs">
+                <svg class="w-3.5 h-3.5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                <span>Copy</span>
+            </button>
+        </div>
+        <pre class="p-4 sm:p-5 overflow-x-auto text-[13.5px] leading-relaxed custom-scrollbar"><code class="language-bash text-slate-100">npm run build</code></pre>
+    </div>
+
+                <div id="section-6-common-errors-troubleshooting-solutions" class="scroll-mt-24 pt-10 pb-4 border-b border-gray-200 dark:border-gray-800">
+                    <div class="flex items-center space-x-3">
+                        <span class="px-2.5 py-1 text-xs font-bold rounded-md bg-red-100 text-red-700 dark:bg-red-950/80 dark:text-red-300 uppercase tracking-wider">Module 6</span>
+                        <h2 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white tracking-tight">COMMON ERRORS &amp; TROUBLESHOOTING SOLUTIONS</h2>
+                    </div>
+                </div>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">Issue 1: &quot;SQLSTATE[42000]: Syntax error or access violation: 1071 Specified key was too long&quot;</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">Cause: Older MySQL versions / MariaDB character encoding limits (utf8mb4).</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">Solution:</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">Open <code class="px-1.5 py-0.5 rounded text-xs font-mono bg-indigo-50 text-indigo-700 dark:bg-slate-800 dark:text-pink-400 font-semibold border border-indigo-100 dark:border-slate-700/60">app/Providers/AppServiceProvider.php</code> and add:</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">use Illuminate\Support\Facades\Schema;</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">public function boot(): void</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">{</p>
+
+    <div class="relative my-6 group rounded-xl overflow-hidden border border-slate-800 shadow-2xl bg-[#0c1017]">
+        <div class="flex items-center justify-between px-4 py-2.5 bg-[#161b22] border-b border-slate-800/80 text-xs text-slate-400 font-mono select-none">
+            <div class="flex items-center space-x-2">
+                <span class="w-3 h-3 rounded-full bg-[#ff5f56] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#ffbd2e] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#27c93f] inline-block shadow-sm"></span>
+                <span class="ml-2 uppercase font-semibold text-indigo-400 tracking-wider text-[11px]">php</span>
+            </div>
+            <button onclick="copyCode(this)" class="px-2.5 py-1 rounded-md bg-slate-800/90 hover:bg-slate-700 text-slate-200 transition flex items-center space-x-1.5 shadow-sm font-sans text-xs">
+                <svg class="w-3.5 h-3.5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                <span>Copy</span>
+            </button>
+        </div>
+        <pre class="p-4 sm:p-5 overflow-x-auto text-[13.5px] leading-relaxed custom-scrollbar"><code class="language-php text-slate-100">    Schema::defaultStringLength(191);
+}</code></pre>
+    </div>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">Issue 2: &quot;SQLSTATE[HY000] [1045] Access denied for user &#x27;root&#x27;@&#x27;localhost&#x27;&quot;</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">Solution:</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">1. Double-check your <code class="px-1.5 py-0.5 rounded text-xs font-mono bg-indigo-50 text-indigo-700 dark:bg-slate-800 dark:text-pink-400 font-semibold border border-indigo-100 dark:border-slate-700/60">DB_USERNAME</code> and <code class="px-1.5 py-0.5 rounded text-xs font-mono bg-indigo-50 text-indigo-700 dark:bg-slate-800 dark:text-pink-400 font-semibold border border-indigo-100 dark:border-slate-700/60">DB_PASSWORD</code> in <code class="px-1.5 py-0.5 rounded text-xs font-mono bg-indigo-50 text-indigo-700 dark:bg-slate-800 dark:text-pink-400 font-semibold border border-indigo-100 dark:border-slate-700/60">.env</code>.</p>
+
+                <div id="section-2-if-mysql-root-has-no-password-in-xampp-set" class="scroll-mt-24 pt-10 pb-4 border-b border-gray-200 dark:border-gray-800">
+                    <div class="flex items-center space-x-3">
+                        <span class="px-2.5 py-1 text-xs font-bold rounded-md bg-red-100 text-red-700 dark:bg-red-950/80 dark:text-red-300 uppercase tracking-wider">Module 2</span>
+                        <h2 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white tracking-tight">If MySQL root has no password in XAMPP, set:</h2>
+                    </div>
+                </div>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">DB_PASSWORD=</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">3. Clear config cache so Laravel reloads <code class="px-1.5 py-0.5 rounded text-xs font-mono bg-indigo-50 text-indigo-700 dark:bg-slate-800 dark:text-pink-400 font-semibold border border-indigo-100 dark:border-slate-700/60">.env</code>:</p>
+
+    <div class="relative my-6 group rounded-xl overflow-hidden border border-slate-800 shadow-2xl bg-[#0c1017]">
+        <div class="flex items-center justify-between px-4 py-2.5 bg-[#161b22] border-b border-slate-800/80 text-xs text-slate-400 font-mono select-none">
+            <div class="flex items-center space-x-2">
+                <span class="w-3 h-3 rounded-full bg-[#ff5f56] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#ffbd2e] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#27c93f] inline-block shadow-sm"></span>
+                <span class="ml-2 uppercase font-semibold text-indigo-400 tracking-wider text-[11px]">bash</span>
+            </div>
+            <button onclick="copyCode(this)" class="px-2.5 py-1 rounded-md bg-slate-800/90 hover:bg-slate-700 text-slate-200 transition flex items-center space-x-1.5 shadow-sm font-sans text-xs">
+                <svg class="w-3.5 h-3.5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                <span>Copy</span>
+            </button>
+        </div>
+        <pre class="p-4 sm:p-5 overflow-x-auto text-[13.5px] leading-relaxed custom-scrollbar"><code class="language-bash text-slate-100">   php artisan config:clear</code></pre>
+    </div>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">Issue 3: &quot;Vite manifest not found at: ... /public/build/manifest.json&quot;</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">Solution:</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">Compile your frontend assets:</p>
+
+    <div class="relative my-6 group rounded-xl overflow-hidden border border-slate-800 shadow-2xl bg-[#0c1017]">
+        <div class="flex items-center justify-between px-4 py-2.5 bg-[#161b22] border-b border-slate-800/80 text-xs text-slate-400 font-mono select-none">
+            <div class="flex items-center space-x-2">
+                <span class="w-3 h-3 rounded-full bg-[#ff5f56] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#ffbd2e] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#27c93f] inline-block shadow-sm"></span>
+                <span class="ml-2 uppercase font-semibold text-indigo-400 tracking-wider text-[11px]">bash</span>
+            </div>
+            <button onclick="copyCode(this)" class="px-2.5 py-1 rounded-md bg-slate-800/90 hover:bg-slate-700 text-slate-200 transition flex items-center space-x-1.5 shadow-sm font-sans text-xs">
+                <svg class="w-3.5 h-3.5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                <span>Copy</span>
+            </button>
+        </div>
+        <pre class="p-4 sm:p-5 overflow-x-auto text-[13.5px] leading-relaxed custom-scrollbar"><code class="language-bash text-slate-100">npm install
+npm run build</code></pre>
+    </div>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">Issue 4: Changes in <code class="px-1.5 py-0.5 rounded text-xs font-mono bg-indigo-50 text-indigo-700 dark:bg-slate-800 dark:text-pink-400 font-semibold border border-indigo-100 dark:border-slate-700/60">.env</code> or routes not updating</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">Solution:</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">Clear cached application data:</p>
+
+    <div class="relative my-6 group rounded-xl overflow-hidden border border-slate-800 shadow-2xl bg-[#0c1017]">
+        <div class="flex items-center justify-between px-4 py-2.5 bg-[#161b22] border-b border-slate-800/80 text-xs text-slate-400 font-mono select-none">
+            <div class="flex items-center space-x-2">
+                <span class="w-3 h-3 rounded-full bg-[#ff5f56] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#ffbd2e] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#27c93f] inline-block shadow-sm"></span>
+                <span class="ml-2 uppercase font-semibold text-indigo-400 tracking-wider text-[11px]">bash</span>
+            </div>
+            <button onclick="copyCode(this)" class="px-2.5 py-1 rounded-md bg-slate-800/90 hover:bg-slate-700 text-slate-200 transition flex items-center space-x-1.5 shadow-sm font-sans text-xs">
+                <svg class="w-3.5 h-3.5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                <span>Copy</span>
+            </button>
+        </div>
+        <pre class="p-4 sm:p-5 overflow-x-auto text-[13.5px] leading-relaxed custom-scrollbar"><code class="language-bash text-slate-100">php artisan config:clear
+php artisan route:clear
+php artisan view:clear
+php artisan cache:clear
+Or run all at once:
+php artisan optimize:clear</code></pre>
+    </div>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">Issue 5: &quot;Composer memory limit exceeded&quot;</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">Solution:</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">Run composer with no memory limit:</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">COMPOSER_MEMORY_LIMIT=-1 composer create-project laravel/laravel project_name</p>
+
+                <div id="section-7-useful-artisan-commands-cheat-sheet" class="scroll-mt-24 pt-10 pb-4 border-b border-gray-200 dark:border-gray-800">
+                    <div class="flex items-center space-x-3">
+                        <span class="px-2.5 py-1 text-xs font-bold rounded-md bg-red-100 text-red-700 dark:bg-red-950/80 dark:text-red-300 uppercase tracking-wider">Module 7</span>
+                        <h2 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white tracking-tight">USEFUL ARTISAN COMMANDS CHEAT SHEET</h2>
+                    </div>
+                </div>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">Server &amp; Maintenance:</p>
+
+    <div class="relative my-6 group rounded-xl overflow-hidden border border-slate-800 shadow-2xl bg-[#0c1017]">
+        <div class="flex items-center justify-between px-4 py-2.5 bg-[#161b22] border-b border-slate-800/80 text-xs text-slate-400 font-mono select-none">
+            <div class="flex items-center space-x-2">
+                <span class="w-3 h-3 rounded-full bg-[#ff5f56] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#ffbd2e] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#27c93f] inline-block shadow-sm"></span>
+                <span class="ml-2 uppercase font-semibold text-indigo-400 tracking-wider text-[11px]">bash</span>
+            </div>
+            <button onclick="copyCode(this)" class="px-2.5 py-1 rounded-md bg-slate-800/90 hover:bg-slate-700 text-slate-200 transition flex items-center space-x-1.5 shadow-sm font-sans text-xs">
+                <svg class="w-3.5 h-3.5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                <span>Copy</span>
+            </button>
+        </div>
+        <pre class="p-4 sm:p-5 overflow-x-auto text-[13.5px] leading-relaxed custom-scrollbar"><code class="language-bash text-slate-100">  php artisan serve                       # Start local server
+  php artisan down                        # Put application into maintenance mode
+  php artisan up                          # Bring application out of maintenance
+  php artisan optimize:clear              # Clear all caches (config, route, views)</code></pre>
+    </div>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">Database &amp; Migrations:</p>
+
+    <div class="relative my-6 group rounded-xl overflow-hidden border border-slate-800 shadow-2xl bg-[#0c1017]">
+        <div class="flex items-center justify-between px-4 py-2.5 bg-[#161b22] border-b border-slate-800/80 text-xs text-slate-400 font-mono select-none">
+            <div class="flex items-center space-x-2">
+                <span class="w-3 h-3 rounded-full bg-[#ff5f56] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#ffbd2e] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#27c93f] inline-block shadow-sm"></span>
+                <span class="ml-2 uppercase font-semibold text-indigo-400 tracking-wider text-[11px]">bash</span>
+            </div>
+            <button onclick="copyCode(this)" class="px-2.5 py-1 rounded-md bg-slate-800/90 hover:bg-slate-700 text-slate-200 transition flex items-center space-x-1.5 shadow-sm font-sans text-xs">
+                <svg class="w-3.5 h-3.5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                <span>Copy</span>
+            </button>
+        </div>
+        <pre class="p-4 sm:p-5 overflow-x-auto text-[13.5px] leading-relaxed custom-scrollbar"><code class="language-bash text-slate-100">  php artisan migrate                     # Run pending migrations
+  php artisan migrate:rollback            # Rollback last migration batch
+  php artisan migrate:fresh               # Drop all tables and re-run all migrations
+  php artisan migrate:fresh --seed        # Drop all tables, re-migrate, and seed data
+  php artisan db:seed                     # Run database seeders</code></pre>
+    </div>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">Code Generators:</p>
+
+    <div class="relative my-6 group rounded-xl overflow-hidden border border-slate-800 shadow-2xl bg-[#0c1017]">
+        <div class="flex items-center justify-between px-4 py-2.5 bg-[#161b22] border-b border-slate-800/80 text-xs text-slate-400 font-mono select-none">
+            <div class="flex items-center space-x-2">
+                <span class="w-3 h-3 rounded-full bg-[#ff5f56] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#ffbd2e] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#27c93f] inline-block shadow-sm"></span>
+                <span class="ml-2 uppercase font-semibold text-indigo-400 tracking-wider text-[11px]">bash</span>
+            </div>
+            <button onclick="copyCode(this)" class="px-2.5 py-1 rounded-md bg-slate-800/90 hover:bg-slate-700 text-slate-200 transition flex items-center space-x-1.5 shadow-sm font-sans text-xs">
+                <svg class="w-3.5 h-3.5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                <span>Copy</span>
+            </button>
+        </div>
+        <pre class="p-4 sm:p-5 overflow-x-auto text-[13.5px] leading-relaxed custom-scrollbar"><code class="language-bash text-slate-100">  php artisan make:controller PostController --resource   # Resource controller with CRUD methods
+  php artisan make:model Post -mfs                       # Creates Model, Migration (-m), Factory (-f), Seeder (-s)
+  php artisan make:middleware CheckAdminRole             # Creates custom middleware
+  php artisan make:request StorePostRequest              # Creates form request validation
+  php artisan make:mail OrderShipped                     # Creates mailable class</code></pre>
+    </div>
+            </article>
+
+            <!-- Bottom Navigation -->
+            <div class="mt-16 pt-8 border-t border-gray-200 dark:border-gray-800 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4">
+                <div></div>
+                <a href="02-workflow-command-playbook.html" class="group flex items-center space-x-3 px-5 py-3 rounded-xl border border-indigo-600 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium shadow-md hover:shadow-xl transition-all">
+        <div class="text-right">
+            <div class="text-[10px] uppercase tracking-wider text-indigo-200">Next</div>
+            <div class="font-semibold truncate max-w-[200px] sm:max-w-xs">Full-Cycle Command Playbook</div>
+        </div>
+        <span class="group-hover:translate-x-1 transition-transform">→</span>
+    </a>
+            </div>
+        </main>
+
+        <!-- Right TOC Sidebar (Desktop) with ScrollSpy -->
+        <aside class="hidden xl:block w-72 shrink-0 py-8 pl-4">
+            <div class="sticky top-24">
+                <div class="flex items-center space-x-2 mb-3 px-1">
+                    <span class="w-2 h-2 rounded-full bg-indigo-500 animate-pulse"></span>
+                    <h3 class="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">On This Page</h3>
+                </div>
+                <div id="toc-nav" class="space-y-1 border-l-2 border-gray-200 dark:border-gray-800 pl-3 max-h-[75vh] overflow-y-auto custom-scrollbar">
+                    
+        <a href="#section-1-prerequisites-system-requirements" class="toc-link block py-1.5 text-xs text-gray-500 hover:text-indigo-600 dark:text-gray-400 dark:hover:text-indigo-400 truncate transition-all duration-150" data-target="section-1-prerequisites-system-requirements">
+            1. PREREQUISITES &amp; SYSTEM REQUIREMENTS
+        </a>
+
+        <a href="#section-2-methods-to-create-a-laravel-project" class="toc-link block py-1.5 text-xs text-gray-500 hover:text-indigo-600 dark:text-gray-400 dark:hover:text-indigo-400 truncate transition-all duration-150" data-target="section-2-methods-to-create-a-laravel-project">
+            2. METHODS TO CREATE A LARAVEL PROJECT
+        </a>
+
+        <a href="#step-1-install-the-laravel-installer-globally-once-on-your-machine" class="toc-link block py-1.5 text-xs text-gray-500 hover:text-indigo-600 dark:text-gray-400 dark:hover:text-indigo-400 truncate transition-all duration-150" data-target="step-1-install-the-laravel-installer-globally-once-on-your-machine">
+            STEP 1: Install the Laravel installer globally once on your machine:
+        </a>
+
+        <a href="#step-2-create-a-new-project" class="toc-link block py-1.5 text-xs text-gray-500 hover:text-indigo-600 dark:text-gray-400 dark:hover:text-indigo-400 truncate transition-all duration-150" data-target="step-2-create-a-new-project">
+            STEP 2: Create a new project:
+        </a>
+
+        <a href="#step-3-enter-your-project-directory" class="toc-link block py-1.5 text-xs text-gray-500 hover:text-indigo-600 dark:text-gray-400 dark:hover:text-indigo-400 truncate transition-all duration-150" data-target="step-3-enter-your-project-directory">
+            STEP 3: Enter your project directory:
+        </a>
+
+        <a href="#section-3-essential-initial-configuration-env-key-database" class="toc-link block py-1.5 text-xs text-gray-500 hover:text-indigo-600 dark:text-gray-400 dark:hover:text-indigo-400 truncate transition-all duration-150" data-target="section-3-essential-initial-configuration-env-key-database">
+            3. ESSENTIAL INITIAL CONFIGURATION (.env, Key, Database)
+        </a>
+
+        <a href="#section-4-starter-kits-authentication-setup-optional" class="toc-link block py-1.5 text-xs text-gray-500 hover:text-indigo-600 dark:text-gray-400 dark:hover:text-indigo-400 truncate transition-all duration-150" data-target="section-4-starter-kits-authentication-setup-optional">
+            4. STARTER KITS &amp; AUTHENTICATION SETUP (OPTIONAL)
+        </a>
+
+        <a href="#section-1-require-breeze-via-composer" class="toc-link block py-1.5 text-xs text-gray-500 hover:text-indigo-600 dark:text-gray-400 dark:hover:text-indigo-400 truncate transition-all duration-150" data-target="section-1-require-breeze-via-composer">
+            1. Require Breeze via Composer:
+        </a>
+
+        <a href="#section-2-run-breeze-install-command" class="toc-link block py-1.5 text-xs text-gray-500 hover:text-indigo-600 dark:text-gray-400 dark:hover:text-indigo-400 truncate transition-all duration-150" data-target="section-2-run-breeze-install-command">
+            2. Run Breeze Install Command:
+        </a>
+
+        <a href="#section-3-run-migrations-and-build-assets" class="toc-link block py-1.5 text-xs text-gray-500 hover:text-indigo-600 dark:text-gray-400 dark:hover:text-indigo-400 truncate transition-all duration-150" data-target="section-3-run-migrations-and-build-assets">
+            3. Run migrations and build assets:
+        </a>
+
+        <a href="#section-1-require-jetstream-via-composer" class="toc-link block py-1.5 text-xs text-gray-500 hover:text-indigo-600 dark:text-gray-400 dark:hover:text-indigo-400 truncate transition-all duration-150" data-target="section-1-require-jetstream-via-composer">
+            1. Require Jetstream via Composer:
+        </a>
+
+        <a href="#section-2-install-jetstream-with-your-choice-of-stack" class="toc-link block py-1.5 text-xs text-gray-500 hover:text-indigo-600 dark:text-gray-400 dark:hover:text-indigo-400 truncate transition-all duration-150" data-target="section-2-install-jetstream-with-your-choice-of-stack">
+            2. Install Jetstream with your choice of stack:
+        </a>
+
+        <a href="#section-3-finalizing-jetstream-installation" class="toc-link block py-1.5 text-xs text-gray-500 hover:text-indigo-600 dark:text-gray-400 dark:hover:text-indigo-400 truncate transition-all duration-150" data-target="section-3-finalizing-jetstream-installation">
+            3. Finalizing Jetstream Installation:
+        </a>
+
+        <a href="#section-4-customizing-application-logos-in-jetstream" class="toc-link block py-1.5 text-xs text-gray-500 hover:text-indigo-600 dark:text-gray-400 dark:hover:text-indigo-400 truncate transition-all duration-150" data-target="section-4-customizing-application-logos-in-jetstream">
+            4. Customizing Application Logos in Jetstream:
+        </a>
+
+        <a href="#section-5-running-the-application" class="toc-link block py-1.5 text-xs text-gray-500 hover:text-indigo-600 dark:text-gray-400 dark:hover:text-indigo-400 truncate transition-all duration-150" data-target="section-5-running-the-application">
+            5. RUNNING THE APPLICATION
+        </a>
+
+        <a href="#section-6-common-errors-troubleshooting-solutions" class="toc-link block py-1.5 text-xs text-gray-500 hover:text-indigo-600 dark:text-gray-400 dark:hover:text-indigo-400 truncate transition-all duration-150" data-target="section-6-common-errors-troubleshooting-solutions">
+            6. COMMON ERRORS &amp; TROUBLESHOOTING SOLUTIONS
+        </a>
+
+        <a href="#section-2-if-mysql-root-has-no-password-in-xampp-set" class="toc-link block py-1.5 text-xs text-gray-500 hover:text-indigo-600 dark:text-gray-400 dark:hover:text-indigo-400 truncate transition-all duration-150" data-target="section-2-if-mysql-root-has-no-password-in-xampp-set">
+            2. If MySQL root has no password in XAMPP, set:
+        </a>
+
+        <a href="#section-7-useful-artisan-commands-cheat-sheet" class="toc-link block py-1.5 text-xs text-gray-500 hover:text-indigo-600 dark:text-gray-400 dark:hover:text-indigo-400 truncate transition-all duration-150" data-target="section-7-useful-artisan-commands-cheat-sheet">
+            7. USEFUL ARTISAN COMMANDS CHEAT SHEET
+        </a>
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <!-- Floating Back to Top Button -->
+    <button id="back-to-top" onclick="window.scrollTo({top: 0, behavior: 'smooth'})" class="fixed bottom-6 right-6 p-3 rounded-full bg-indigo-600 text-white shadow-2xl hover:bg-indigo-700 transition-all opacity-0 pointer-events-none translate-y-3 z-40 focus:outline-none flex items-center justify-center group" title="Back to top">
+        <svg class="w-5 h-5 group-hover:-translate-y-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 10l7-7m0 0l7 7m-7-7v18"></path></svg>
+    </button>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-php.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-json.min.js"></script>
+    <script>
+        // Dark Mode Logic
+        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+            document.getElementById('theme-icon').textContent = '☀️';
+        } else {
+            document.documentElement.classList.remove('dark');
+            document.getElementById('theme-icon').textContent = '🌙';
+        }
+
+        function toggleDarkMode() {
+            const isDark = document.documentElement.classList.toggle('dark');
+            localStorage.theme = isDark ? 'dark' : 'light';
+            document.getElementById('theme-icon').textContent = isDark ? '☀️' : '🌙';
+        }
+
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('-translate-x-full');
+        }
+
+        function copyCode(btn) {
+            const codeEl = btn.closest('.group').querySelector('code');
+            navigator.clipboard.writeText(codeEl.innerText).then(() => {
+                const span = btn.querySelector('span');
+                const orig = span.textContent;
+                span.textContent = 'Copied! ✓';
+                btn.classList.add('bg-emerald-600', 'text-white');
+                btn.classList.remove('bg-slate-800/90', 'hover:bg-slate-700');
+                setTimeout(() => {
+                    span.textContent = orig;
+                    btn.classList.remove('bg-emerald-600', 'text-white');
+                    btn.classList.add('bg-slate-800/90', 'hover:bg-slate-700');
+                }, 2000);
+            });
+        }
+
+        // Reading Progress Bar & Back-to-Top Toggle
+        const btt = document.getElementById('back-to-top');
+        const progressBar = document.getElementById('scroll-progress');
+        window.addEventListener('scroll', () => {
+            const winScroll = document.documentElement.scrollTop || document.body.scrollTop;
+            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrolled = height > 0 ? (winScroll / height) * 100 : 0;
+            if (progressBar) progressBar.style.width = scrolled + '%';
+
+            if (btt) {
+                if (winScroll > 400) {
+                    btt.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-3');
+                    btt.classList.add('opacity-100', 'translate-y-0');
+                } else {
+                    btt.classList.add('opacity-0', 'pointer-events-none', 'translate-y-3');
+                    btt.classList.remove('opacity-100', 'translate-y-0');
+                }
+            }
+        });
+
+        // Active TOC ScrollSpy using IntersectionObserver
+        const tocLinks = document.querySelectorAll('.toc-link');
+        const headingElements = document.querySelectorAll('div[id]');
+        if (tocLinks.length > 0 && headingElements.length > 0) {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const id = entry.target.getAttribute('id');
+                        if (!id) return;
+                        tocLinks.forEach(link => {
+                            if (link.getAttribute('href') === '#' + id) {
+                                link.classList.add('text-indigo-600', 'dark:text-indigo-400', 'font-bold', 'border-l-2', 'border-indigo-600', '-ml-[14px]', 'pl-3', 'bg-indigo-50/70', 'dark:bg-indigo-950/60', 'rounded-r');
+                                link.classList.remove('text-gray-500', 'dark:text-gray-400');
+                            } else {
+                                link.classList.remove('text-indigo-600', 'dark:text-indigo-400', 'font-bold', 'border-l-2', 'border-indigo-600', '-ml-[14px]', 'pl-3', 'bg-indigo-50/70', 'dark:bg-indigo-950/60', 'rounded-r');
+                                link.classList.add('text-gray-500', 'dark:text-gray-400');
+                            }
+                        });
+                    }
+                });
+            }, { rootMargin: '0px 0px -75% 0px' });
+
+            headingElements.forEach(el => observer.observe(el));
+        }
+    </script>
+</body>
+</html>

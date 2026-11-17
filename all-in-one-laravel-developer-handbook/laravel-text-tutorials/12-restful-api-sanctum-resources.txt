@@ -1,0 +1,581 @@
+================================================================================
+     LARAVEL RESTFUL API DEVELOPMENT, SANCTUM AUTHENTICATION & API RESOURCES
+================================================================================
+
+This tutorial provides a complete, production-ready guide to building high-performance,
+secure RESTful APIs in Laravel 11/12/13.
+
+It covers installing Laravel Sanctum for API token issuance and revocation, token abilities/scopes,
+API Form Request validation with standardized JSON error formatting, Eloquent API Resources
+and Resource Collections, consistent JSON response envelopes, dynamic pagination, and API rate limiting.
+
+--------------------------------------------------------------------------------
+TABLE OF CONTENTS
+--------------------------------------------------------------------------------
+1. Installing & Configuring Laravel Sanctum (Laravel 11+ API Scaffolding)
+2. API Authentication Controller (Register, Login, Token Issuance & Logout)
+3. Token Abilities & Token Scope Authorization
+4. Standardized API Response Trait (ApiResponseEnvelope)
+5. Creating Form Requests with Custom JSON Error Responses
+6. Eloquent API Resources & Resource Collections (Transforming Models)
+7. Building Full CRUD RESTful API Controller (Products / Posts API)
+8. Custom Route Rate Limiting & Throttling
+9. Testing the API with cURL & Automated Feature Tests (Pest/PHPUnit)
+
+
+================================================================================
+1. INSTALLING & CONFIGURING LARAVEL SANCTUM (LARAVEL 11+ API SCAFFOLDING)
+================================================================================
+In Laravel 11+, API routes are not installed by default. Install Sanctum and publish
+the `routes/api.php` file using:
+
+php artisan install:api
+
+This command:
+1. Publishes and runs the `create_personal_access_tokens_table` migration.
+2. Creates `routes/api.php`.
+3. Registers the `api` route group and middleware in `bootstrap/app.php`.
+
+Verify `User` model (`app/Models/User.php`) includes `HasApiTokens`:
+```php
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
+
+class User extends Authenticatable
+{
+    /** @use HasFactory<\Database\Factories\UserFactory> */
+    use HasApiTokens, HasFactory, Notifiable;
+
+    protected $fillable = [
+        'name',
+        'email',
+        'password',
+    ];
+
+    protected $hidden = [
+        'password',
+        'remember_token',
+    ];
+
+    protected function casts(): array
+    {
+        return [
+            'email_verified_at' => 'datetime',
+            'password' => 'hashed',
+        ];
+    }
+}
+```
+
+
+================================================================================
+2. STANDARDIZED API RESPONSE TRAIT (ApiResponseEnvelope)
+================================================================================
+Every production API must return a consistent JSON response envelope.
+Create `app/Traits/ApiResponse.php`:
+
+```php
+<?php
+
+namespace App\Traits;
+
+use Illuminate\Http\JsonResponse;
+
+trait ApiResponse
+{
+    /**
+     * Return a standardized success JSON response.
+     */
+    protected function success(mixed $data = null, string $message = 'Success', int $statusCode = 200): JsonResponse
+    {
+        return response()->json([
+            'status' => 'success',
+            'code' => $statusCode,
+            'message' => $message,
+            'data' => $data,
+        ], $statusCode);
+    }
+
+    /**
+     * Return a standardized error JSON response.
+     */
+    protected function error(string $message = 'Error', int $statusCode = 400, mixed $errors = null): JsonResponse
+    {
+        $response = [
+            'status' => 'error',
+            'code' => $statusCode,
+            'message' => $message,
+        ];
+
+        if ($errors !== null) {
+            $response['errors'] = $errors;
+        }
+
+        return response()->json($response, $statusCode);
+    }
+}
+```
+
+
+================================================================================
+3. API AUTHENTICATION CONTROLLER (REGISTER, LOGIN, TOKEN & LOGOUT)
+================================================================================
+Create `app/Http/Controllers/Api/AuthController.php`:
+php artisan make:controller Api/AuthController
+
+```php
+<?php
+
+namespace App\Http\Controllers\Api;
+
+use App\Http\Controllers\Controller;
+use App\Models\User;
+use App\Traits\ApiResponse;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\ValidationException;
+
+class AuthController extends Controller
+{
+    use ApiResponse;
+
+    /**
+     * Register a new user and issue an API token.
+     */
+    public function register(Request $request): JsonResponse
+    {
+        $validated = $request->validate([
+            'name' => ['required', 'string', 'max:100'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email'],
+            'password' => ['required', 'string', 'min:8', 'confirmed'],
+            'device_name' => ['nullable', 'string', 'max:100'],
+        ]);
+
+        $user = User::create([
+            'name' => $validated['name'],
+            'email' => $validated['email'],
+            'password' => Hash::make($validated['password']),
+        ]);
+
+        $deviceName = $request->input('device_name', 'default_device');
+        $token = $user->createToken($deviceName, ['products:read', 'products:create'])->plainTextToken;
+
+        return $this->success([
+            'user' => [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'created_at' => $user->created_at->toISOString(),
+            ],
+            'token_type' => 'Bearer',
+            'access_token' => $token,
+        ], 'User registered successfully', 201);
+    }
+
+    /**
+     * Authenticate user credentials and return a bearer token.
+     */
+    public function login(Request $request): JsonResponse
+    {
+        $request->validate([
+            'email' => ['required', 'email'],
+            'password' => ['required', 'string'],
+            'device_name' => ['nullable', 'string', 'max:100'],
+        ]);
+
+        $user = User::where('email', $request->email)->first();
+
+        if (!$user || !Hash::check($request->password, $user->password)) {
+            return $this->error('The provided credentials do not match our records.', 401);
+        }
+
+        $deviceName = $request->input('device_name', 'auth_token');
+        // Define token abilities (e.g., read, write)
+        $abilities = $user->is_admin ? ['*'] : ['products:read', 'products:create', 'products:update'];
+        $token = $user->createToken($deviceName, $abilities)->plainTextToken;
+
+        return $this->success([
+            'user' => [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+            ],
+            'token_type' => 'Bearer',
+            'access_token' => $token,
+        ], 'Logged in successfully');
+    }
+
+    /**
+     * Return authenticated user profile.
+     */
+    public function profile(Request $request): JsonResponse
+    {
+        return $this->success($request->user(), 'Profile retrieved successfully');
+    }
+
+    /**
+     * Revoke current access token (logout).
+     */
+    public function logout(Request $request): JsonResponse
+    {
+        // Revoke only the token used in the current request
+        $request->user()->currentAccessToken()->delete();
+
+        return $this->success(null, 'Token revoked successfully');
+    }
+
+    /**
+     * Revoke all access tokens across all devices.
+     */
+    public function logoutAllDevices(Request $request): JsonResponse
+    {
+        $request->user()->tokens()->delete();
+
+        return $this->success(null, 'All session tokens revoked successfully');
+    }
+}
+```
+
+
+================================================================================
+4. CREATING FORM REQUESTS WITH STANDARDIZED JSON ERROR RESPONSES
+================================================================================
+When building APIs, validation errors should always return HTTP 422 JSON rather
+than redirecting back with session flash messages.
+
+Create `app/Http/Requests/Api/StoreProductRequest.php`:
+php artisan make:request Api/StoreProductRequest
+
+```php
+<?php
+
+namespace App\Http\Requests\Api;
+
+use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\Exceptions\HttpResponseException;
+
+class StoreProductRequest extends FormRequest
+{
+    public function authorize(): bool
+    {
+        return true;
+    }
+
+    public function rules(): array
+    {
+        return [
+            'name' => ['required', 'string', 'min:3', 'max:255'],
+            'sku' => ['required', 'string', 'max:50', 'unique:products,sku'],
+            'price' => ['required', 'numeric', 'min:0'],
+            'stock' => ['required', 'integer', 'min:0'],
+            'description' => ['nullable', 'string', 'max:2000'],
+            'category_id' => ['required', 'integer', 'exists:categories,id'],
+        ];
+    }
+
+    /**
+     * Override failedValidation to return structured JSON response envelope.
+     */
+    protected function failedValidation(Validator $validator): void
+    {
+        throw new HttpResponseException(response()->json([
+            'status' => 'error',
+            'code' => 422,
+            'message' => 'Validation errors occurred.',
+            'errors' => $validator->errors(),
+        ], 422));
+    }
+}
+```
+
+
+================================================================================
+5. ELOQUENT API RESOURCES & RESOURCE COLLECTIONS
+================================================================================
+API Resources act as a transformation layer between your Eloquent models and the
+JSON responses returned to clients, ensuring internal database columns aren't leaked.
+
+Create `app/Http/Resources/ProductResource.php`:
+php artisan make:resource ProductResource
+
+```php
+<?php
+
+namespace App\Http\Resources;
+
+use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\JsonResource;
+
+class ProductResource extends JsonResource
+{
+    /**
+     * Transform the resource into an array.
+     */
+    public function toArray(Request $request): array
+    {
+        return [
+            'id' => $this->id,
+            'name' => $this->name,
+            'sku' => $this->sku,
+            'price' => (float) $this->price,
+            'formatted_price' => '$' . number_format($this->price, 2),
+            'stock' => (int) $this->stock,
+            'in_stock' => $this->stock > 0,
+            'description' => $this->description,
+            'category' => [
+                'id' => $this->category_id,
+                'name' => $this->whenLoaded('category', fn() => $this->category?->name),
+            ],
+            'created_at' => $this->created_at?->toISOString(),
+            'updated_at' => $this->updated_at?->toISOString(),
+        ];
+    }
+}
+```
+
+
+================================================================================
+6. FULL CRUD RESTFUL API CONTROLLER
+================================================================================
+Create `app/Http/Controllers/Api/ProductApiController.php`:
+php artisan make:controller Api/ProductApiController
+
+```php
+<?php
+
+namespace App\Http\Controllers\Api;
+
+use App\Http\Controllers\Controller;
+use App\Http\Requests\Api\StoreProductRequest;
+use App\Http\Resources\ProductResource;
+use App\Models\Product;
+use App\Traits\ApiResponse;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+
+class ProductApiController extends Controller
+{
+    use ApiResponse;
+
+    /**
+     * Display a paginated listing of the resource.
+     */
+    public function index(Request $request): JsonResponse
+    {
+        $perPage = min((int) $request->input('per_page', 15), 100);
+        
+        $products = Product::with('category')
+            ->when($request->search, fn($q, $s) => $q->where('name', 'like', "%{$s}%"))
+            ->latest('id')
+            ->paginate($perPage);
+
+        return response()->json([
+            'status' => 'success',
+            'code' => 200,
+            'message' => 'Products retrieved successfully',
+            'data' => ProductResource::collection($products),
+            'pagination' => [
+                'total' => $products->total(),
+                'count' => $products->count(),
+                'per_page' => $products->perPage(),
+                'current_page' => $products->currentPage(),
+                'total_pages' => $products->lastPage(),
+            ],
+        ], 200);
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store(StoreProductRequest $request): JsonResponse
+    {
+        $product = Product::create($request->validated());
+
+        return $this->success(
+            new ProductResource($product->load('category')),
+            'Product created successfully',
+            201
+        );
+    }
+
+    /**
+     * Display the specified resource.
+     */
+    public function show(int $id): JsonResponse
+    {
+        $product = Product::with('category')->find($id);
+
+        if (!$product) {
+            return $this->error('Product not found.', 404);
+        }
+
+        return $this->success(new ProductResource($product), 'Product retrieved successfully');
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, int $id): JsonResponse
+    {
+        $product = Product::find($id);
+
+        if (!$product) {
+            return $this->error('Product not found.', 404);
+        }
+
+        $validated = $request->validate([
+            'name' => ['sometimes', 'string', 'min:3', 'max:255'],
+            'price' => ['sometimes', 'numeric', 'min:0'],
+            'stock' => ['sometimes', 'integer', 'min:0'],
+            'description' => ['nullable', 'string', 'max:2000'],
+        ]);
+
+        $product->update($validated);
+
+        return $this->success(new ProductResource($product), 'Product updated successfully');
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(int $id): JsonResponse
+    {
+        $product = Product::find($id);
+
+        if (!$product) {
+            return $this->error('Product not found.', 404);
+        }
+
+        $product->delete();
+
+        return $this->success(null, 'Product deleted successfully', 200);
+    }
+}
+```
+
+
+================================================================================
+7. ROUTE DEFINITIONS IN routes/api.php
+================================================================================
+In `routes/api.php`:
+
+```php
+<?php
+
+use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\ProductApiController;
+use Illuminate\Support\Facades\Route;
+
+// Public Authentication Endpoints
+Route::prefix('v1/auth')->group(function () {
+    Route::post('/register', [AuthController::class, 'register']);
+    Route::post('/login', [AuthController::class, 'login']);
+});
+
+// Protected API Endpoints (Requires valid Sanctum Bearer Token)
+Route::prefix('v1')->middleware('auth:sanctum')->group(function () {
+    // Current user profile & logout
+    Route::get('/user', [AuthController::class, 'profile']);
+    Route::post('/auth/logout', [AuthController::class, 'logout']);
+    Route::post('/auth/logout-all', [AuthController::class, 'logoutAllDevices']);
+
+    // Products RESTful API with token ability checks
+    Route::get('/products', [ProductApiController::class, 'index'])->middleware('ability:products:read');
+    Route::post('/products', [ProductApiController::class, 'store'])->middleware('ability:products:create');
+    Route::get('/products/{id}', [ProductApiController::class, 'show'])->middleware('ability:products:read');
+    Route::put('/products/{id}', [ProductApiController::class, 'update'])->middleware('ability:products:update');
+    Route::delete('/products/{id}', [ProductApiController::class, 'destroy'])->middleware('ability:products:delete');
+});
+```
+
+
+================================================================================
+8. CUSTOM API RATE LIMITING & THROTTLING
+================================================================================
+In Laravel 11/12/13, rate limiters are configured in `bootstrap/app.php`.
+
+```php
+use Illuminate\Cache\RateLimiting\Limit;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\RateLimiter;
+
+->withMiddleware(function (Middleware $middleware) {
+    // Configure API Rate Limiting (60 requests per minute per IP or authenticated user)
+    RateLimiter::for('api', function (Request $request) {
+        return Limit::perMinute(60)->by($request->user()?->id ?: $request->ip());
+    });
+})
+```
+
+
+================================================================================
+9. TESTING THE API WITH CURL & AUTOMATED TESTS
+================================================================================
+1. Register user via cURL:
+curl -X POST http://127.0.0.1:8000/api/v1/auth/register \
+  -H "Accept: application/json" \
+  -H "Content-Type: application/json" \
+  -d '{"name":"John Doe","email":"john@example.com","password":"secretpassword","password_confirmation":"secretpassword"}'
+
+2. Make an Authenticated Request:
+curl -X GET http://127.0.0.1:8000/api/v1/products \
+  -H "Accept: application/json" \
+  -H "Authorization: Bearer 1|abcdef1234567890..."
+
+3. Automated Feature Test in `tests/Feature/ProductApiTest.php`:
+php artisan make:test ProductApiTest
+
+```php
+<?php
+
+namespace Tests\Feature;
+
+use App\Models\Category;
+use App\Models\Product;
+use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Laravel\Sanctum\Sanctum;
+use Tests\TestCase;
+
+class ProductApiTest extends TestCase
+{
+    use RefreshDatabase;
+
+    public function test_authenticated_user_can_list_products(): void
+    {
+        $user = User::factory()->create();
+        Sanctum::actingAs($user, ['products:read']);
+
+        $category = Category::factory()->create();
+        Product::factory()->count(3)->create(['category_id' => $category->id]);
+
+        $response = $this->getJson('/api/v1/products');
+
+        $response->assertStatus(200)
+            ->assertJsonStructure([
+                'status',
+                'code',
+                'message',
+                'data' => [
+                    '*' => ['id', 'name', 'price', 'in_stock']
+                ],
+                'pagination'
+            ]);
+    }
+
+    public function test_unauthenticated_request_is_rejected(): void
+    {
+        $response = $this->getJson('/api/v1/products');
+        $response->assertStatus(401);
+    }
+}
+```
+================================================================================

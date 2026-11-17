@@ -1,0 +1,398 @@
+================================================================================
+   LARAVEL APPLICATION SCAFFOLDING, BREEZE AUTH & DYNAMIC CMS ARCHITECTURE
+                    (COMPLETE STEP-BY-STEP MASTER GUIDE)
+================================================================================
+
+This comprehensive guide merges and completes the application scaffolding blueprint,
+Laravel Breeze starter kit installation, dynamic CMS page management, multi-layout
+architecture, and essential production commands into a unified master tutorial.
+
+--------------------------------------------------------------------------------
+TABLE OF CONTENTS
+--------------------------------------------------------------------------------
+1. Laravel Breeze Authentication Setup & Frontend Stacks
+2. Master Scaffolding Blueprint: Models, Migrations, Seeders & Controllers
+3. Multi-Layout & Partial Modular Architecture (Admin, User, Academic, Blog, Home)
+4. Dynamic CMS Page Content Management & Caching System
+5. Pagination Indexing, Timezones & Blade Practical Helpers
+6. Database Management, Migrations & Seeders
+7. Application Cache Clearing & Optimization Maintenance
+
+
+================================================================================
+1. LARAVEL BREEZE AUTHENTICATION SETUP & FRONTEND STACKS
+================================================================================
+Laravel Breeze provides a minimal, clean, and robust starting point for building
+authentication into your application with Tailwind CSS.
+
+Step 1: Install Breeze package via Composer:
+composer require laravel/breeze --dev
+
+Step 2: Run the Breeze installation command:
+php artisan breeze:install
+
+When prompted, select your preferred stack:
+- blade       : Traditional server-rendered Blade templates (Default)
+- livewire    : Reactive UI with Livewire and Volt
+- vue         : Inertia.js with Vue 3
+- react       : Inertia.js with React
+- api         : API only (Headless with Laravel Sanctum)
+
+You can also specify options directly:
+php artisan breeze:install blade --dark --pest
+php artisan breeze:install livewire --dark
+
+Step 3: Run database migrations and compile frontend assets:
+php artisan migrate
+npm install
+npm run dev
+
+* For production deployment:
+npm run build
+
+
+================================================================================
+2. MASTER SCAFFOLDING BLUEPRINT: MODELS, MIGRATIONS, SEEDERS & CONTROLLERS
+================================================================================
+Use the following Artisan commands to scaffold a complete, modular, enterprise
+web application (Admin, CMS, E-Commerce, Academic, Blog, Media):
+
+1. Core Administration & Navigation:
+   php artisan make:model Admin -mfs
+   php artisan make:controller Admin/AdminController --model=Admin
+
+   php artisan make:model Menu -mfs
+   php artisan make:controller Admin/MenuController --model=Menu
+
+   php artisan make:model Footer -mfs
+   php artisan make:controller Admin/FooterController --model=Footer
+
+2. CMS & Dynamic Page Content:
+   php artisan make:model Page -mfs
+   php artisan make:controller Admin/PageController --model=Page
+
+3. Blog & Editorial System:
+   php artisan make:model Category -mfs
+   php artisan make:controller Admin/CategoryController --model=Category
+
+   php artisan make:model Author -mfs
+   php artisan make:controller Admin/AuthorController --model=Author
+
+   php artisan make:model Post -mfs
+   php artisan make:controller Admin/PostController --model=Post
+
+   php artisan make:model Comment -mfs
+   php artisan make:controller Admin/CommentController --model=Comment
+
+   php artisan make:model Tag -mfs
+   php artisan make:controller Admin/TagController --model=Tag
+
+4. Media, Assets & Galleries:
+   php artisan make:model Picture -mfs
+   php artisan make:controller Admin/PictureController --model=Picture
+
+   php artisan make:model Gallery -mfs
+   php artisan make:controller Admin/GalleryController --model=Gallery
+
+5. E-Commerce & Inventory:
+   php artisan make:model Product -mfs
+   php artisan make:controller Admin/ProductController --model=Product
+
+6. Academic, Staff & Profiles:
+   php artisan make:model Teacher -mfs
+   php artisan make:controller Admin/TeacherController --model=Teacher
+
+   php artisan make:model Profile -mfs
+   php artisan make:controller Admin/ProfileController --model=Profile
+
+7. Custom Program & Fellowship Controllers:
+   php artisan make:controller NkbFellowshipController
+   php artisan make:controller MgbFellowshipController
+   php artisan make:controller SrFellowshipController
+   php artisan make:controller SkpFellowshipController
+   php artisan make:controller SkmFellowshipController
+
+8. Role-User Many-to-Many Pivot Table Migration:
+   php artisan make:migration create_role_user_table --create=role_user
+
+
+================================================================================
+3. MULTI-LAYOUT & PARTIAL MODULAR ARCHITECTURE
+================================================================================
+For clean separation of concerns, scaffold dedicated layout files and reusable
+partials across 5 main application sections: Admin, User, Academic, Home, and Blog.
+
+--------------------------------------------------------------------------------
+A. Generate Master Layout View Templates:
+--------------------------------------------------------------------------------
+php artisan make:view layouts.admin-layout
+php artisan make:view layouts.user-layout
+php artisan make:view layouts.academic-layout
+php artisan make:view layouts.home-layout
+php artisan make:view layouts.blog-layout
+
+--------------------------------------------------------------------------------
+B. Generate Modular Partials for Each Section:
+--------------------------------------------------------------------------------
+
+1. Admin Partials:
+   php artisan make:view admin.admin-partials.head
+   php artisan make:view admin.admin-partials.header
+   php artisan make:view admin.admin-partials.navbar
+   php artisan make:view admin.admin-partials.sidebar
+   php artisan make:view admin.admin-partials.footer
+   php artisan make:view admin.admin-partials.styles
+   php artisan make:view admin.admin-partials.scripts
+   php artisan make:view admin.main
+   php artisan make:view admin.admin-main
+
+2. User Portal Partials:
+   php artisan make:view user.user-partials.head
+   php artisan make:view user.user-partials.header
+   php artisan make:view user.user-partials.navbar
+   php artisan make:view user.user-partials.sidebar
+   php artisan make:view user.user-partials.footer
+   php artisan make:view user.user-partials.styles
+   php artisan make:view user.user-partials.scripts
+   php artisan make:view user.main
+   php artisan make:view user.user-main
+
+3. Academic Section Partials:
+   php artisan make:view academic.academic-partials.head
+   php artisan make:view academic.academic-partials.header
+   php artisan make:view academic.academic-partials.navbar
+   php artisan make:view academic.academic-partials.sidebar
+   php artisan make:view academic.academic-partials.footer
+   php artisan make:view academic.academic-partials.styles
+   php artisan make:view academic.academic-partials.scripts
+   php artisan make:view academic.main
+   php artisan make:view academic.academic-main
+
+4. Home & Landing Partials:
+   php artisan make:view home.home-partials.head
+   php artisan make:view home.home-partials.header
+   php artisan make:view home.home-partials.navbar
+   php artisan make:view home.home-partials.sidebar
+   php artisan make:view home.home-partials.footer
+   php artisan make:view home.home-partials.styles
+   php artisan make:view home.home-partials.scripts
+   php artisan make:view home.main
+   php artisan make:view home.home-main
+
+5. Blog Section Partials:
+   php artisan make:view blog.blog-partials.head
+   php artisan make:view blog.blog-partials.header
+   php artisan make:view blog.blog-partials.navbar
+   php artisan make:view blog.blog-partials.sidebar
+   php artisan make:view blog.blog-partials.footer
+   php artisan make:view blog.blog-partials.styles
+   php artisan make:view blog.blog-partials.scripts
+   php artisan make:view blog.main
+   php artisan make:view blog.blog-main
+
+6. Global Layout Partials:
+   php artisan make:view layouts.partials.head
+   php artisan make:view layouts.partials.header
+   php artisan make:view layouts.partials.navbar
+   php artisan make:view layouts.partials.slider
+   php artisan make:view layouts.partials.sidebar
+   php artisan make:view layouts.partials.news-section
+   php artisan make:view layouts.partials.footer
+   php artisan make:view layouts.partials.scripts
+
+--------------------------------------------------------------------------------
+C. Structure of a Master Layout Template (e.g. layouts/admin-layout.blade.php):
+--------------------------------------------------------------------------------
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    @include('admin.admin-partials.head')
+    @include('admin.admin-partials.styles')
+    @stack('styles')
+</head>
+<body class="bg-gray-100 font-sans leading-normal tracking-normal">
+    @include('admin.admin-partials.header')
+    @include('admin.admin-partials.navbar')
+
+    <div class="flex flex-col md:flex-row">
+        @include('admin.admin-partials.sidebar')
+
+        <main class="main-content flex-1 bg-gray-100 mt-12 md:mt-2 pb-24 md:pb-5">
+            @yield('content')
+        </main>
+    </div>
+
+    @include('admin.admin-partials.footer')
+    @include('admin.admin-partials.scripts')
+    @stack('scripts')
+</body>
+</html>
+
+
+================================================================================
+4. DYNAMIC CMS PAGE CONTENT MANAGEMENT & CACHING SYSTEM
+================================================================================
+When website pages (About, Services, Privacy, Terms, FAQ) share the same layout
+and store their content in the database, implement a unified dynamic controller:
+
+--------------------------------------------------------------------------------
+Step 1: Pages Database Schema
+--------------------------------------------------------------------------------
+Open `database/migrations/xxxx_create_pages_table.php`:
+
+Schema::create('pages', function (Blueprint $table) {
+    $table->id();
+    $table->string('title');
+    $table->string('slug')->unique();
+    $table->text('content');
+    $table->string('meta_title')->nullable();
+    $table->string('meta_description')->nullable();
+    $table->boolean('is_active')->default(true);
+    $table->timestamps();
+});
+
+--------------------------------------------------------------------------------
+Step 2: Page Controller with High-Performance Caching
+--------------------------------------------------------------------------------
+Open `app/Http/Controllers/PageController.php`:
+
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\Page;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\View\View;
+
+class PageController extends Controller
+{
+    /**
+     * Display a dynamic CMS page by slug.
+     */
+    public function show(string $slug): View
+    {
+        // Cache static page content for 24 hours to eliminate repetitive DB queries:
+        $page = Cache::remember("page_{$slug}", now()->addHours(24), function () use ($slug) {
+            return Page::where('slug', $slug)
+                       ->where('is_active', true)
+                       ->firstOrFail();
+        });
+
+        return view('pages.show', compact('page'));
+    }
+}
+
+--------------------------------------------------------------------------------
+Step 3: Define Dynamic Route in routes/web.php
+--------------------------------------------------------------------------------
+Place this route near the bottom of `routes/web.php`:
+
+use App\Http\Controllers\PageController;
+
+Route::get('/page/{slug}', [PageController::class, 'show'])->name('page.show');
+
+--------------------------------------------------------------------------------
+Step 4: Reusable Page Blade Template (resources/views/pages/show.blade.php)
+--------------------------------------------------------------------------------
+@extends('layouts.home-layout')
+
+@section('title', $page->meta_title ?? $page->title)
+
+@section('content')
+<div class="container mx-auto px-4 py-12 max-w-4xl">
+    <article class="prose lg:prose-xl bg-white p-8 rounded-lg shadow">
+        <h1 class="text-3xl font-bold text-gray-900 mb-6">{{ $page->title }}</h1>
+        <div class="page-body text-gray-700 leading-relaxed">
+            {!! $page->content !!}
+        </div>
+    </article>
+</div>
+@endsection
+
+
+================================================================================
+5. PAGINATION INDEXING, TIMEZONES & BLADE PRACTICAL HELPERS
+================================================================================
+
+--------------------------------------------------------------------------------
+1. Continuous Pagination Row Indexing Formula:
+--------------------------------------------------------------------------------
+When using pagination (`$products->paginate(10)`), `$loop->iteration` resets to 1
+on every page. To display continuous row numbers (e.g. 1-10 on page 1, 11-20 on page 2):
+
+<tbody>
+    @foreach ($products as $product)
+        @php
+            $rowNumber = $loop->iteration + $products->firstItem() - 1;
+        @endphp
+        <tr>
+            <th scope="row">{{ $rowNumber }}</th>
+            <td>{{ $product->name }}</td>
+            <td>${{ number_format($product->price, 2) }}</td>
+        </tr>
+    @endforeach
+</tbody>
+
+--------------------------------------------------------------------------------
+2. Setting Default Application Timezone:
+--------------------------------------------------------------------------------
+Open `config/app.php`:
+'timezone' => 'Asia/Kolkata',
+
+In Laravel 11/12/13, set in `.env`:
+APP_TIMEZONE=Asia/Kolkata
+
+--------------------------------------------------------------------------------
+3. Dynamic Read More Button Helper:
+--------------------------------------------------------------------------------
+<div class="text-end mt-2">
+    <a href="{{ url('nkb-fellowship') }}" class="font-bold btn btn-outline-danger">
+        Read More Here <i class="fas fa-arrow-right me-2"></i>
+    </a>
+</div>
+
+
+================================================================================
+6. DATABASE MANAGEMENT, MIGRATIONS & SEEDERS
+================================================================================
+
+1. Run all migrations:
+   php artisan migrate
+
+2. Fresh migration (drops all tables) and seeds database:
+   php artisan migrate:fresh --seed
+
+3. Run a specific database seeder:
+   php artisan db:seed --class=FooterSeeder
+   php artisan db:seed --class=PageSeeder
+
+4. Create public storage symlink for uploaded files:
+   php artisan storage:link
+
+5. Rollback or refresh migrations:
+   php artisan migrate:rollback
+   php artisan migrate:refresh
+
+
+================================================================================
+7. APPLICATION CACHE CLEARING & OPTIMIZATION MAINTENANCE
+================================================================================
+
+1. Clear all application caches in development:
+   php artisan optimize:clear
+
+2. Individual cache clearing commands:
+   php artisan cache:clear          # Application data cache
+   php artisan config:clear         # Configuration cache
+   php artisan route:clear          # Route registration cache
+   php artisan view:clear           # Compiled Blade templates cache
+
+3. Inspect application routes:
+   php artisan route:list
+
+4. Run local server:
+   php artisan serve
+
+5. Build production optimized caches:
+   php artisan optimize             # Caches config, routes, and views for production
+================================================================================

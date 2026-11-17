@@ -1,0 +1,296 @@
+================================================================================
+                    LARAVEL PROJECT CREATION & SETUP TUTORIAL
+================================================================================
+
+This tutorial guides you step-by-step through creating and configuring a fresh
+Laravel project, setting up the environment, installing authentication starter
+kits (Breeze & Jetstream), compiling front-end assets, and troubleshooting common issues.
+
+--------------------------------------------------------------------------------
+TABLE OF CONTENTS
+--------------------------------------------------------------------------------
+1. Prerequisites & System Requirements
+2. Methods to Create a Laravel Project
+   - Method 1: Via Composer (Direct & Most Popular)
+   - Method 2: Via Laravel Installer CLI
+3. Essential Initial Configuration (.env, Key, Database)
+4. Starter Kits & Authentication Setup (Optional)
+   - Option A: Laravel Breeze (Simple, Fast, Minimalist)
+   - Option B: Laravel Jetstream (Advanced: Livewire / Inertia + 2FA + Teams)
+5. Running the Application (PHP & Vite Server)
+6. Common Errors & Troubleshooting Solutions
+7. Useful Artisan Commands Cheat Sheet
+
+
+================================================================================
+1. PREREQUISITES & SYSTEM REQUIREMENTS
+================================================================================
+Make sure your system has the following installed and accessible from your terminal:
+
+a) PHP (version 8.2 or higher recommended)
+   Verify version:
+   php -v
+
+   Ensure common PHP extensions are enabled in your php.ini:
+   - pdo, pdo_mysql (or pdo_sqlite / pdo_pgsql)
+   - mbstring, openssl, tokenizer, xml, ctype, json, curl, fileinfo, bcmath
+
+b) Composer (PHP dependency manager)
+   Verify version:
+   composer -v
+
+c) Node.js & NPM (for compiling front-end assets with Vite)
+   Verify version:
+   node -v
+   npm -v
+
+d) Database Server:
+   - MySQL / MariaDB (e.g., via XAMPP, WampServer, Laragon, or standalone)
+   - OR SQLite (built into PHP, zero configuration)
+
+
+================================================================================
+2. METHODS TO CREATE A LARAVEL PROJECT
+================================================================================
+
+--------------------------------------------------------------------------------
+METHOD 1: Using Composer (Recommended without global installer)
+--------------------------------------------------------------------------------
+Open terminal in your desired projects directory (e.g., C:/xampp/htdocs or E:/projects)
+and run:
+
+composer create-project laravel/laravel project_name
+
+* To specify a specific Laravel version (e.g., Laravel 11):
+composer create-project laravel/laravel:^11.0 project_name
+
+Once installed, enter your project directory:
+cd project_name
+
+
+--------------------------------------------------------------------------------
+METHOD 2: Using the Laravel Installer CLI
+--------------------------------------------------------------------------------
+Step 1: Install the Laravel installer globally once on your machine:
+composer global require laravel/installer
+
+* Note: Make sure Composer's global bin directory is added to your system PATH:
+  Windows: %USERPROFILE%\AppData\Roaming\Composer\vendor\bin
+
+Step 2: Create a new project:
+laravel new project_name
+
+* The installer will ask interactive questions:
+  - Starter kit (None, Breeze, Jetstream)
+  - Preferred frontend stack (Blade, Livewire, Vue/Inertia, React/Inertia)
+  - Testing framework (Pest, PHPUnit)
+  - Database type (SQLite, MySQL, PostgreSQL, etc.)
+
+Step 3: Enter your project directory:
+cd project_name
+
+
+================================================================================
+3. ESSENTIAL INITIAL CONFIGURATION (.env, Key, Database)
+================================================================================
+
+1) Check Environment File (.env):
+   If `.env` does not exist, copy `.env.example`:
+   cp .env.example .env
+   (On Windows cmd: copy .env.example .env)
+
+2) Generate Application Encryption Key:
+   php artisan key:generate
+
+3) Update General Settings in .env:
+   APP_NAME="My Laravel Project"
+   APP_ENV=local
+   APP_DEBUG=true
+   APP_URL=http://127.0.0.1:8000
+
+4) Setup Database Configuration in .env:
+
+   --- For MySQL (Default/Standard) ---
+   DB_CONNECTION=mysql
+   DB_HOST=127.0.0.1
+   DB_PORT=3306
+   DB_DATABASE=your_database_name
+   DB_USERNAME=root
+   DB_PASSWORD=your_password
+
+   * Create the database in phpMyAdmin or MySQL CLI before running migrations:
+     CREATE DATABASE your_database_name;
+
+   --- For SQLite (Quick Local Development) ---
+   DB_CONNECTION=sqlite
+   * In Laravel 11+, database/database.sqlite is automatically created if missing.
+
+5) Create Storage Symbolic Link (for public file/image uploads):
+   php artisan storage:link
+
+6) Run Initial Migrations:
+   php artisan migrate
+
+
+================================================================================
+4. STARTER KITS & AUTHENTICATION SETUP (OPTIONAL)
+================================================================================
+
+Choose a starter kit if your project requires user authentication, registration,
+password resets, and dashboard.
+
+--------------------------------------------------------------------------------
+OPTION A: Laravel Breeze (Simple, Clean, Recommended for Most Projects)
+--------------------------------------------------------------------------------
+1. Require Breeze via Composer:
+   composer require laravel/breeze --dev
+
+2. Run Breeze Install Command:
+   php artisan breeze:install
+
+   Select your preferred stack when prompted:
+   - blade (traditional Laravel blade views)
+   - livewire (dynamic UI without Vue/React)
+   - vue / inertia
+   - react / inertia
+   - api only
+
+3. Run migrations and build assets:
+   php artisan migrate
+   npm install
+   npm run dev
+
+
+--------------------------------------------------------------------------------
+OPTION B: Laravel Jetstream (Advanced: 2FA, API Tokens, Teams, Profile Photos)
+--------------------------------------------------------------------------------
+1. Require Jetstream via Composer:
+   composer require laravel/jetstream
+
+2. Install Jetstream with your choice of stack:
+
+   * Option 1: Livewire Stack:
+     php artisan jetstream:install livewire
+
+     (Optional with Teams support):
+     php artisan jetstream:install livewire --teams
+
+   * Option 2: Inertia (Vue 3) Stack:
+     php artisan jetstream:install inertia
+
+     (Optional with Teams support):
+     php artisan jetstream:install inertia --teams
+
+3. Finalizing Jetstream Installation:
+   Install and build NPM dependencies, and migrate the database:
+   npm install
+   npm run build
+   php artisan migrate
+
+4. Customizing Application Logos in Jetstream:
+
+   * If using Livewire, customize SVG icons in these Blade components:
+     - resources/views/components/application-logo.blade.php
+     - resources/views/components/application-mark.blade.php
+     - resources/views/components/authentication-card-logo.blade.php
+
+   * If using Inertia, customize SVG icons in these Vue components:
+     - resources/js/Components/ApplicationLogo.vue
+     - resources/js/Components/ApplicationMark.vue
+     - resources/js/Components/AuthenticationCardLogo.vue
+
+   * Rebuild assets after changing Vue/JS/CSS components:
+     npm run build
+
+
+================================================================================
+5. RUNNING THE APPLICATION
+================================================================================
+
+To run your Laravel application locally:
+
+Terminal 1: Start Laravel Development Backend Server:
+php artisan serve
+
+Application will be available at:
+http://127.0.0.1:8000
+
+Terminal 2: Start Vite Development Server (for live CSS/JS hot reload):
+npm run dev
+
+When deploying or preparing for production, build optimized assets:
+npm run build
+
+
+================================================================================
+6. COMMON ERRORS & TROUBLESHOOTING SOLUTIONS
+================================================================================
+
+Issue 1: "SQLSTATE[42000]: Syntax error or access violation: 1071 Specified key was too long"
+Cause: Older MySQL versions / MariaDB character encoding limits (utf8mb4).
+Solution:
+Open `app/Providers/AppServiceProvider.php` and add:
+---------------------------------------------------------------------
+use Illuminate\Support\Facades\Schema;
+
+public function boot(): void
+{
+    Schema::defaultStringLength(191);
+}
+---------------------------------------------------------------------
+
+Issue 2: "SQLSTATE[HY000] [1045] Access denied for user 'root'@'localhost'"
+Solution:
+1. Double-check your `DB_USERNAME` and `DB_PASSWORD` in `.env`.
+2. If MySQL root has no password in XAMPP, set:
+   DB_PASSWORD=
+3. Clear config cache so Laravel reloads `.env`:
+   php artisan config:clear
+
+Issue 3: "Vite manifest not found at: ... /public/build/manifest.json"
+Solution:
+Compile your frontend assets:
+npm install
+npm run build
+
+Issue 4: Changes in `.env` or routes not updating
+Solution:
+Clear cached application data:
+php artisan config:clear
+php artisan route:clear
+php artisan view:clear
+php artisan cache:clear
+Or run all at once:
+php artisan optimize:clear
+
+Issue 5: "Composer memory limit exceeded"
+Solution:
+Run composer with no memory limit:
+COMPOSER_MEMORY_LIMIT=-1 composer create-project laravel/laravel project_name
+
+
+================================================================================
+7. USEFUL ARTISAN COMMANDS CHEAT SHEET
+================================================================================
+
+Server & Maintenance:
+  php artisan serve                       # Start local server
+  php artisan down                        # Put application into maintenance mode
+  php artisan up                          # Bring application out of maintenance
+  php artisan optimize:clear              # Clear all caches (config, route, views)
+
+Database & Migrations:
+  php artisan migrate                     # Run pending migrations
+  php artisan migrate:rollback            # Rollback last migration batch
+  php artisan migrate:fresh               # Drop all tables and re-run all migrations
+  php artisan migrate:fresh --seed        # Drop all tables, re-migrate, and seed data
+  php artisan db:seed                     # Run database seeders
+
+Code Generators:
+  php artisan make:controller PostController --resource   # Resource controller with CRUD methods
+  php artisan make:model Post -mfs                       # Creates Model, Migration (-m), Factory (-f), Seeder (-s)
+  php artisan make:middleware CheckAdminRole             # Creates custom middleware
+  php artisan make:request StorePostRequest              # Creates form request validation
+  php artisan make:mail OrderShipped                     # Creates mailable class
+
+================================================================================

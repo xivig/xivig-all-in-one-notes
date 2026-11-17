@@ -1,0 +1,1318 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Eloquent Relationships &amp; Transactions - Laravel Master Docs</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: '#f9322c',
+                        darkbg: '#0b0f19',
+                        darkpanel: '#111827',
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" />
+    <style>
+        /* Custom scrollbar */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 5px;
+            height: 5px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: rgba(156, 163, 175, 0.25);
+            border-radius: 9999px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: rgba(156, 163, 175, 0.45);
+        }
+        /* Ensure maximum readable width for code & tables */
+        .prose {
+            max-width: 100% !important;
+        }
+        .prose p, .prose li {
+            line-height: 1.8;
+        }
+        pre[class*="language-"] {
+            margin: 0;
+            background: transparent;
+        }
+        code[class*="language-"] {
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-900 dark:bg-[#0b0f19] dark:text-gray-100 min-h-screen flex flex-col font-sans transition-colors duration-200 antialiased">
+    <!-- Top Reading Progress Indicator -->
+    <div id="scroll-progress" class="fixed top-0 left-0 h-[3px] bg-gradient-to-r from-red-500 via-indigo-500 to-cyan-400 z-50 transition-all duration-75" style="width: 0%"></div>
+
+    <!-- Header / Navbar -->
+    <header class="sticky top-0 z-40 bg-white/90 dark:bg-[#0b0f19]/90 backdrop-blur-md border-b border-gray-200 dark:border-gray-800 transition-colors">
+        <div class="max-w-[1780px] w-full mx-auto px-4 sm:px-6 lg:px-8 xl:px-10 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <button onclick="toggleSidebar()" class="lg:hidden p-2 rounded-lg text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800 transition" aria-label="Toggle navigation">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+                </button>
+                <a href="index.html" class="flex items-center space-x-3">
+                    <span class="text-2xl drop-shadow-sm">🔴</span>
+                    <span class="font-extrabold text-lg sm:text-xl tracking-tight bg-gradient-to-r from-red-600 via-pink-600 to-indigo-600 bg-clip-text text-transparent">Laravel Master Docs</span>
+                </a>
+                <span class="hidden sm:inline-flex items-center px-2.5 py-0.5 text-xs font-semibold rounded-full bg-red-100 text-red-700 dark:bg-red-950/80 dark:text-red-300 border border-red-200 dark:border-red-900/40">Laravel 13</span>
+            </div>
+
+            <div class="flex items-center space-x-4">
+                <a href="index.html" class="text-xs sm:text-sm font-medium text-gray-600 hover:text-indigo-600 dark:text-gray-300 dark:hover:text-indigo-400 flex items-center space-x-1.5 transition">
+                    <span>📚</span>
+                    <span class="hidden md:inline">Browse All</span> <span>Tutorials</span>
+                </a>
+                <!-- Dark Mode Toggle -->
+                <button onclick="toggleDarkMode()" class="p-2 rounded-xl bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 transition" title="Toggle Dark/Light Mode">
+                    <span id="theme-icon">🌙</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Elite Wide Container -->
+    <div class="max-w-[1780px] w-full mx-auto px-4 sm:px-6 lg:px-8 xl:px-10 flex-1 flex gap-8 xl:gap-10">
+        <!-- Sidebar Navigation (Desktop & Mobile Drawer) -->
+        <aside id="sidebar" class="fixed inset-y-0 left-0 z-30 w-72 bg-white dark:bg-[#0b0f19] border-r border-gray-200 dark:border-gray-800 transform -translate-x-full lg:translate-x-0 lg:static lg:w-72 pt-20 lg:pt-6 pb-10 transition-transform duration-200 ease-in-out overflow-y-auto shrink-0 custom-scrollbar">
+            <div class="px-3 mb-6">
+                <div class="flex items-center justify-between px-3 mb-3">
+                    <p class="text-[11px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider">Tutorial Chapters (15)</p>
+                    <span class="text-[10px] px-2 py-0.5 rounded-full bg-indigo-50 dark:bg-indigo-950 text-indigo-600 dark:text-indigo-400 font-semibold">100% Complete</span>
+                </div>
+                <div class="space-y-1">
+                    
+        <a href="01-create-laravel-project.html" class="flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs sm:text-sm transition-all duration-150 text-gray-600 dark:text-gray-400 hover:bg-gray-100/80 dark:hover:bg-gray-800/60 hover:text-gray-900 dark:hover:text-white">
+            <span class="text-base shrink-0">🚀</span>
+            <span class="truncate">Laravel Project Creation & Setup Guide</span>
+        </a>
+
+        <a href="02-workflow-command-playbook.html" class="flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs sm:text-sm transition-all duration-150 text-gray-600 dark:text-gray-400 hover:bg-gray-100/80 dark:hover:bg-gray-800/60 hover:text-gray-900 dark:hover:text-white">
+            <span class="text-base shrink-0">⚡</span>
+            <span class="truncate">Full-Cycle Command Playbook</span>
+        </a>
+
+        <a href="03-laravel-100-tips.html" class="flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs sm:text-sm transition-all duration-150 text-gray-600 dark:text-gray-400 hover:bg-gray-100/80 dark:hover:bg-gray-800/60 hover:text-gray-900 dark:hover:text-white">
+            <span class="text-base shrink-0">💡</span>
+            <span class="truncate">Laravel 100 Pro Tips Masterclass</span>
+        </a>
+
+        <a href="04-admin-multi-auth-fortify.html" class="flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs sm:text-sm transition-all duration-150 text-gray-600 dark:text-gray-400 hover:bg-gray-100/80 dark:hover:bg-gray-800/60 hover:text-gray-900 dark:hover:text-white">
+            <span class="text-base shrink-0">🛡️</span>
+            <span class="truncate">Admin Multi-Auth (Fortify & Jetstream)</span>
+        </a>
+
+        <a href="05-admin-login-step-by-step.html" class="flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs sm:text-sm transition-all duration-150 text-gray-600 dark:text-gray-400 hover:bg-gray-100/80 dark:hover:bg-gray-800/60 hover:text-gray-900 dark:hover:text-white">
+            <span class="text-base shrink-0">🔐</span>
+            <span class="truncate">Admin Login & Dashboard (16 Steps)</span>
+        </a>
+
+        <a href="06-multi-auth-master-system.html" class="flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs sm:text-sm transition-all duration-150 text-gray-600 dark:text-gray-400 hover:bg-gray-100/80 dark:hover:bg-gray-800/60 hover:text-gray-900 dark:hover:text-white">
+            <span class="text-base shrink-0">👥</span>
+            <span class="truncate">Multi-Authentication Master System & OTP</span>
+        </a>
+
+        <a href="07-dynamic-menu-crud.html" class="flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs sm:text-sm transition-all duration-150 text-gray-600 dark:text-gray-400 hover:bg-gray-100/80 dark:hover:bg-gray-800/60 hover:text-gray-900 dark:hover:text-white">
+            <span class="text-base shrink-0">📋</span>
+            <span class="truncate">Dynamic Menu Builder & Admin CRUD</span>
+        </a>
+
+        <a href="08-scaffolding-breeze-cms.html" class="flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs sm:text-sm transition-all duration-150 text-gray-600 dark:text-gray-400 hover:bg-gray-100/80 dark:hover:bg-gray-800/60 hover:text-gray-900 dark:hover:text-white">
+            <span class="text-base shrink-0">🏗️</span>
+            <span class="truncate">App Scaffolding, Breeze & Dynamic CMS</span>
+        </a>
+
+        <a href="09-qa-deployment-checklist.html" class="flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs sm:text-sm transition-all duration-150 text-gray-600 dark:text-gray-400 hover:bg-gray-100/80 dark:hover:bg-gray-800/60 hover:text-gray-900 dark:hover:text-white">
+            <span class="text-base shrink-0">✅</span>
+            <span class="truncate">Project QA & Production Checklist</span>
+        </a>
+
+        <a href="10-math-captcha-security.html" class="flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs sm:text-sm transition-all duration-150 text-gray-600 dark:text-gray-400 hover:bg-gray-100/80 dark:hover:bg-gray-800/60 hover:text-gray-900 dark:hover:text-white">
+            <span class="text-base shrink-0">🧮</span>
+            <span class="truncate">Secure Math CAPTCHA & Anti-Spam Defense</span>
+        </a>
+
+        <a href="11-seo-metadata-schema.html" class="flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs sm:text-sm transition-all duration-150 text-gray-600 dark:text-gray-400 hover:bg-gray-100/80 dark:hover:bg-gray-800/60 hover:text-gray-900 dark:hover:text-white">
+            <span class="text-base shrink-0">📈</span>
+            <span class="truncate">Production Technical SEO & Schema Markup</span>
+        </a>
+
+        <a href="12-restful-api-sanctum-resources.html" class="flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs sm:text-sm transition-all duration-150 text-gray-600 dark:text-gray-400 hover:bg-gray-100/80 dark:hover:bg-gray-800/60 hover:text-gray-900 dark:hover:text-white">
+            <span class="text-base shrink-0">🌐</span>
+            <span class="truncate">RESTful API Development & Sanctum Tokens</span>
+        </a>
+
+        <a href="13-eloquent-relationships-transactions.html" class="flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs sm:text-sm transition-all duration-150 bg-indigo-50 dark:bg-indigo-950/70 text-indigo-600 dark:text-indigo-400 font-semibold border-r-2 border-indigo-600 shadow-sm">
+            <span class="text-base shrink-0">🗄️</span>
+            <span class="truncate">Advanced Eloquent Relationships & Transactions</span>
+        </a>
+
+        <a href="14-queues-jobs-events-scheduling.html" class="flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs sm:text-sm transition-all duration-150 text-gray-600 dark:text-gray-400 hover:bg-gray-100/80 dark:hover:bg-gray-800/60 hover:text-gray-900 dark:hover:text-white">
+            <span class="text-base shrink-0">⏱️</span>
+            <span class="truncate">Queues, Asynchronous Jobs & Task Scheduling</span>
+        </a>
+
+        <a href="15-file-storage-uploads-media.html" class="flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs sm:text-sm transition-all duration-150 text-gray-600 dark:text-gray-400 hover:bg-gray-100/80 dark:hover:bg-gray-800/60 hover:text-gray-900 dark:hover:text-white">
+            <span class="text-base shrink-0">📁</span>
+            <span class="truncate">Secure File Uploads & Cloud Storage (S3)</span>
+        </a>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Article Container: WIDE & UNCONSTRAINED -->
+        <main class="flex-1 min-w-0 py-8 lg:px-4 w-full max-w-none">
+            <!-- Breadcrumbs -->
+            <nav class="flex items-center space-x-2 text-xs text-gray-500 dark:text-gray-400 mb-6">
+                <a href="index.html" class="hover:text-indigo-600 dark:hover:text-indigo-400 transition">Docs</a>
+                <span>/</span>
+                <span class="text-gray-800 dark:text-gray-200 font-medium truncate">Advanced Eloquent Relationships &amp; Transactions</span>
+            </nav>
+
+            <header class="mb-10 pb-6 border-b border-gray-200 dark:border-gray-800">
+                <div class="flex flex-wrap items-center gap-2 mb-3">
+                    <span class="px-3 py-1 rounded-full bg-indigo-100 text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300 text-xs font-bold uppercase tracking-wider">Step-by-Step Blueprint</span>
+                    <span class="px-3 py-1 rounded-full bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300 text-xs font-medium">Laravel 13 Verified</span>
+                </div>
+                <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-gray-900 dark:text-white mb-4 leading-tight">Advanced Eloquent Relationships &amp; Transactions</h1>
+                <p class="text-base sm:text-lg text-gray-600 dark:text-gray-300 max-w-4xl leading-relaxed">Complete production-ready walkthrough with high-resolution code snippets, database schemas, architectural patterns, and troubleshooting steps.</p>
+            </header>
+
+            <article class="prose dark:prose-invert max-w-none text-base">
+                <p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">ADVANCED ELOQUENT RELATIONSHIPS, TRANSACTIONS, OBSERVERS &amp; N+1 OPTIMIZATION</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">This tutorial provides a complete masterclass on database modeling, Eloquent relationships,</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">data integrity, transactional safety, and high-performance ORM querying in Laravel 11/12/13.</p>
+
+                <div id="section-1-eloquent-orm-architecture-modern-best-practices" class="scroll-mt-24 pt-10 pb-4 border-b border-gray-200 dark:border-gray-800">
+                    <div class="flex items-center space-x-3">
+                        <span class="px-2.5 py-1 text-xs font-bold rounded-md bg-red-100 text-red-700 dark:bg-red-950/80 dark:text-red-300 uppercase tracking-wider">Module 1</span>
+                        <h2 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white tracking-tight">ELOQUENT ORM ARCHITECTURE &amp; MODERN BEST PRACTICES</h2>
+                    </div>
+                </div>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">In Laravel 11/12/13:</p>
+<ul class="my-3 space-y-2 pl-6 list-disc text-gray-700 dark:text-gray-300 text-sm md:text-base leading-relaxed">
+<li>Always define foreign keys with cascade constraints in migration files.</li>
+<li>Enable Eloquent Strict Mode during local development to catch lazy loading and unfillable attributes early:</li>
+</ul>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">In <code class="px-1.5 py-0.5 rounded text-xs font-mono bg-indigo-50 text-indigo-700 dark:bg-slate-800 dark:text-pink-400 font-semibold border border-indigo-100 dark:border-slate-700/60">app/Providers/AppServiceProvider.php</code>:</p>
+
+    <div class="relative my-6 group rounded-xl overflow-hidden border border-slate-800 shadow-2xl bg-[#0c1017]">
+        <div class="flex items-center justify-between px-4 py-2.5 bg-[#161b22] border-b border-slate-800/80 text-xs text-slate-400 font-mono select-none">
+            <div class="flex items-center space-x-2">
+                <span class="w-3 h-3 rounded-full bg-[#ff5f56] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#ffbd2e] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#27c93f] inline-block shadow-sm"></span>
+                <span class="ml-2 uppercase font-semibold text-indigo-400 tracking-wider text-[11px]">php</span>
+            </div>
+            <button onclick="copyCode(this)" class="px-2.5 py-1 rounded-md bg-slate-800/90 hover:bg-slate-700 text-slate-200 transition flex items-center space-x-1.5 shadow-sm font-sans text-xs">
+                <svg class="w-3.5 h-3.5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                <span>Copy</span>
+            </button>
+        </div>
+        <pre class="p-4 sm:p-5 overflow-x-auto text-[13.5px] leading-relaxed custom-scrollbar"><code class="language-php text-slate-100">use Illuminate\Database\Eloquent\Model;
+
+public function boot(): void
+{
+    // Throws exceptions when lazy loading relationships in non-production environments
+    Model::preventLazyLoading(!app()-&gt;isProduction());
+    
+    // Prevent silently discarding unfillable attributes
+    Model::preventSilentlyDiscardingAttributes(!app()-&gt;isProduction());
+}</code></pre>
+    </div>
+
+                <div id="section-2-one-to-one-relationships-hasone-belongsto" class="scroll-mt-24 pt-10 pb-4 border-b border-gray-200 dark:border-gray-800">
+                    <div class="flex items-center space-x-3">
+                        <span class="px-2.5 py-1 text-xs font-bold rounded-md bg-red-100 text-red-700 dark:bg-red-950/80 dark:text-red-300 uppercase tracking-wider">Module 2</span>
+                        <h2 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white tracking-tight">ONE-TO-ONE RELATIONSHIPS (hasOne &amp; belongsTo)</h2>
+                    </div>
+                </div>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">Example: A <code class="px-1.5 py-0.5 rounded text-xs font-mono bg-indigo-50 text-indigo-700 dark:bg-slate-800 dark:text-pink-400 font-semibold border border-indigo-100 dark:border-slate-700/60">User</code> has one <code class="px-1.5 py-0.5 rounded text-xs font-mono bg-indigo-50 text-indigo-700 dark:bg-slate-800 dark:text-pink-400 font-semibold border border-indigo-100 dark:border-slate-700/60">Profile</code>.</p>
+
+                <div id="section-1-migration-schema" class="scroll-mt-24 pt-10 pb-4 border-b border-gray-200 dark:border-gray-800">
+                    <div class="flex items-center space-x-3">
+                        <span class="px-2.5 py-1 text-xs font-bold rounded-md bg-red-100 text-red-700 dark:bg-red-950/80 dark:text-red-300 uppercase tracking-wider">Module 1</span>
+                        <h2 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white tracking-tight">Migration Schema:</h2>
+                    </div>
+                </div>
+
+    <div class="relative my-6 group rounded-xl overflow-hidden border border-slate-800 shadow-2xl bg-[#0c1017]">
+        <div class="flex items-center justify-between px-4 py-2.5 bg-[#161b22] border-b border-slate-800/80 text-xs text-slate-400 font-mono select-none">
+            <div class="flex items-center space-x-2">
+                <span class="w-3 h-3 rounded-full bg-[#ff5f56] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#ffbd2e] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#27c93f] inline-block shadow-sm"></span>
+                <span class="ml-2 uppercase font-semibold text-indigo-400 tracking-wider text-[11px]">php</span>
+            </div>
+            <button onclick="copyCode(this)" class="px-2.5 py-1 rounded-md bg-slate-800/90 hover:bg-slate-700 text-slate-200 transition flex items-center space-x-1.5 shadow-sm font-sans text-xs">
+                <svg class="w-3.5 h-3.5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                <span>Copy</span>
+            </button>
+        </div>
+        <pre class="p-4 sm:p-5 overflow-x-auto text-[13.5px] leading-relaxed custom-scrollbar"><code class="language-php text-slate-100">// create_profiles_table
+Schema::create(&#x27;profiles&#x27;, function (Blueprint $table) {
+    $table-&gt;id();
+    $table-&gt;foreignId(&#x27;user_id&#x27;)-&gt;constrained()-&gt;cascadeOnDelete();
+    $table-&gt;string(&#x27;bio&#x27;, 500)-&gt;nullable();
+    $table-&gt;string(&#x27;avatar_path&#x27;)-&gt;nullable();
+    $table-&gt;string(&#x27;phone&#x27;, 30)-&gt;nullable();
+    $table-&gt;timestamps();
+});</code></pre>
+    </div>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">2. User Model (<code class="px-1.5 py-0.5 rounded text-xs font-mono bg-indigo-50 text-indigo-700 dark:bg-slate-800 dark:text-pink-400 font-semibold border border-indigo-100 dark:border-slate-700/60">app/Models/User.php</code>):</p>
+
+    <div class="relative my-6 group rounded-xl overflow-hidden border border-slate-800 shadow-2xl bg-[#0c1017]">
+        <div class="flex items-center justify-between px-4 py-2.5 bg-[#161b22] border-b border-slate-800/80 text-xs text-slate-400 font-mono select-none">
+            <div class="flex items-center space-x-2">
+                <span class="w-3 h-3 rounded-full bg-[#ff5f56] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#ffbd2e] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#27c93f] inline-block shadow-sm"></span>
+                <span class="ml-2 uppercase font-semibold text-indigo-400 tracking-wider text-[11px]">php</span>
+            </div>
+            <button onclick="copyCode(this)" class="px-2.5 py-1 rounded-md bg-slate-800/90 hover:bg-slate-700 text-slate-200 transition flex items-center space-x-1.5 shadow-sm font-sans text-xs">
+                <svg class="w-3.5 h-3.5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                <span>Copy</span>
+            </button>
+        </div>
+        <pre class="p-4 sm:p-5 overflow-x-auto text-[13.5px] leading-relaxed custom-scrollbar"><code class="language-php text-slate-100">use Illuminate\Database\Eloquent\Relations\HasOne;
+
+public function profile(): HasOne
+{
+    return $this-&gt;hasOne(Profile::class);
+}</code></pre>
+    </div>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">3. Profile Model (<code class="px-1.5 py-0.5 rounded text-xs font-mono bg-indigo-50 text-indigo-700 dark:bg-slate-800 dark:text-pink-400 font-semibold border border-indigo-100 dark:border-slate-700/60">app/Models/Profile.php</code>):</p>
+
+    <div class="relative my-6 group rounded-xl overflow-hidden border border-slate-800 shadow-2xl bg-[#0c1017]">
+        <div class="flex items-center justify-between px-4 py-2.5 bg-[#161b22] border-b border-slate-800/80 text-xs text-slate-400 font-mono select-none">
+            <div class="flex items-center space-x-2">
+                <span class="w-3 h-3 rounded-full bg-[#ff5f56] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#ffbd2e] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#27c93f] inline-block shadow-sm"></span>
+                <span class="ml-2 uppercase font-semibold text-indigo-400 tracking-wider text-[11px]">php</span>
+            </div>
+            <button onclick="copyCode(this)" class="px-2.5 py-1 rounded-md bg-slate-800/90 hover:bg-slate-700 text-slate-200 transition flex items-center space-x-1.5 shadow-sm font-sans text-xs">
+                <svg class="w-3.5 h-3.5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                <span>Copy</span>
+            </button>
+        </div>
+        <pre class="p-4 sm:p-5 overflow-x-auto text-[13.5px] leading-relaxed custom-scrollbar"><code class="language-php text-slate-100">use Illuminate\Database\Eloquent\Relations\BelongsTo;
+
+public function user(): BelongsTo
+{
+    return $this-&gt;belongsTo(User::class);
+}</code></pre>
+    </div>
+
+                <div id="section-4-usage" class="scroll-mt-24 pt-10 pb-4 border-b border-gray-200 dark:border-gray-800">
+                    <div class="flex items-center space-x-3">
+                        <span class="px-2.5 py-1 text-xs font-bold rounded-md bg-red-100 text-red-700 dark:bg-red-950/80 dark:text-red-300 uppercase tracking-wider">Module 4</span>
+                        <h2 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white tracking-tight">Usage:</h2>
+                    </div>
+                </div>
+
+    <div class="relative my-6 group rounded-xl overflow-hidden border border-slate-800 shadow-2xl bg-[#0c1017]">
+        <div class="flex items-center justify-between px-4 py-2.5 bg-[#161b22] border-b border-slate-800/80 text-xs text-slate-400 font-mono select-none">
+            <div class="flex items-center space-x-2">
+                <span class="w-3 h-3 rounded-full bg-[#ff5f56] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#ffbd2e] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#27c93f] inline-block shadow-sm"></span>
+                <span class="ml-2 uppercase font-semibold text-indigo-400 tracking-wider text-[11px]">php</span>
+            </div>
+            <button onclick="copyCode(this)" class="px-2.5 py-1 rounded-md bg-slate-800/90 hover:bg-slate-700 text-slate-200 transition flex items-center space-x-1.5 shadow-sm font-sans text-xs">
+                <svg class="w-3.5 h-3.5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                <span>Copy</span>
+            </button>
+        </div>
+        <pre class="p-4 sm:p-5 overflow-x-auto text-[13.5px] leading-relaxed custom-scrollbar"><code class="language-php text-slate-100">// Create with relationship
+$user = User::find(1);
+$user-&gt;profile()-&gt;create([
+    &#x27;bio&#x27; =&gt; &#x27;Senior Laravel Developer&#x27;,
+    &#x27;phone&#x27; =&gt; &#x27;+1 555-0199&#x27;,
+]);
+
+// Access related profile
+$bio = $user-&gt;profile?-&gt;bio;</code></pre>
+    </div>
+
+                <div id="section-3-one-to-many-relationships-hasmany-belongsto" class="scroll-mt-24 pt-10 pb-4 border-b border-gray-200 dark:border-gray-800">
+                    <div class="flex items-center space-x-3">
+                        <span class="px-2.5 py-1 text-xs font-bold rounded-md bg-red-100 text-red-700 dark:bg-red-950/80 dark:text-red-300 uppercase tracking-wider">Module 3</span>
+                        <h2 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white tracking-tight">ONE-TO-MANY RELATIONSHIPS (hasMany &amp; belongsTo)</h2>
+                    </div>
+                </div>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">Example: An <code class="px-1.5 py-0.5 rounded text-xs font-mono bg-indigo-50 text-indigo-700 dark:bg-slate-800 dark:text-pink-400 font-semibold border border-indigo-100 dark:border-slate-700/60">Author</code> has many <code class="px-1.5 py-0.5 rounded text-xs font-mono bg-indigo-50 text-indigo-700 dark:bg-slate-800 dark:text-pink-400 font-semibold border border-indigo-100 dark:border-slate-700/60">Posts</code>.</p>
+
+                <div id="section-1-migration-schema" class="scroll-mt-24 pt-10 pb-4 border-b border-gray-200 dark:border-gray-800">
+                    <div class="flex items-center space-x-3">
+                        <span class="px-2.5 py-1 text-xs font-bold rounded-md bg-red-100 text-red-700 dark:bg-red-950/80 dark:text-red-300 uppercase tracking-wider">Module 1</span>
+                        <h2 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white tracking-tight">Migration Schema:</h2>
+                    </div>
+                </div>
+
+    <div class="relative my-6 group rounded-xl overflow-hidden border border-slate-800 shadow-2xl bg-[#0c1017]">
+        <div class="flex items-center justify-between px-4 py-2.5 bg-[#161b22] border-b border-slate-800/80 text-xs text-slate-400 font-mono select-none">
+            <div class="flex items-center space-x-2">
+                <span class="w-3 h-3 rounded-full bg-[#ff5f56] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#ffbd2e] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#27c93f] inline-block shadow-sm"></span>
+                <span class="ml-2 uppercase font-semibold text-indigo-400 tracking-wider text-[11px]">php</span>
+            </div>
+            <button onclick="copyCode(this)" class="px-2.5 py-1 rounded-md bg-slate-800/90 hover:bg-slate-700 text-slate-200 transition flex items-center space-x-1.5 shadow-sm font-sans text-xs">
+                <svg class="w-3.5 h-3.5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                <span>Copy</span>
+            </button>
+        </div>
+        <pre class="p-4 sm:p-5 overflow-x-auto text-[13.5px] leading-relaxed custom-scrollbar"><code class="language-php text-slate-100">// create_posts_table
+Schema::create(&#x27;posts&#x27;, function (Blueprint $table) {
+    $table-&gt;id();
+    $table-&gt;foreignId(&#x27;user_id&#x27;)-&gt;constrained()-&gt;cascadeOnDelete();
+    $table-&gt;string(&#x27;title&#x27;);
+    $table-&gt;string(&#x27;slug&#x27;)-&gt;unique();
+    $table-&gt;text(&#x27;content&#x27;);
+    $table-&gt;boolean(&#x27;is_published&#x27;)-&gt;default(false);
+    $table-&gt;timestamps();
+});</code></pre>
+    </div>
+
+                <div id="section-2-user-model" class="scroll-mt-24 pt-10 pb-4 border-b border-gray-200 dark:border-gray-800">
+                    <div class="flex items-center space-x-3">
+                        <span class="px-2.5 py-1 text-xs font-bold rounded-md bg-red-100 text-red-700 dark:bg-red-950/80 dark:text-red-300 uppercase tracking-wider">Module 2</span>
+                        <h2 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white tracking-tight">User Model:</h2>
+                    </div>
+                </div>
+
+    <div class="relative my-6 group rounded-xl overflow-hidden border border-slate-800 shadow-2xl bg-[#0c1017]">
+        <div class="flex items-center justify-between px-4 py-2.5 bg-[#161b22] border-b border-slate-800/80 text-xs text-slate-400 font-mono select-none">
+            <div class="flex items-center space-x-2">
+                <span class="w-3 h-3 rounded-full bg-[#ff5f56] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#ffbd2e] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#27c93f] inline-block shadow-sm"></span>
+                <span class="ml-2 uppercase font-semibold text-indigo-400 tracking-wider text-[11px]">php</span>
+            </div>
+            <button onclick="copyCode(this)" class="px-2.5 py-1 rounded-md bg-slate-800/90 hover:bg-slate-700 text-slate-200 transition flex items-center space-x-1.5 shadow-sm font-sans text-xs">
+                <svg class="w-3.5 h-3.5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                <span>Copy</span>
+            </button>
+        </div>
+        <pre class="p-4 sm:p-5 overflow-x-auto text-[13.5px] leading-relaxed custom-scrollbar"><code class="language-php text-slate-100">use Illuminate\Database\Eloquent\Relations\HasMany;
+
+public function posts(): HasMany
+{
+    return $this-&gt;hasMany(Post::class)-&gt;latest();
+}
+
+public function publishedPosts(): HasMany
+{
+    return $this-&gt;hasMany(Post::class)-&gt;where(&#x27;is_published&#x27;, true)-&gt;latest();
+}</code></pre>
+    </div>
+
+                <div id="section-3-post-model" class="scroll-mt-24 pt-10 pb-4 border-b border-gray-200 dark:border-gray-800">
+                    <div class="flex items-center space-x-3">
+                        <span class="px-2.5 py-1 text-xs font-bold rounded-md bg-red-100 text-red-700 dark:bg-red-950/80 dark:text-red-300 uppercase tracking-wider">Module 3</span>
+                        <h2 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white tracking-tight">Post Model:</h2>
+                    </div>
+                </div>
+
+    <div class="relative my-6 group rounded-xl overflow-hidden border border-slate-800 shadow-2xl bg-[#0c1017]">
+        <div class="flex items-center justify-between px-4 py-2.5 bg-[#161b22] border-b border-slate-800/80 text-xs text-slate-400 font-mono select-none">
+            <div class="flex items-center space-x-2">
+                <span class="w-3 h-3 rounded-full bg-[#ff5f56] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#ffbd2e] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#27c93f] inline-block shadow-sm"></span>
+                <span class="ml-2 uppercase font-semibold text-indigo-400 tracking-wider text-[11px]">php</span>
+            </div>
+            <button onclick="copyCode(this)" class="px-2.5 py-1 rounded-md bg-slate-800/90 hover:bg-slate-700 text-slate-200 transition flex items-center space-x-1.5 shadow-sm font-sans text-xs">
+                <svg class="w-3.5 h-3.5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                <span>Copy</span>
+            </button>
+        </div>
+        <pre class="p-4 sm:p-5 overflow-x-auto text-[13.5px] leading-relaxed custom-scrollbar"><code class="language-php text-slate-100">use Illuminate\Database\Eloquent\Relations\BelongsTo;
+
+public function author(): BelongsTo
+{
+    return $this-&gt;belongsTo(User::class, &#x27;user_id&#x27;);
+}</code></pre>
+    </div>
+
+                <div id="section-4-many-to-many-relationships-belongstomany-pivot-attributes" class="scroll-mt-24 pt-10 pb-4 border-b border-gray-200 dark:border-gray-800">
+                    <div class="flex items-center space-x-3">
+                        <span class="px-2.5 py-1 text-xs font-bold rounded-md bg-red-100 text-red-700 dark:bg-red-950/80 dark:text-red-300 uppercase tracking-wider">Module 4</span>
+                        <h2 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white tracking-tight">MANY-TO-MANY RELATIONSHIPS (belongsToMany &amp; PIVOT ATTRIBUTES)</h2>
+                    </div>
+                </div>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">Example: <code class="px-1.5 py-0.5 rounded text-xs font-mono bg-indigo-50 text-indigo-700 dark:bg-slate-800 dark:text-pink-400 font-semibold border border-indigo-100 dark:border-slate-700/60">Users</code> and <code class="px-1.5 py-0.5 rounded text-xs font-mono bg-indigo-50 text-indigo-700 dark:bg-slate-800 dark:text-pink-400 font-semibold border border-indigo-100 dark:border-slate-700/60">Roles</code> connected via a <code class="px-1.5 py-0.5 rounded text-xs font-mono bg-indigo-50 text-indigo-700 dark:bg-slate-800 dark:text-pink-400 font-semibold border border-indigo-100 dark:border-slate-700/60">role_user</code> pivot table with metadata.</p>
+
+                <div id="section-1-pivot-migration" class="scroll-mt-24 pt-10 pb-4 border-b border-gray-200 dark:border-gray-800">
+                    <div class="flex items-center space-x-3">
+                        <span class="px-2.5 py-1 text-xs font-bold rounded-md bg-red-100 text-red-700 dark:bg-red-950/80 dark:text-red-300 uppercase tracking-wider">Module 1</span>
+                        <h2 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white tracking-tight">Pivot Migration:</h2>
+                    </div>
+                </div>
+
+    <div class="relative my-6 group rounded-xl overflow-hidden border border-slate-800 shadow-2xl bg-[#0c1017]">
+        <div class="flex items-center justify-between px-4 py-2.5 bg-[#161b22] border-b border-slate-800/80 text-xs text-slate-400 font-mono select-none">
+            <div class="flex items-center space-x-2">
+                <span class="w-3 h-3 rounded-full bg-[#ff5f56] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#ffbd2e] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#27c93f] inline-block shadow-sm"></span>
+                <span class="ml-2 uppercase font-semibold text-indigo-400 tracking-wider text-[11px]">php</span>
+            </div>
+            <button onclick="copyCode(this)" class="px-2.5 py-1 rounded-md bg-slate-800/90 hover:bg-slate-700 text-slate-200 transition flex items-center space-x-1.5 shadow-sm font-sans text-xs">
+                <svg class="w-3.5 h-3.5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                <span>Copy</span>
+            </button>
+        </div>
+        <pre class="p-4 sm:p-5 overflow-x-auto text-[13.5px] leading-relaxed custom-scrollbar"><code class="language-php text-slate-100">Schema::create(&#x27;role_user&#x27;, function (Blueprint $table) {
+    $table-&gt;id();
+    $table-&gt;foreignId(&#x27;user_id&#x27;)-&gt;constrained()-&gt;cascadeOnDelete();
+    $table-&gt;foreignId(&#x27;role_id&#x27;)-&gt;constrained()-&gt;cascadeOnDelete();
+    $table-&gt;string(&#x27;assigned_by&#x27;)-&gt;nullable();
+    $table-&gt;timestamp(&#x27;expires_at&#x27;)-&gt;nullable();
+    $table-&gt;timestamps();
+    
+    // Prevent duplicate role assignments
+    $table-&gt;unique([&#x27;user_id&#x27;, &#x27;role_id&#x27;]);
+});</code></pre>
+    </div>
+
+                <div id="section-2-user-model" class="scroll-mt-24 pt-10 pb-4 border-b border-gray-200 dark:border-gray-800">
+                    <div class="flex items-center space-x-3">
+                        <span class="px-2.5 py-1 text-xs font-bold rounded-md bg-red-100 text-red-700 dark:bg-red-950/80 dark:text-red-300 uppercase tracking-wider">Module 2</span>
+                        <h2 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white tracking-tight">User Model:</h2>
+                    </div>
+                </div>
+
+    <div class="relative my-6 group rounded-xl overflow-hidden border border-slate-800 shadow-2xl bg-[#0c1017]">
+        <div class="flex items-center justify-between px-4 py-2.5 bg-[#161b22] border-b border-slate-800/80 text-xs text-slate-400 font-mono select-none">
+            <div class="flex items-center space-x-2">
+                <span class="w-3 h-3 rounded-full bg-[#ff5f56] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#ffbd2e] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#27c93f] inline-block shadow-sm"></span>
+                <span class="ml-2 uppercase font-semibold text-indigo-400 tracking-wider text-[11px]">php</span>
+            </div>
+            <button onclick="copyCode(this)" class="px-2.5 py-1 rounded-md bg-slate-800/90 hover:bg-slate-700 text-slate-200 transition flex items-center space-x-1.5 shadow-sm font-sans text-xs">
+                <svg class="w-3.5 h-3.5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                <span>Copy</span>
+            </button>
+        </div>
+        <pre class="p-4 sm:p-5 overflow-x-auto text-[13.5px] leading-relaxed custom-scrollbar"><code class="language-php text-slate-100">use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+
+public function roles(): BelongsToMany
+{
+    return $this-&gt;belongsToMany(Role::class)
+        -&gt;withPivot(&#x27;assigned_by&#x27;, &#x27;expires_at&#x27;)
+        -&gt;withTimestamps();
+}</code></pre>
+    </div>
+
+                <div id="section-3-role-model" class="scroll-mt-24 pt-10 pb-4 border-b border-gray-200 dark:border-gray-800">
+                    <div class="flex items-center space-x-3">
+                        <span class="px-2.5 py-1 text-xs font-bold rounded-md bg-red-100 text-red-700 dark:bg-red-950/80 dark:text-red-300 uppercase tracking-wider">Module 3</span>
+                        <h2 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white tracking-tight">Role Model:</h2>
+                    </div>
+                </div>
+
+    <div class="relative my-6 group rounded-xl overflow-hidden border border-slate-800 shadow-2xl bg-[#0c1017]">
+        <div class="flex items-center justify-between px-4 py-2.5 bg-[#161b22] border-b border-slate-800/80 text-xs text-slate-400 font-mono select-none">
+            <div class="flex items-center space-x-2">
+                <span class="w-3 h-3 rounded-full bg-[#ff5f56] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#ffbd2e] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#27c93f] inline-block shadow-sm"></span>
+                <span class="ml-2 uppercase font-semibold text-indigo-400 tracking-wider text-[11px]">php</span>
+            </div>
+            <button onclick="copyCode(this)" class="px-2.5 py-1 rounded-md bg-slate-800/90 hover:bg-slate-700 text-slate-200 transition flex items-center space-x-1.5 shadow-sm font-sans text-xs">
+                <svg class="w-3.5 h-3.5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                <span>Copy</span>
+            </button>
+        </div>
+        <pre class="p-4 sm:p-5 overflow-x-auto text-[13.5px] leading-relaxed custom-scrollbar"><code class="language-php text-slate-100">use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+
+public function users(): BelongsToMany
+{
+    return $this-&gt;belongsToMany(User::class)
+        -&gt;withPivot(&#x27;assigned_by&#x27;, &#x27;expires_at&#x27;)
+        -&gt;withTimestamps();
+}</code></pre>
+    </div>
+
+                <div id="section-4-practical-operations" class="scroll-mt-24 pt-10 pb-4 border-b border-gray-200 dark:border-gray-800">
+                    <div class="flex items-center space-x-3">
+                        <span class="px-2.5 py-1 text-xs font-bold rounded-md bg-red-100 text-red-700 dark:bg-red-950/80 dark:text-red-300 uppercase tracking-wider">Module 4</span>
+                        <h2 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white tracking-tight">Practical Operations:</h2>
+                    </div>
+                </div>
+
+    <div class="relative my-6 group rounded-xl overflow-hidden border border-slate-800 shadow-2xl bg-[#0c1017]">
+        <div class="flex items-center justify-between px-4 py-2.5 bg-[#161b22] border-b border-slate-800/80 text-xs text-slate-400 font-mono select-none">
+            <div class="flex items-center space-x-2">
+                <span class="w-3 h-3 rounded-full bg-[#ff5f56] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#ffbd2e] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#27c93f] inline-block shadow-sm"></span>
+                <span class="ml-2 uppercase font-semibold text-indigo-400 tracking-wider text-[11px]">php</span>
+            </div>
+            <button onclick="copyCode(this)" class="px-2.5 py-1 rounded-md bg-slate-800/90 hover:bg-slate-700 text-slate-200 transition flex items-center space-x-1.5 shadow-sm font-sans text-xs">
+                <svg class="w-3.5 h-3.5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                <span>Copy</span>
+            </button>
+        </div>
+        <pre class="p-4 sm:p-5 overflow-x-auto text-[13.5px] leading-relaxed custom-scrollbar"><code class="language-php text-slate-100">$user = User::find(1);
+
+// Attach a role with pivot data
+$user-&gt;roles()-&gt;attach($roleId, [
+    &#x27;assigned_by&#x27; =&gt; &#x27;SuperAdmin&#x27;,
+    &#x27;expires_at&#x27; =&gt; now()-&gt;addYear(),
+]);
+
+// Sync roles (removes unlisted roles, adds new ones)
+$user-&gt;roles()-&gt;sync([1, 2, 3]);
+
+// Toggle role
+$user-&gt;roles()-&gt;toggle($roleId);
+
+// Access pivot data
+foreach ($user-&gt;roles as $role) {
+    echo $role-&gt;name . &#x27; - assigned by: &#x27; . $role-&gt;pivot-&gt;assigned_by;
+}</code></pre>
+    </div>
+
+                <div id="section-5-has-many-through-has-one-through-relationships" class="scroll-mt-24 pt-10 pb-4 border-b border-gray-200 dark:border-gray-800">
+                    <div class="flex items-center space-x-3">
+                        <span class="px-2.5 py-1 text-xs font-bold rounded-md bg-red-100 text-red-700 dark:bg-red-950/80 dark:text-red-300 uppercase tracking-wider">Module 5</span>
+                        <h2 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white tracking-tight">HAS-MANY-THROUGH &amp; HAS-ONE-THROUGH RELATIONSHIPS</h2>
+                    </div>
+                </div>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">Example: A <code class="px-1.5 py-0.5 rounded text-xs font-mono bg-indigo-50 text-indigo-700 dark:bg-slate-800 dark:text-pink-400 font-semibold border border-indigo-100 dark:border-slate-700/60">Country</code> has many <code class="px-1.5 py-0.5 rounded text-xs font-mono bg-indigo-50 text-indigo-700 dark:bg-slate-800 dark:text-pink-400 font-semibold border border-indigo-100 dark:border-slate-700/60">Posts</code> through <code class="px-1.5 py-0.5 rounded text-xs font-mono bg-indigo-50 text-indigo-700 dark:bg-slate-800 dark:text-pink-400 font-semibold border border-indigo-100 dark:border-slate-700/60">Users</code>.</p>
+
+    <div class="relative my-6 group rounded-xl overflow-hidden border border-slate-800 shadow-2xl bg-[#0c1017]">
+        <div class="flex items-center justify-between px-4 py-2.5 bg-[#161b22] border-b border-slate-800/80 text-xs text-slate-400 font-mono select-none">
+            <div class="flex items-center space-x-2">
+                <span class="w-3 h-3 rounded-full bg-[#ff5f56] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#ffbd2e] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#27c93f] inline-block shadow-sm"></span>
+                <span class="ml-2 uppercase font-semibold text-indigo-400 tracking-wider text-[11px]">bash</span>
+            </div>
+            <button onclick="copyCode(this)" class="px-2.5 py-1 rounded-md bg-slate-800/90 hover:bg-slate-700 text-slate-200 transition flex items-center space-x-1.5 shadow-sm font-sans text-xs">
+                <svg class="w-3.5 h-3.5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                <span>Copy</span>
+            </button>
+        </div>
+        <pre class="p-4 sm:p-5 overflow-x-auto text-[13.5px] leading-relaxed custom-scrollbar"><code class="language-bash text-slate-100">[Country] 1 ---- * [User] 1 ---- * [Post]</code></pre>
+    </div>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">In <code class="px-1.5 py-0.5 rounded text-xs font-mono bg-indigo-50 text-indigo-700 dark:bg-slate-800 dark:text-pink-400 font-semibold border border-indigo-100 dark:border-slate-700/60">Country</code> model:</p>
+
+    <div class="relative my-6 group rounded-xl overflow-hidden border border-slate-800 shadow-2xl bg-[#0c1017]">
+        <div class="flex items-center justify-between px-4 py-2.5 bg-[#161b22] border-b border-slate-800/80 text-xs text-slate-400 font-mono select-none">
+            <div class="flex items-center space-x-2">
+                <span class="w-3 h-3 rounded-full bg-[#ff5f56] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#ffbd2e] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#27c93f] inline-block shadow-sm"></span>
+                <span class="ml-2 uppercase font-semibold text-indigo-400 tracking-wider text-[11px]">php</span>
+            </div>
+            <button onclick="copyCode(this)" class="px-2.5 py-1 rounded-md bg-slate-800/90 hover:bg-slate-700 text-slate-200 transition flex items-center space-x-1.5 shadow-sm font-sans text-xs">
+                <svg class="w-3.5 h-3.5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                <span>Copy</span>
+            </button>
+        </div>
+        <pre class="p-4 sm:p-5 overflow-x-auto text-[13.5px] leading-relaxed custom-scrollbar"><code class="language-php text-slate-100">use Illuminate\Database\Eloquent\Relations\HasManyThrough;
+
+public function posts(): HasManyThrough
+{
+    return $this-&gt;hasManyThrough(
+        Post::class,       // Target final model
+        User::class,       // Intermediate bridge model
+        &#x27;country_id&#x27;,      // Foreign key on users table...
+        &#x27;user_id&#x27;,         // Foreign key on posts table...
+        &#x27;id&#x27;,              // Local key on countries table...
+        &#x27;id&#x27;               // Local key on users table...
+    );
+}</code></pre>
+    </div>
+
+                <div id="section-6-polymorphic-relationships-one-to-many-comments" class="scroll-mt-24 pt-10 pb-4 border-b border-gray-200 dark:border-gray-800">
+                    <div class="flex items-center space-x-3">
+                        <span class="px-2.5 py-1 text-xs font-bold rounded-md bg-red-100 text-red-700 dark:bg-red-950/80 dark:text-red-300 uppercase tracking-wider">Module 6</span>
+                        <h2 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white tracking-tight">POLYMORPHIC RELATIONSHIPS (ONE-TO-MANY COMMENTS)</h2>
+                    </div>
+                </div>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">A single <code class="px-1.5 py-0.5 rounded text-xs font-mono bg-indigo-50 text-indigo-700 dark:bg-slate-800 dark:text-pink-400 font-semibold border border-indigo-100 dark:border-slate-700/60">comments</code> table can store comments for <code class="px-1.5 py-0.5 rounded text-xs font-mono bg-indigo-50 text-indigo-700 dark:bg-slate-800 dark:text-pink-400 font-semibold border border-indigo-100 dark:border-slate-700/60">Post</code>, <code class="px-1.5 py-0.5 rounded text-xs font-mono bg-indigo-50 text-indigo-700 dark:bg-slate-800 dark:text-pink-400 font-semibold border border-indigo-100 dark:border-slate-700/60">Video</code>, or <code class="px-1.5 py-0.5 rounded text-xs font-mono bg-indigo-50 text-indigo-700 dark:bg-slate-800 dark:text-pink-400 font-semibold border border-indigo-100 dark:border-slate-700/60">Product</code> models.</p>
+
+                <div id="section-1-polymorphic-migration-schema" class="scroll-mt-24 pt-10 pb-4 border-b border-gray-200 dark:border-gray-800">
+                    <div class="flex items-center space-x-3">
+                        <span class="px-2.5 py-1 text-xs font-bold rounded-md bg-red-100 text-red-700 dark:bg-red-950/80 dark:text-red-300 uppercase tracking-wider">Module 1</span>
+                        <h2 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white tracking-tight">Polymorphic Migration Schema:</h2>
+                    </div>
+                </div>
+
+    <div class="relative my-6 group rounded-xl overflow-hidden border border-slate-800 shadow-2xl bg-[#0c1017]">
+        <div class="flex items-center justify-between px-4 py-2.5 bg-[#161b22] border-b border-slate-800/80 text-xs text-slate-400 font-mono select-none">
+            <div class="flex items-center space-x-2">
+                <span class="w-3 h-3 rounded-full bg-[#ff5f56] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#ffbd2e] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#27c93f] inline-block shadow-sm"></span>
+                <span class="ml-2 uppercase font-semibold text-indigo-400 tracking-wider text-[11px]">php</span>
+            </div>
+            <button onclick="copyCode(this)" class="px-2.5 py-1 rounded-md bg-slate-800/90 hover:bg-slate-700 text-slate-200 transition flex items-center space-x-1.5 shadow-sm font-sans text-xs">
+                <svg class="w-3.5 h-3.5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                <span>Copy</span>
+            </button>
+        </div>
+        <pre class="p-4 sm:p-5 overflow-x-auto text-[13.5px] leading-relaxed custom-scrollbar"><code class="language-php text-slate-100">Schema::create(&#x27;comments&#x27;, function (Blueprint $table) {
+    $table-&gt;id();
+    $table-&gt;foreignId(&#x27;user_id&#x27;)-&gt;constrained()-&gt;cascadeOnDelete();
+    $table-&gt;text(&#x27;body&#x27;);
+    // Generates commentable_id (bigint) and commentable_type (string) with index:
+    $table-&gt;morphs(&#x27;commentable&#x27;);
+    $table-&gt;timestamps();
+});</code></pre>
+    </div>
+
+                <div id="section-2-comment-model" class="scroll-mt-24 pt-10 pb-4 border-b border-gray-200 dark:border-gray-800">
+                    <div class="flex items-center space-x-3">
+                        <span class="px-2.5 py-1 text-xs font-bold rounded-md bg-red-100 text-red-700 dark:bg-red-950/80 dark:text-red-300 uppercase tracking-wider">Module 2</span>
+                        <h2 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white tracking-tight">Comment Model:</h2>
+                    </div>
+                </div>
+
+    <div class="relative my-6 group rounded-xl overflow-hidden border border-slate-800 shadow-2xl bg-[#0c1017]">
+        <div class="flex items-center justify-between px-4 py-2.5 bg-[#161b22] border-b border-slate-800/80 text-xs text-slate-400 font-mono select-none">
+            <div class="flex items-center space-x-2">
+                <span class="w-3 h-3 rounded-full bg-[#ff5f56] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#ffbd2e] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#27c93f] inline-block shadow-sm"></span>
+                <span class="ml-2 uppercase font-semibold text-indigo-400 tracking-wider text-[11px]">php</span>
+            </div>
+            <button onclick="copyCode(this)" class="px-2.5 py-1 rounded-md bg-slate-800/90 hover:bg-slate-700 text-slate-200 transition flex items-center space-x-1.5 shadow-sm font-sans text-xs">
+                <svg class="w-3.5 h-3.5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                <span>Copy</span>
+            </button>
+        </div>
+        <pre class="p-4 sm:p-5 overflow-x-auto text-[13.5px] leading-relaxed custom-scrollbar"><code class="language-php text-slate-100">use Illuminate\Database\Eloquent\Relations\MorphTo;
+
+public function commentable(): MorphTo
+{
+    return $this-&gt;morphTo();
+}</code></pre>
+    </div>
+
+                <div id="section-3-post-video-models" class="scroll-mt-24 pt-10 pb-4 border-b border-gray-200 dark:border-gray-800">
+                    <div class="flex items-center space-x-3">
+                        <span class="px-2.5 py-1 text-xs font-bold rounded-md bg-red-100 text-red-700 dark:bg-red-950/80 dark:text-red-300 uppercase tracking-wider">Module 3</span>
+                        <h2 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white tracking-tight">Post &amp; Video Models:</h2>
+                    </div>
+                </div>
+
+    <div class="relative my-6 group rounded-xl overflow-hidden border border-slate-800 shadow-2xl bg-[#0c1017]">
+        <div class="flex items-center justify-between px-4 py-2.5 bg-[#161b22] border-b border-slate-800/80 text-xs text-slate-400 font-mono select-none">
+            <div class="flex items-center space-x-2">
+                <span class="w-3 h-3 rounded-full bg-[#ff5f56] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#ffbd2e] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#27c93f] inline-block shadow-sm"></span>
+                <span class="ml-2 uppercase font-semibold text-indigo-400 tracking-wider text-[11px]">php</span>
+            </div>
+            <button onclick="copyCode(this)" class="px-2.5 py-1 rounded-md bg-slate-800/90 hover:bg-slate-700 text-slate-200 transition flex items-center space-x-1.5 shadow-sm font-sans text-xs">
+                <svg class="w-3.5 h-3.5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                <span>Copy</span>
+            </button>
+        </div>
+        <pre class="p-4 sm:p-5 overflow-x-auto text-[13.5px] leading-relaxed custom-scrollbar"><code class="language-php text-slate-100">use Illuminate\Database\Eloquent\Relations\MorphMany;
+
+public function comments(): MorphMany
+{
+    return $this-&gt;morphMany(Comment::class, &#x27;commentable&#x27;)-&gt;latest();
+}</code></pre>
+    </div>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">4. Custom Morph Map in <code class="px-1.5 py-0.5 rounded text-xs font-mono bg-indigo-50 text-indigo-700 dark:bg-slate-800 dark:text-pink-400 font-semibold border border-indigo-100 dark:border-slate-700/60">AppServiceProvider.php</code> (Never store raw class strings in DB):</p>
+
+    <div class="relative my-6 group rounded-xl overflow-hidden border border-slate-800 shadow-2xl bg-[#0c1017]">
+        <div class="flex items-center justify-between px-4 py-2.5 bg-[#161b22] border-b border-slate-800/80 text-xs text-slate-400 font-mono select-none">
+            <div class="flex items-center space-x-2">
+                <span class="w-3 h-3 rounded-full bg-[#ff5f56] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#ffbd2e] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#27c93f] inline-block shadow-sm"></span>
+                <span class="ml-2 uppercase font-semibold text-indigo-400 tracking-wider text-[11px]">php</span>
+            </div>
+            <button onclick="copyCode(this)" class="px-2.5 py-1 rounded-md bg-slate-800/90 hover:bg-slate-700 text-slate-200 transition flex items-center space-x-1.5 shadow-sm font-sans text-xs">
+                <svg class="w-3.5 h-3.5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                <span>Copy</span>
+            </button>
+        </div>
+        <pre class="p-4 sm:p-5 overflow-x-auto text-[13.5px] leading-relaxed custom-scrollbar"><code class="language-php text-slate-100">use Illuminate\Database\Eloquent\Relations\Relation;
+
+public function boot(): void
+{
+    Relation::morphMap([
+        &#x27;post&#x27; =&gt; \App\Models\Post::class,
+        &#x27;video&#x27; =&gt; \App\Models\Video::class,
+        &#x27;product&#x27; =&gt; \App\Models\Product::class,
+    ]);
+}</code></pre>
+    </div>
+
+                <div id="section-7-polymorphic-many-to-many-universal-tagging-system" class="scroll-mt-24 pt-10 pb-4 border-b border-gray-200 dark:border-gray-800">
+                    <div class="flex items-center space-x-3">
+                        <span class="px-2.5 py-1 text-xs font-bold rounded-md bg-red-100 text-red-700 dark:bg-red-950/80 dark:text-red-300 uppercase tracking-wider">Module 7</span>
+                        <h2 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white tracking-tight">POLYMORPHIC MANY-TO-MANY (UNIVERSAL TAGGING SYSTEM)</h2>
+                    </div>
+                </div>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">Example: <code class="px-1.5 py-0.5 rounded text-xs font-mono bg-indigo-50 text-indigo-700 dark:bg-slate-800 dark:text-pink-400 font-semibold border border-indigo-100 dark:border-slate-700/60">Post</code> and <code class="px-1.5 py-0.5 rounded text-xs font-mono bg-indigo-50 text-indigo-700 dark:bg-slate-800 dark:text-pink-400 font-semibold border border-indigo-100 dark:border-slate-700/60">Video</code> models can both have many <code class="px-1.5 py-0.5 rounded text-xs font-mono bg-indigo-50 text-indigo-700 dark:bg-slate-800 dark:text-pink-400 font-semibold border border-indigo-100 dark:border-slate-700/60">Tags</code>.</p>
+
+                <div id="section-1-migration" class="scroll-mt-24 pt-10 pb-4 border-b border-gray-200 dark:border-gray-800">
+                    <div class="flex items-center space-x-3">
+                        <span class="px-2.5 py-1 text-xs font-bold rounded-md bg-red-100 text-red-700 dark:bg-red-950/80 dark:text-red-300 uppercase tracking-wider">Module 1</span>
+                        <h2 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white tracking-tight">Migration:</h2>
+                    </div>
+                </div>
+
+    <div class="relative my-6 group rounded-xl overflow-hidden border border-slate-800 shadow-2xl bg-[#0c1017]">
+        <div class="flex items-center justify-between px-4 py-2.5 bg-[#161b22] border-b border-slate-800/80 text-xs text-slate-400 font-mono select-none">
+            <div class="flex items-center space-x-2">
+                <span class="w-3 h-3 rounded-full bg-[#ff5f56] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#ffbd2e] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#27c93f] inline-block shadow-sm"></span>
+                <span class="ml-2 uppercase font-semibold text-indigo-400 tracking-wider text-[11px]">php</span>
+            </div>
+            <button onclick="copyCode(this)" class="px-2.5 py-1 rounded-md bg-slate-800/90 hover:bg-slate-700 text-slate-200 transition flex items-center space-x-1.5 shadow-sm font-sans text-xs">
+                <svg class="w-3.5 h-3.5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                <span>Copy</span>
+            </button>
+        </div>
+        <pre class="p-4 sm:p-5 overflow-x-auto text-[13.5px] leading-relaxed custom-scrollbar"><code class="language-php text-slate-100">Schema::create(&#x27;tags&#x27;, function (Blueprint $table) {
+    $table-&gt;id();
+    $table-&gt;string(&#x27;name&#x27;)-&gt;unique();
+    $table-&gt;string(&#x27;slug&#x27;)-&gt;unique();
+    $table-&gt;timestamps();
+});
+
+Schema::create(&#x27;taggables&#x27;, function (Blueprint $table) {
+    $table-&gt;id();
+    $table-&gt;foreignId(&#x27;tag_id&#x27;)-&gt;constrained()-&gt;cascadeOnDelete();
+    $table-&gt;morphs(&#x27;taggable&#x27;); // taggable_id, taggable_type
+});</code></pre>
+    </div>
+
+                <div id="section-2-tag-model" class="scroll-mt-24 pt-10 pb-4 border-b border-gray-200 dark:border-gray-800">
+                    <div class="flex items-center space-x-3">
+                        <span class="px-2.5 py-1 text-xs font-bold rounded-md bg-red-100 text-red-700 dark:bg-red-950/80 dark:text-red-300 uppercase tracking-wider">Module 2</span>
+                        <h2 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white tracking-tight">Tag Model:</h2>
+                    </div>
+                </div>
+
+    <div class="relative my-6 group rounded-xl overflow-hidden border border-slate-800 shadow-2xl bg-[#0c1017]">
+        <div class="flex items-center justify-between px-4 py-2.5 bg-[#161b22] border-b border-slate-800/80 text-xs text-slate-400 font-mono select-none">
+            <div class="flex items-center space-x-2">
+                <span class="w-3 h-3 rounded-full bg-[#ff5f56] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#ffbd2e] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#27c93f] inline-block shadow-sm"></span>
+                <span class="ml-2 uppercase font-semibold text-indigo-400 tracking-wider text-[11px]">php</span>
+            </div>
+            <button onclick="copyCode(this)" class="px-2.5 py-1 rounded-md bg-slate-800/90 hover:bg-slate-700 text-slate-200 transition flex items-center space-x-1.5 shadow-sm font-sans text-xs">
+                <svg class="w-3.5 h-3.5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                <span>Copy</span>
+            </button>
+        </div>
+        <pre class="p-4 sm:p-5 overflow-x-auto text-[13.5px] leading-relaxed custom-scrollbar"><code class="language-php text-slate-100">use Illuminate\Database\Eloquent\Relations\MorphToMany;
+
+public function posts(): MorphToMany
+{
+    return $this-&gt;morphedByMany(Post::class, &#x27;taggable&#x27;);
+}
+
+public function videos(): MorphToMany
+{
+    return $this-&gt;morphedByMany(Video::class, &#x27;taggable&#x27;);
+}</code></pre>
+    </div>
+
+                <div id="section-3-post-model" class="scroll-mt-24 pt-10 pb-4 border-b border-gray-200 dark:border-gray-800">
+                    <div class="flex items-center space-x-3">
+                        <span class="px-2.5 py-1 text-xs font-bold rounded-md bg-red-100 text-red-700 dark:bg-red-950/80 dark:text-red-300 uppercase tracking-wider">Module 3</span>
+                        <h2 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white tracking-tight">Post Model:</h2>
+                    </div>
+                </div>
+
+    <div class="relative my-6 group rounded-xl overflow-hidden border border-slate-800 shadow-2xl bg-[#0c1017]">
+        <div class="flex items-center justify-between px-4 py-2.5 bg-[#161b22] border-b border-slate-800/80 text-xs text-slate-400 font-mono select-none">
+            <div class="flex items-center space-x-2">
+                <span class="w-3 h-3 rounded-full bg-[#ff5f56] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#ffbd2e] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#27c93f] inline-block shadow-sm"></span>
+                <span class="ml-2 uppercase font-semibold text-indigo-400 tracking-wider text-[11px]">php</span>
+            </div>
+            <button onclick="copyCode(this)" class="px-2.5 py-1 rounded-md bg-slate-800/90 hover:bg-slate-700 text-slate-200 transition flex items-center space-x-1.5 shadow-sm font-sans text-xs">
+                <svg class="w-3.5 h-3.5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                <span>Copy</span>
+            </button>
+        </div>
+        <pre class="p-4 sm:p-5 overflow-x-auto text-[13.5px] leading-relaxed custom-scrollbar"><code class="language-php text-slate-100">use Illuminate\Database\Eloquent\Relations\MorphToMany;
+
+public function tags(): MorphToMany
+{
+    return $this-&gt;morphToMany(Tag::class, &#x27;taggable&#x27;);
+}</code></pre>
+    </div>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">8. ELIMINATING THE N+1 QUERY PROBLEM &amp; EAGER LOADING</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">The N+1 problem occurs when a query executes 1 query for the parent records,</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">then N additional queries for each child record in a loop.</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">Bad (101 SQL queries for 100 posts):</p>
+
+    <div class="relative my-6 group rounded-xl overflow-hidden border border-slate-800 shadow-2xl bg-[#0c1017]">
+        <div class="flex items-center justify-between px-4 py-2.5 bg-[#161b22] border-b border-slate-800/80 text-xs text-slate-400 font-mono select-none">
+            <div class="flex items-center space-x-2">
+                <span class="w-3 h-3 rounded-full bg-[#ff5f56] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#ffbd2e] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#27c93f] inline-block shadow-sm"></span>
+                <span class="ml-2 uppercase font-semibold text-indigo-400 tracking-wider text-[11px]">php</span>
+            </div>
+            <button onclick="copyCode(this)" class="px-2.5 py-1 rounded-md bg-slate-800/90 hover:bg-slate-700 text-slate-200 transition flex items-center space-x-1.5 shadow-sm font-sans text-xs">
+                <svg class="w-3.5 h-3.5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                <span>Copy</span>
+            </button>
+        </div>
+        <pre class="p-4 sm:p-5 overflow-x-auto text-[13.5px] leading-relaxed custom-scrollbar"><code class="language-php text-slate-100">$posts = Post::all();
+foreach ($posts as $post) {
+    echo $post-&gt;author-&gt;name; // Executes a separate SELECT query per post!
+}</code></pre>
+    </div>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">Good (Only 2 SQL queries total with Eager Loading):</p>
+
+    <div class="relative my-6 group rounded-xl overflow-hidden border border-slate-800 shadow-2xl bg-[#0c1017]">
+        <div class="flex items-center justify-between px-4 py-2.5 bg-[#161b22] border-b border-slate-800/80 text-xs text-slate-400 font-mono select-none">
+            <div class="flex items-center space-x-2">
+                <span class="w-3 h-3 rounded-full bg-[#ff5f56] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#ffbd2e] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#27c93f] inline-block shadow-sm"></span>
+                <span class="ml-2 uppercase font-semibold text-indigo-400 tracking-wider text-[11px]">php</span>
+            </div>
+            <button onclick="copyCode(this)" class="px-2.5 py-1 rounded-md bg-slate-800/90 hover:bg-slate-700 text-slate-200 transition flex items-center space-x-1.5 shadow-sm font-sans text-xs">
+                <svg class="w-3.5 h-3.5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                <span>Copy</span>
+            </button>
+        </div>
+        <pre class="p-4 sm:p-5 overflow-x-auto text-[13.5px] leading-relaxed custom-scrollbar"><code class="language-php text-slate-100">$posts = Post::with([&#x27;author&#x27;, &#x27;tags&#x27;])-&gt;get();
+foreach ($posts as $post) {
+    echo $post-&gt;author-&gt;name; // Already in memory!
+}</code></pre>
+    </div>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">Constrained Eager Loading:</p>
+
+    <div class="relative my-6 group rounded-xl overflow-hidden border border-slate-800 shadow-2xl bg-[#0c1017]">
+        <div class="flex items-center justify-between px-4 py-2.5 bg-[#161b22] border-b border-slate-800/80 text-xs text-slate-400 font-mono select-none">
+            <div class="flex items-center space-x-2">
+                <span class="w-3 h-3 rounded-full bg-[#ff5f56] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#ffbd2e] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#27c93f] inline-block shadow-sm"></span>
+                <span class="ml-2 uppercase font-semibold text-indigo-400 tracking-wider text-[11px]">php</span>
+            </div>
+            <button onclick="copyCode(this)" class="px-2.5 py-1 rounded-md bg-slate-800/90 hover:bg-slate-700 text-slate-200 transition flex items-center space-x-1.5 shadow-sm font-sans text-xs">
+                <svg class="w-3.5 h-3.5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                <span>Copy</span>
+            </button>
+        </div>
+        <pre class="p-4 sm:p-5 overflow-x-auto text-[13.5px] leading-relaxed custom-scrollbar"><code class="language-php text-slate-100">$users = User::with([&#x27;posts&#x27; =&gt; function ($query) {
+    $query-&gt;where(&#x27;is_published&#x27;, true)-&gt;orderBy(&#x27;created_at&#x27;, &#x27;desc&#x27;);
+}])-&gt;get();</code></pre>
+    </div>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">Counting Relationships without loading models (<code class="px-1.5 py-0.5 rounded text-xs font-mono bg-indigo-50 text-indigo-700 dark:bg-slate-800 dark:text-pink-400 font-semibold border border-indigo-100 dark:border-slate-700/60">withCount</code>):</p>
+
+    <div class="relative my-6 group rounded-xl overflow-hidden border border-slate-800 shadow-2xl bg-[#0c1017]">
+        <div class="flex items-center justify-between px-4 py-2.5 bg-[#161b22] border-b border-slate-800/80 text-xs text-slate-400 font-mono select-none">
+            <div class="flex items-center space-x-2">
+                <span class="w-3 h-3 rounded-full bg-[#ff5f56] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#ffbd2e] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#27c93f] inline-block shadow-sm"></span>
+                <span class="ml-2 uppercase font-semibold text-indigo-400 tracking-wider text-[11px]">php</span>
+            </div>
+            <button onclick="copyCode(this)" class="px-2.5 py-1 rounded-md bg-slate-800/90 hover:bg-slate-700 text-slate-200 transition flex items-center space-x-1.5 shadow-sm font-sans text-xs">
+                <svg class="w-3.5 h-3.5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                <span>Copy</span>
+            </button>
+        </div>
+        <pre class="p-4 sm:p-5 overflow-x-auto text-[13.5px] leading-relaxed custom-scrollbar"><code class="language-php text-slate-100">// Adds posts_count attribute to the User model using an efficient subquery
+$users = User::withCount(&#x27;posts&#x27;)-&gt;get();
+foreach ($users as $user) {
+    echo &quot;{$user-&gt;name} has written {$user-&gt;posts_count} posts.&quot;;
+}</code></pre>
+    </div>
+
+                <div id="section-9-database-transactions-transactional-safety-deadlock-retries" class="scroll-mt-24 pt-10 pb-4 border-b border-gray-200 dark:border-gray-800">
+                    <div class="flex items-center space-x-3">
+                        <span class="px-2.5 py-1 text-xs font-bold rounded-md bg-red-100 text-red-700 dark:bg-red-950/80 dark:text-red-300 uppercase tracking-wider">Module 9</span>
+                        <h2 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white tracking-tight">DATABASE TRANSACTIONS (TRANSACTIONAL SAFETY &amp; DEADLOCK RETRIES)</h2>
+                    </div>
+                </div>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">Whenever you perform multiple database operations that must succeed or fail</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">as a single atomic unit, wrap them in a database transaction.</p>
+
+    <div class="relative my-6 group rounded-xl overflow-hidden border border-slate-800 shadow-2xl bg-[#0c1017]">
+        <div class="flex items-center justify-between px-4 py-2.5 bg-[#161b22] border-b border-slate-800/80 text-xs text-slate-400 font-mono select-none">
+            <div class="flex items-center space-x-2">
+                <span class="w-3 h-3 rounded-full bg-[#ff5f56] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#ffbd2e] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#27c93f] inline-block shadow-sm"></span>
+                <span class="ml-2 uppercase font-semibold text-indigo-400 tracking-wider text-[11px]">php</span>
+            </div>
+            <button onclick="copyCode(this)" class="px-2.5 py-1 rounded-md bg-slate-800/90 hover:bg-slate-700 text-slate-200 transition flex items-center space-x-1.5 shadow-sm font-sans text-xs">
+                <svg class="w-3.5 h-3.5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                <span>Copy</span>
+            </button>
+        </div>
+        <pre class="p-4 sm:p-5 overflow-x-auto text-[13.5px] leading-relaxed custom-scrollbar"><code class="language-php text-slate-100">use Illuminate\Support\Facades\DB;
+
+// Automatic transaction with 5 automatic retries in case of database deadlocks
+DB::transaction(function () use ($sender, $receiver, $amount) {
+    // Pessimistic locking (lockForUpdate) prevents race conditions
+    $fromAccount = Account::where(&#x27;id&#x27;, $sender-&gt;id)-&gt;lockForUpdate()-&gt;firstOrFail();
+    $toAccount = Account::where(&#x27;id&#x27;, $receiver-&gt;id)-&gt;lockForUpdate()-&gt;firstOrFail();
+
+    if ($fromAccount-&gt;balance &lt; $amount) {
+        throw new \Exception(&#x27;Insufficient funds.&#x27;);
+    }
+
+    $fromAccount-&gt;decrement(&#x27;balance&#x27;, $amount);
+    $toAccount-&gt;increment(&#x27;balance&#x27;, $amount);
+
+    TransactionRecord::create([
+        &#x27;from_account_id&#x27; =&gt; $fromAccount-&gt;id,
+        &#x27;to_account_id&#x27; =&gt; $toAccount-&gt;id,
+        &#x27;amount&#x27; =&gt; $amount,
+        &#x27;reference&#x27; =&gt; &#x27;TXN-&#x27; . Str::uuid(),
+    ]);
+}, 5);</code></pre>
+    </div>
+
+                <div id="section-10-model-observers-lifecycle-hooks" class="scroll-mt-24 pt-10 pb-4 border-b border-gray-200 dark:border-gray-800">
+                    <div class="flex items-center space-x-3">
+                        <span class="px-2.5 py-1 text-xs font-bold rounded-md bg-red-100 text-red-700 dark:bg-red-950/80 dark:text-red-300 uppercase tracking-wider">Module 10</span>
+                        <h2 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white tracking-tight">MODEL OBSERVERS &amp; LIFECYCLE HOOKS</h2>
+                    </div>
+                </div>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">Observers extract business logic (like generating slugs or cleaning up files)</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">out of controllers and models.</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">Create Observer:</p>
+
+    <div class="relative my-6 group rounded-xl overflow-hidden border border-slate-800 shadow-2xl bg-[#0c1017]">
+        <div class="flex items-center justify-between px-4 py-2.5 bg-[#161b22] border-b border-slate-800/80 text-xs text-slate-400 font-mono select-none">
+            <div class="flex items-center space-x-2">
+                <span class="w-3 h-3 rounded-full bg-[#ff5f56] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#ffbd2e] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#27c93f] inline-block shadow-sm"></span>
+                <span class="ml-2 uppercase font-semibold text-indigo-400 tracking-wider text-[11px]">bash</span>
+            </div>
+            <button onclick="copyCode(this)" class="px-2.5 py-1 rounded-md bg-slate-800/90 hover:bg-slate-700 text-slate-200 transition flex items-center space-x-1.5 shadow-sm font-sans text-xs">
+                <svg class="w-3.5 h-3.5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                <span>Copy</span>
+            </button>
+        </div>
+        <pre class="p-4 sm:p-5 overflow-x-auto text-[13.5px] leading-relaxed custom-scrollbar"><code class="language-bash text-slate-100">php artisan make:observer PostObserver --model=Post</code></pre>
+    </div>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">In <code class="px-1.5 py-0.5 rounded text-xs font-mono bg-indigo-50 text-indigo-700 dark:bg-slate-800 dark:text-pink-400 font-semibold border border-indigo-100 dark:border-slate-700/60">app/Observers/PostObserver.php</code>:</p>
+
+    <div class="relative my-6 group rounded-xl overflow-hidden border border-slate-800 shadow-2xl bg-[#0c1017]">
+        <div class="flex items-center justify-between px-4 py-2.5 bg-[#161b22] border-b border-slate-800/80 text-xs text-slate-400 font-mono select-none">
+            <div class="flex items-center space-x-2">
+                <span class="w-3 h-3 rounded-full bg-[#ff5f56] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#ffbd2e] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#27c93f] inline-block shadow-sm"></span>
+                <span class="ml-2 uppercase font-semibold text-indigo-400 tracking-wider text-[11px]">php</span>
+            </div>
+            <button onclick="copyCode(this)" class="px-2.5 py-1 rounded-md bg-slate-800/90 hover:bg-slate-700 text-slate-200 transition flex items-center space-x-1.5 shadow-sm font-sans text-xs">
+                <svg class="w-3.5 h-3.5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                <span>Copy</span>
+            </button>
+        </div>
+        <pre class="p-4 sm:p-5 overflow-x-auto text-[13.5px] leading-relaxed custom-scrollbar"><code class="language-php text-slate-100">&lt;?php
+
+namespace App\Observers;
+
+use App\Models\Post;
+use Illuminate\Support\Str;
+
+class PostObserver
+{
+    /**
+     * Handle the Post &quot;creating&quot; event.
+     */
+    public function creating(Post $post): void
+    {
+        if (empty($post-&gt;slug)) {
+            $post-&gt;slug = Str::slug($post-&gt;title) . &#x27;-&#x27; . Str::random(6);
+        }
+    }
+
+    /**
+     * Handle the Post &quot;deleted&quot; event (cleanup attached assets).
+     */
+    public function deleted(Post $post): void
+    {
+        // Delete associated featured image from storage
+        if ($post-&gt;featured_image) {
+            \Illuminate\Support\Facades\Storage::disk(&#x27;public&#x27;)-&gt;delete($post-&gt;featured_image);
+        }
+    }
+}</code></pre>
+    </div>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">In Laravel 11+, register observers using the <code class="px-1.5 py-0.5 rounded text-xs font-mono bg-indigo-50 text-indigo-700 dark:bg-slate-800 dark:text-pink-400 font-semibold border border-indigo-100 dark:border-slate-700/60">#[ObservedBy]</code> attribute directly on the model:</p>
+
+    <div class="relative my-6 group rounded-xl overflow-hidden border border-slate-800 shadow-2xl bg-[#0c1017]">
+        <div class="flex items-center justify-between px-4 py-2.5 bg-[#161b22] border-b border-slate-800/80 text-xs text-slate-400 font-mono select-none">
+            <div class="flex items-center space-x-2">
+                <span class="w-3 h-3 rounded-full bg-[#ff5f56] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#ffbd2e] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#27c93f] inline-block shadow-sm"></span>
+                <span class="ml-2 uppercase font-semibold text-indigo-400 tracking-wider text-[11px]">php</span>
+            </div>
+            <button onclick="copyCode(this)" class="px-2.5 py-1 rounded-md bg-slate-800/90 hover:bg-slate-700 text-slate-200 transition flex items-center space-x-1.5 shadow-sm font-sans text-xs">
+                <svg class="w-3.5 h-3.5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                <span>Copy</span>
+            </button>
+        </div>
+        <pre class="p-4 sm:p-5 overflow-x-auto text-[13.5px] leading-relaxed custom-scrollbar"><code class="language-php text-slate-100">namespace App\Models;
+
+use App\Observers\PostObserver;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
+use Illuminate\Database\Eloquent\Model;
+
+#[ObservedBy([PostObserver::class])]
+class Post extends Model
+{
+    // ...
+}</code></pre>
+    </div>
+            </article>
+
+            <!-- Bottom Navigation -->
+            <div class="mt-16 pt-8 border-t border-gray-200 dark:border-gray-800 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4">
+                <a href="12-restful-api-sanctum-resources.html" class="group flex items-center space-x-3 px-5 py-3 rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-800/50 text-sm font-medium text-gray-700 dark:text-gray-300 hover:border-indigo-500 dark:hover:border-indigo-500 hover:shadow-md transition-all">
+        <span class="text-indigo-600 dark:text-indigo-400 group-hover:-translate-x-1 transition-transform">←</span>
+        <div>
+            <div class="text-[10px] uppercase tracking-wider text-gray-400">Previous</div>
+            <div class="font-semibold text-gray-900 dark:text-white truncate max-w-[200px] sm:max-w-xs">RESTful API Development & Sanctum Tokens</div>
+        </div>
+    </a>
+                <a href="14-queues-jobs-events-scheduling.html" class="group flex items-center space-x-3 px-5 py-3 rounded-xl border border-indigo-600 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium shadow-md hover:shadow-xl transition-all">
+        <div class="text-right">
+            <div class="text-[10px] uppercase tracking-wider text-indigo-200">Next</div>
+            <div class="font-semibold truncate max-w-[200px] sm:max-w-xs">Queues, Asynchronous Jobs & Task Scheduling</div>
+        </div>
+        <span class="group-hover:translate-x-1 transition-transform">→</span>
+    </a>
+            </div>
+        </main>
+
+        <!-- Right TOC Sidebar (Desktop) with ScrollSpy -->
+        <aside class="hidden xl:block w-72 shrink-0 py-8 pl-4">
+            <div class="sticky top-24">
+                <div class="flex items-center space-x-2 mb-3 px-1">
+                    <span class="w-2 h-2 rounded-full bg-indigo-500 animate-pulse"></span>
+                    <h3 class="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">On This Page</h3>
+                </div>
+                <div id="toc-nav" class="space-y-1 border-l-2 border-gray-200 dark:border-gray-800 pl-3 max-h-[75vh] overflow-y-auto custom-scrollbar">
+                    
+        <a href="#section-1-eloquent-orm-architecture-modern-best-practices" class="toc-link block py-1.5 text-xs text-gray-500 hover:text-indigo-600 dark:text-gray-400 dark:hover:text-indigo-400 truncate transition-all duration-150" data-target="section-1-eloquent-orm-architecture-modern-best-practices">
+            1. ELOQUENT ORM ARCHITECTURE &amp; MODERN BEST PRACTICES
+        </a>
+
+        <a href="#section-2-one-to-one-relationships-hasone-belongsto" class="toc-link block py-1.5 text-xs text-gray-500 hover:text-indigo-600 dark:text-gray-400 dark:hover:text-indigo-400 truncate transition-all duration-150" data-target="section-2-one-to-one-relationships-hasone-belongsto">
+            2. ONE-TO-ONE RELATIONSHIPS (hasOne &amp; belongsTo)
+        </a>
+
+        <a href="#section-1-migration-schema" class="toc-link block py-1.5 text-xs text-gray-500 hover:text-indigo-600 dark:text-gray-400 dark:hover:text-indigo-400 truncate transition-all duration-150" data-target="section-1-migration-schema">
+            1. Migration Schema:
+        </a>
+
+        <a href="#section-4-usage" class="toc-link block py-1.5 text-xs text-gray-500 hover:text-indigo-600 dark:text-gray-400 dark:hover:text-indigo-400 truncate transition-all duration-150" data-target="section-4-usage">
+            4. Usage:
+        </a>
+
+        <a href="#section-3-one-to-many-relationships-hasmany-belongsto" class="toc-link block py-1.5 text-xs text-gray-500 hover:text-indigo-600 dark:text-gray-400 dark:hover:text-indigo-400 truncate transition-all duration-150" data-target="section-3-one-to-many-relationships-hasmany-belongsto">
+            3. ONE-TO-MANY RELATIONSHIPS (hasMany &amp; belongsTo)
+        </a>
+
+        <a href="#section-1-migration-schema" class="toc-link block py-1.5 text-xs text-gray-500 hover:text-indigo-600 dark:text-gray-400 dark:hover:text-indigo-400 truncate transition-all duration-150" data-target="section-1-migration-schema">
+            1. Migration Schema:
+        </a>
+
+        <a href="#section-2-user-model" class="toc-link block py-1.5 text-xs text-gray-500 hover:text-indigo-600 dark:text-gray-400 dark:hover:text-indigo-400 truncate transition-all duration-150" data-target="section-2-user-model">
+            2. User Model:
+        </a>
+
+        <a href="#section-3-post-model" class="toc-link block py-1.5 text-xs text-gray-500 hover:text-indigo-600 dark:text-gray-400 dark:hover:text-indigo-400 truncate transition-all duration-150" data-target="section-3-post-model">
+            3. Post Model:
+        </a>
+
+        <a href="#section-4-many-to-many-relationships-belongstomany-pivot-attributes" class="toc-link block py-1.5 text-xs text-gray-500 hover:text-indigo-600 dark:text-gray-400 dark:hover:text-indigo-400 truncate transition-all duration-150" data-target="section-4-many-to-many-relationships-belongstomany-pivot-attributes">
+            4. MANY-TO-MANY RELATIONSHIPS (belongsToMany &amp; PIVOT ATTRIBUTES)
+        </a>
+
+        <a href="#section-1-pivot-migration" class="toc-link block py-1.5 text-xs text-gray-500 hover:text-indigo-600 dark:text-gray-400 dark:hover:text-indigo-400 truncate transition-all duration-150" data-target="section-1-pivot-migration">
+            1. Pivot Migration:
+        </a>
+
+        <a href="#section-2-user-model" class="toc-link block py-1.5 text-xs text-gray-500 hover:text-indigo-600 dark:text-gray-400 dark:hover:text-indigo-400 truncate transition-all duration-150" data-target="section-2-user-model">
+            2. User Model:
+        </a>
+
+        <a href="#section-3-role-model" class="toc-link block py-1.5 text-xs text-gray-500 hover:text-indigo-600 dark:text-gray-400 dark:hover:text-indigo-400 truncate transition-all duration-150" data-target="section-3-role-model">
+            3. Role Model:
+        </a>
+
+        <a href="#section-4-practical-operations" class="toc-link block py-1.5 text-xs text-gray-500 hover:text-indigo-600 dark:text-gray-400 dark:hover:text-indigo-400 truncate transition-all duration-150" data-target="section-4-practical-operations">
+            4. Practical Operations:
+        </a>
+
+        <a href="#section-5-has-many-through-has-one-through-relationships" class="toc-link block py-1.5 text-xs text-gray-500 hover:text-indigo-600 dark:text-gray-400 dark:hover:text-indigo-400 truncate transition-all duration-150" data-target="section-5-has-many-through-has-one-through-relationships">
+            5. HAS-MANY-THROUGH &amp; HAS-ONE-THROUGH RELATIONSHIPS
+        </a>
+
+        <a href="#section-6-polymorphic-relationships-one-to-many-comments" class="toc-link block py-1.5 text-xs text-gray-500 hover:text-indigo-600 dark:text-gray-400 dark:hover:text-indigo-400 truncate transition-all duration-150" data-target="section-6-polymorphic-relationships-one-to-many-comments">
+            6. POLYMORPHIC RELATIONSHIPS (ONE-TO-MANY COMMENTS)
+        </a>
+
+        <a href="#section-1-polymorphic-migration-schema" class="toc-link block py-1.5 text-xs text-gray-500 hover:text-indigo-600 dark:text-gray-400 dark:hover:text-indigo-400 truncate transition-all duration-150" data-target="section-1-polymorphic-migration-schema">
+            1. Polymorphic Migration Schema:
+        </a>
+
+        <a href="#section-2-comment-model" class="toc-link block py-1.5 text-xs text-gray-500 hover:text-indigo-600 dark:text-gray-400 dark:hover:text-indigo-400 truncate transition-all duration-150" data-target="section-2-comment-model">
+            2. Comment Model:
+        </a>
+
+        <a href="#section-3-post-video-models" class="toc-link block py-1.5 text-xs text-gray-500 hover:text-indigo-600 dark:text-gray-400 dark:hover:text-indigo-400 truncate transition-all duration-150" data-target="section-3-post-video-models">
+            3. Post &amp; Video Models:
+        </a>
+
+        <a href="#section-7-polymorphic-many-to-many-universal-tagging-system" class="toc-link block py-1.5 text-xs text-gray-500 hover:text-indigo-600 dark:text-gray-400 dark:hover:text-indigo-400 truncate transition-all duration-150" data-target="section-7-polymorphic-many-to-many-universal-tagging-system">
+            7. POLYMORPHIC MANY-TO-MANY (UNIVERSAL TAGGING SYSTEM)
+        </a>
+
+        <a href="#section-1-migration" class="toc-link block py-1.5 text-xs text-gray-500 hover:text-indigo-600 dark:text-gray-400 dark:hover:text-indigo-400 truncate transition-all duration-150" data-target="section-1-migration">
+            1. Migration:
+        </a>
+
+        <a href="#section-2-tag-model" class="toc-link block py-1.5 text-xs text-gray-500 hover:text-indigo-600 dark:text-gray-400 dark:hover:text-indigo-400 truncate transition-all duration-150" data-target="section-2-tag-model">
+            2. Tag Model:
+        </a>
+
+        <a href="#section-3-post-model" class="toc-link block py-1.5 text-xs text-gray-500 hover:text-indigo-600 dark:text-gray-400 dark:hover:text-indigo-400 truncate transition-all duration-150" data-target="section-3-post-model">
+            3. Post Model:
+        </a>
+
+        <a href="#section-9-database-transactions-transactional-safety-deadlock-retries" class="toc-link block py-1.5 text-xs text-gray-500 hover:text-indigo-600 dark:text-gray-400 dark:hover:text-indigo-400 truncate transition-all duration-150" data-target="section-9-database-transactions-transactional-safety-deadlock-retries">
+            9. DATABASE TRANSACTIONS (TRANSACTIONAL SAFETY &amp; DEADLOCK RETRIES)
+        </a>
+
+        <a href="#section-10-model-observers-lifecycle-hooks" class="toc-link block py-1.5 text-xs text-gray-500 hover:text-indigo-600 dark:text-gray-400 dark:hover:text-indigo-400 truncate transition-all duration-150" data-target="section-10-model-observers-lifecycle-hooks">
+            10. MODEL OBSERVERS &amp; LIFECYCLE HOOKS
+        </a>
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <!-- Floating Back to Top Button -->
+    <button id="back-to-top" onclick="window.scrollTo({top: 0, behavior: 'smooth'})" class="fixed bottom-6 right-6 p-3 rounded-full bg-indigo-600 text-white shadow-2xl hover:bg-indigo-700 transition-all opacity-0 pointer-events-none translate-y-3 z-40 focus:outline-none flex items-center justify-center group" title="Back to top">
+        <svg class="w-5 h-5 group-hover:-translate-y-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 10l7-7m0 0l7 7m-7-7v18"></path></svg>
+    </button>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-php.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-json.min.js"></script>
+    <script>
+        // Dark Mode Logic
+        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+            document.getElementById('theme-icon').textContent = '☀️';
+        } else {
+            document.documentElement.classList.remove('dark');
+            document.getElementById('theme-icon').textContent = '🌙';
+        }
+
+        function toggleDarkMode() {
+            const isDark = document.documentElement.classList.toggle('dark');
+            localStorage.theme = isDark ? 'dark' : 'light';
+            document.getElementById('theme-icon').textContent = isDark ? '☀️' : '🌙';
+        }
+
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('-translate-x-full');
+        }
+
+        function copyCode(btn) {
+            const codeEl = btn.closest('.group').querySelector('code');
+            navigator.clipboard.writeText(codeEl.innerText).then(() => {
+                const span = btn.querySelector('span');
+                const orig = span.textContent;
+                span.textContent = 'Copied! ✓';
+                btn.classList.add('bg-emerald-600', 'text-white');
+                btn.classList.remove('bg-slate-800/90', 'hover:bg-slate-700');
+                setTimeout(() => {
+                    span.textContent = orig;
+                    btn.classList.remove('bg-emerald-600', 'text-white');
+                    btn.classList.add('bg-slate-800/90', 'hover:bg-slate-700');
+                }, 2000);
+            });
+        }
+
+        // Reading Progress Bar & Back-to-Top Toggle
+        const btt = document.getElementById('back-to-top');
+        const progressBar = document.getElementById('scroll-progress');
+        window.addEventListener('scroll', () => {
+            const winScroll = document.documentElement.scrollTop || document.body.scrollTop;
+            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrolled = height > 0 ? (winScroll / height) * 100 : 0;
+            if (progressBar) progressBar.style.width = scrolled + '%';
+
+            if (btt) {
+                if (winScroll > 400) {
+                    btt.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-3');
+                    btt.classList.add('opacity-100', 'translate-y-0');
+                } else {
+                    btt.classList.add('opacity-0', 'pointer-events-none', 'translate-y-3');
+                    btt.classList.remove('opacity-100', 'translate-y-0');
+                }
+            }
+        });
+
+        // Active TOC ScrollSpy using IntersectionObserver
+        const tocLinks = document.querySelectorAll('.toc-link');
+        const headingElements = document.querySelectorAll('div[id]');
+        if (tocLinks.length > 0 && headingElements.length > 0) {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const id = entry.target.getAttribute('id');
+                        if (!id) return;
+                        tocLinks.forEach(link => {
+                            if (link.getAttribute('href') === '#' + id) {
+                                link.classList.add('text-indigo-600', 'dark:text-indigo-400', 'font-bold', 'border-l-2', 'border-indigo-600', '-ml-[14px]', 'pl-3', 'bg-indigo-50/70', 'dark:bg-indigo-950/60', 'rounded-r');
+                                link.classList.remove('text-gray-500', 'dark:text-gray-400');
+                            } else {
+                                link.classList.remove('text-indigo-600', 'dark:text-indigo-400', 'font-bold', 'border-l-2', 'border-indigo-600', '-ml-[14px]', 'pl-3', 'bg-indigo-50/70', 'dark:bg-indigo-950/60', 'rounded-r');
+                                link.classList.add('text-gray-500', 'dark:text-gray-400');
+                            }
+                        });
+                    }
+                });
+            }, { rootMargin: '0px 0px -75% 0px' });
+
+            headingElements.forEach(el => observer.observe(el));
+        }
+    </script>
+</body>
+</html>

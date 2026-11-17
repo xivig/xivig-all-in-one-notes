@@ -1,0 +1,313 @@
+================================================================================
+   LARAVEL SECURE FILE UPLOADS, STORAGE DISKS, MEDIA MANAGEMENT & S3 INTEGRATION
+================================================================================
+
+This tutorial provides a complete masterclass on handling file uploads, validating media,
+managing storage disks (`local`, `public`, `s3`), creating secure private document vaults
+with temporary signed URLs, and preventing orphan files in Laravel 11/12/13.
+
+--------------------------------------------------------------------------------
+TABLE OF CONTENTS
+--------------------------------------------------------------------------------
+1. Filesystem Configuration & Storage Disks Architecture
+2. The Public Disk & Creating the Symbolic Link (php artisan storage:link)
+3. Strict File Upload Validation (MIME Types, Size Limits & Image Dimensions)
+4. Uploading Single & Multiple Files (Hashing & Custom Filename Sanitization)
+5. Secure Private Storage & Temporary Signed URLs (Preventing Data Leaks)
+6. Secure File Streaming & Direct Downloads (Storage::download)
+7. Automated File Deletion with Model Observers (Preventing Orphan Files)
+8. Cloud Storage Integration (Amazon S3, DigitalOcean Spaces & Cloudflare R2)
+
+
+================================================================================
+1. FILESYSTEM CONFIGURATION & STORAGE DISKS ARCHITECTURE
+================================================================================
+Laravel's filesystem abstraction (`Illuminate\Support\Facades\Storage`) allows you
+to switch between local disks and cloud storage (AWS S3) without modifying your application code.
+
+Configured in `config/filesystems.php`:
+- `local`: Private storage at `storage/app/private`. Not accessible via public web URL. Perfect for contracts, invoices, and sensitive documents.
+- `public`: Semi-public storage at `storage/app/public`. Accessible via web URL once linked to `public/storage`.
+- `s3`: Cloud object storage for scalable production media and CDNs.
+
+
+================================================================================
+2. THE PUBLIC DISK & CREATING THE SYMBOLIC LINK
+================================================================================
+Files stored in `storage/app/public` are not accessible until you create the
+symbolic link connecting `public/storage` to `storage/app/public`:
+
+php artisan storage:link
+
+On Windows, if permission issues occur, run terminal as Administrator or verify:
+```bash
+# Verify link points correctly
+ls -l public/storage
+```
+
+
+================================================================================
+3. STRICT FILE UPLOAD VALIDATION
+================================================================================
+Never trust user-supplied file extensions. Always validate using strict MIME types
+and size limits.
+
+In your Form Request or Controller:
+```php
+$request->validate([
+    // Avatar upload: must be an image, strictly jpeg/png/webp, max 2MB (2048 KB), min 100x100px
+    'avatar' => [
+        'required',
+        'file',
+        'image',
+        'mimes:jpeg,png,webp',
+        'max:2048', // in Kilobytes
+        'dimensions:min_width=100,min_height=100,max_width=4000,max_height=4000',
+    ],
+    
+    // PDF Documents: strictly pdf, max 10MB (10240 KB)
+    'document' => [
+        'required',
+        'file',
+        'mimes:pdf',
+        'max:10240',
+    ],
+    
+    // Multiple Gallery Images:
+    'gallery' => ['nullable', 'array', 'max:5'],
+    'gallery.*' => ['file', 'image', 'mimes:jpeg,png,webp', 'max:4096'],
+]);
+```
+
+
+================================================================================
+4. UPLOADING SINGLE & MULTIPLE FILES
+================================================================================
+Create `app/Http/Controllers/MediaController.php`:
+php artisan make:controller MediaController
+
+```php
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\User;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
+
+class MediaController extends Controller
+{
+    /**
+     * Upload single user avatar to the public disk.
+     */
+    public function updateAvatar(Request $request)
+    {
+        $request->validate([
+            'avatar' => ['required', 'image', 'mimes:jpeg,png,webp', 'max:2048'],
+        ]);
+
+        $user = $request->user();
+
+        // Delete old avatar if it exists
+        if ($user->avatar_path && Storage::disk('public')->exists($user->avatar_path)) {
+            Storage::disk('public')->delete($user->avatar_path);
+        }
+
+        $file = $request->file('avatar');
+        
+        // Generate a cryptographically secure, clean filename: avatar_userId_timestamp_random.webp
+        $extension = $file->getClientOriginalExtension();
+        $filename = 'avatar_' . $user->id . '_' . time() . '_' . Str::random(8) . '.' . $extension;
+
+        // Store file in storage/app/public/avatars/
+        $path = $file->storeAs('avatars', $filename, 'public');
+
+        $user->update(['avatar_path' => $path]);
+
+        return back()->with('status', 'Avatar updated successfully!');
+    }
+
+    /**
+     * Upload multiple gallery images.
+     */
+    public function uploadGallery(Request $request, int $productId)
+    {
+        $request->validate([
+            'photos' => ['required', 'array', 'max:8'],
+            'photos.*' => ['image', 'mimes:jpeg,png,webp', 'max:3072'],
+        ]);
+
+        $uploadedPaths = [];
+        foreach ($request->file('photos') as $photo) {
+            $path = $photo->store('products/' . $productId, 'public');
+            $uploadedPaths[] = $path;
+        }
+
+        return response()->json([
+            'message' => 'Photos uploaded successfully',
+            'paths' => $uploadedPaths,
+        ]);
+    }
+}
+```
+
+Displaying the Public Image in Blade:
+```html
+@if($user->avatar_path)
+    <!-- Uses Storage::url() to generate public URL: /storage/avatars/filename.jpg -->
+    <img src="{{ Storage::url($user->avatar_path) }}" alt="{{ $user->name }}" class="w-16 h-16 rounded-full object-cover">
+@else
+    <img src="{{ asset('images/default-avatar.png') }}" alt="Default" class="w-16 h-16 rounded-full">
+@endif
+```
+
+
+================================================================================
+5. SECURE PRIVATE STORAGE & TEMPORARY SIGNED URLS
+================================================================================
+For sensitive contracts, receipts, or medical records, NEVER store them in `public`.
+Store them on the default `local` (private) disk.
+
+Uploading Private File:
+```php
+public function uploadContract(Request $request)
+{
+    $request->validate([
+        'contract' => ['required', 'mimes:pdf', 'max:15360'],
+    ]);
+
+    // Stored securely in storage/app/private/contracts/ (inaccessible via direct URL)
+    $path = $request->file('contract')->store('contracts', 'local');
+
+    $contract = Contract::create([
+        'user_id' => auth()->id(),
+        'file_path' => $path,
+        'original_name' => $request->file('contract')->getClientOriginalName(),
+    ]);
+
+    return redirect()->route('contracts.show', $contract->id);
+}
+```
+
+Generating a Temporary Signed Download Link (5-minute expiration):
+When using S3 or signed routes:
+
+```php
+use Illuminate\Support\Facades\URL;
+
+// Generate temporary signed URL valid for only 15 minutes
+$downloadUrl = URL::temporarySignedRoute(
+    'contracts.download',
+    now()->addMinutes(15),
+    ['contract' => $contract->id]
+);
+```
+
+
+================================================================================
+6. SECURE FILE STREAMING & DOWNLOADS (Storage::download)
+================================================================================
+Serve private files only to authorized users with permission checks:
+
+In `routes/web.php`:
+```php
+Route::get('/contracts/{contract}/download', [MediaController::class, 'downloadContract'])
+    ->name('contracts.download')
+    ->middleware('auth');
+```
+
+In `MediaController`:
+```php
+public function downloadContract(Contract $contract)
+{
+    // Authorization check: Only the contract owner or admin can download
+    if (auth()->id() !== $contract->user_id && !auth()->user()->is_admin) {
+        abort(403, 'Unauthorized access to confidential document.');
+    }
+
+    if (!Storage::disk('local')->exists($contract->file_path)) {
+        abort(404, 'File not found on storage disk.');
+    }
+
+    // Force browser download with original readable filename
+    return Storage::disk('local')->download($contract->file_path, $contract->original_name);
+}
+
+public function streamInvoice(Invoice $invoice)
+{
+    // Stream inline in browser rather than downloading as attachment
+    return Storage::disk('local')->response($invoice->pdf_path);
+}
+```
+
+
+================================================================================
+7. PREVENTING ORPHAN FILES WITH MODEL OBSERVERS
+================================================================================
+When a database record is deleted (e.g. `User` or `Product`), its associated files
+on disk become "orphan files", wasting storage space.
+Use Model Observers to guarantee automatic cleanup.
+
+Create Observer:
+php artisan make:observer UserObserver --model=User
+
+In `app/Observers/UserObserver.php`:
+```php
+<?php
+
+namespace App\Observers;
+
+use App\Models\User;
+use Illuminate\Support\Facades\Storage;
+
+class UserObserver
+{
+    /**
+     * Handle the User "deleted" event.
+     */
+    public function deleted(User $user): void
+    {
+        // Delete avatar from storage if present
+        if ($user->avatar_path && Storage::disk('public')->exists($user->avatar_path)) {
+            Storage::disk('public')->delete($user->avatar_path);
+        }
+    }
+}
+```
+
+
+================================================================================
+8. CLOUD STORAGE INTEGRATION (AMAZON S3 & CLOUDFLARE R2)
+================================================================================
+1. Install AWS S3 SDK via Composer:
+composer require league/flysystem-aws-s3-v3 "^3.0"
+
+2. Configure credentials in `.env`:
+```env
+FILESYSTEM_DISK=s3
+
+AWS_ACCESS_KEY_ID=your-key-id
+AWS_SECRET_ACCESS_KEY=your-secret-key
+AWS_DEFAULT_REGION=us-east-1
+AWS_BUCKET=your-production-bucket-name
+AWS_USE_PATH_STYLE_ENDPOINT=false
+```
+
+For Cloudflare R2 (S3-compatible, zero egress fees):
+```env
+FILESYSTEM_DISK=s3
+AWS_ACCESS_KEY_ID=your-r2-access-key
+AWS_SECRET_ACCESS_KEY=your-r2-secret-key
+AWS_DEFAULT_REGION=auto
+AWS_BUCKET=your-r2-bucket
+AWS_ENDPOINT=https://<account-id>.r2.cloudflarestorage.com
+AWS_USE_PATH_STYLE_ENDPOINT=true
+```
+
+Now, all standard storage commands automatically upload directly to the cloud CDN:
+```php
+// Uploads straight to AWS S3 / Cloudflare R2!
+$path = $request->file('photo')->store('photos', 's3');
+```
+================================================================================

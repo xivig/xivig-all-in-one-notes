@@ -1,0 +1,1065 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Production Technical SEO &amp; Schema Markup - Laravel Master Docs</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: '#f9322c',
+                        darkbg: '#0b0f19',
+                        darkpanel: '#111827',
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" />
+    <style>
+        /* Custom scrollbar */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 5px;
+            height: 5px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: rgba(156, 163, 175, 0.25);
+            border-radius: 9999px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: rgba(156, 163, 175, 0.45);
+        }
+        /* Ensure maximum readable width for code & tables */
+        .prose {
+            max-width: 100% !important;
+        }
+        .prose p, .prose li {
+            line-height: 1.8;
+        }
+        pre[class*="language-"] {
+            margin: 0;
+            background: transparent;
+        }
+        code[class*="language-"] {
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-900 dark:bg-[#0b0f19] dark:text-gray-100 min-h-screen flex flex-col font-sans transition-colors duration-200 antialiased">
+    <!-- Top Reading Progress Indicator -->
+    <div id="scroll-progress" class="fixed top-0 left-0 h-[3px] bg-gradient-to-r from-red-500 via-indigo-500 to-cyan-400 z-50 transition-all duration-75" style="width: 0%"></div>
+
+    <!-- Header / Navbar -->
+    <header class="sticky top-0 z-40 bg-white/90 dark:bg-[#0b0f19]/90 backdrop-blur-md border-b border-gray-200 dark:border-gray-800 transition-colors">
+        <div class="max-w-[1780px] w-full mx-auto px-4 sm:px-6 lg:px-8 xl:px-10 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <button onclick="toggleSidebar()" class="lg:hidden p-2 rounded-lg text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800 transition" aria-label="Toggle navigation">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+                </button>
+                <a href="index.html" class="flex items-center space-x-3">
+                    <span class="text-2xl drop-shadow-sm">🔴</span>
+                    <span class="font-extrabold text-lg sm:text-xl tracking-tight bg-gradient-to-r from-red-600 via-pink-600 to-indigo-600 bg-clip-text text-transparent">Laravel Master Docs</span>
+                </a>
+                <span class="hidden sm:inline-flex items-center px-2.5 py-0.5 text-xs font-semibold rounded-full bg-red-100 text-red-700 dark:bg-red-950/80 dark:text-red-300 border border-red-200 dark:border-red-900/40">Laravel 13</span>
+            </div>
+
+            <div class="flex items-center space-x-4">
+                <a href="index.html" class="text-xs sm:text-sm font-medium text-gray-600 hover:text-indigo-600 dark:text-gray-300 dark:hover:text-indigo-400 flex items-center space-x-1.5 transition">
+                    <span>📚</span>
+                    <span class="hidden md:inline">Browse All</span> <span>Tutorials</span>
+                </a>
+                <!-- Dark Mode Toggle -->
+                <button onclick="toggleDarkMode()" class="p-2 rounded-xl bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 transition" title="Toggle Dark/Light Mode">
+                    <span id="theme-icon">🌙</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Elite Wide Container -->
+    <div class="max-w-[1780px] w-full mx-auto px-4 sm:px-6 lg:px-8 xl:px-10 flex-1 flex gap-8 xl:gap-10">
+        <!-- Sidebar Navigation (Desktop & Mobile Drawer) -->
+        <aside id="sidebar" class="fixed inset-y-0 left-0 z-30 w-72 bg-white dark:bg-[#0b0f19] border-r border-gray-200 dark:border-gray-800 transform -translate-x-full lg:translate-x-0 lg:static lg:w-72 pt-20 lg:pt-6 pb-10 transition-transform duration-200 ease-in-out overflow-y-auto shrink-0 custom-scrollbar">
+            <div class="px-3 mb-6">
+                <div class="flex items-center justify-between px-3 mb-3">
+                    <p class="text-[11px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider">Tutorial Chapters (15)</p>
+                    <span class="text-[10px] px-2 py-0.5 rounded-full bg-indigo-50 dark:bg-indigo-950 text-indigo-600 dark:text-indigo-400 font-semibold">100% Complete</span>
+                </div>
+                <div class="space-y-1">
+                    
+        <a href="01-create-laravel-project.html" class="flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs sm:text-sm transition-all duration-150 text-gray-600 dark:text-gray-400 hover:bg-gray-100/80 dark:hover:bg-gray-800/60 hover:text-gray-900 dark:hover:text-white">
+            <span class="text-base shrink-0">🚀</span>
+            <span class="truncate">Laravel Project Creation & Setup Guide</span>
+        </a>
+
+        <a href="02-workflow-command-playbook.html" class="flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs sm:text-sm transition-all duration-150 text-gray-600 dark:text-gray-400 hover:bg-gray-100/80 dark:hover:bg-gray-800/60 hover:text-gray-900 dark:hover:text-white">
+            <span class="text-base shrink-0">⚡</span>
+            <span class="truncate">Full-Cycle Command Playbook</span>
+        </a>
+
+        <a href="03-laravel-100-tips.html" class="flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs sm:text-sm transition-all duration-150 text-gray-600 dark:text-gray-400 hover:bg-gray-100/80 dark:hover:bg-gray-800/60 hover:text-gray-900 dark:hover:text-white">
+            <span class="text-base shrink-0">💡</span>
+            <span class="truncate">Laravel 100 Pro Tips Masterclass</span>
+        </a>
+
+        <a href="04-admin-multi-auth-fortify.html" class="flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs sm:text-sm transition-all duration-150 text-gray-600 dark:text-gray-400 hover:bg-gray-100/80 dark:hover:bg-gray-800/60 hover:text-gray-900 dark:hover:text-white">
+            <span class="text-base shrink-0">🛡️</span>
+            <span class="truncate">Admin Multi-Auth (Fortify & Jetstream)</span>
+        </a>
+
+        <a href="05-admin-login-step-by-step.html" class="flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs sm:text-sm transition-all duration-150 text-gray-600 dark:text-gray-400 hover:bg-gray-100/80 dark:hover:bg-gray-800/60 hover:text-gray-900 dark:hover:text-white">
+            <span class="text-base shrink-0">🔐</span>
+            <span class="truncate">Admin Login & Dashboard (16 Steps)</span>
+        </a>
+
+        <a href="06-multi-auth-master-system.html" class="flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs sm:text-sm transition-all duration-150 text-gray-600 dark:text-gray-400 hover:bg-gray-100/80 dark:hover:bg-gray-800/60 hover:text-gray-900 dark:hover:text-white">
+            <span class="text-base shrink-0">👥</span>
+            <span class="truncate">Multi-Authentication Master System & OTP</span>
+        </a>
+
+        <a href="07-dynamic-menu-crud.html" class="flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs sm:text-sm transition-all duration-150 text-gray-600 dark:text-gray-400 hover:bg-gray-100/80 dark:hover:bg-gray-800/60 hover:text-gray-900 dark:hover:text-white">
+            <span class="text-base shrink-0">📋</span>
+            <span class="truncate">Dynamic Menu Builder & Admin CRUD</span>
+        </a>
+
+        <a href="08-scaffolding-breeze-cms.html" class="flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs sm:text-sm transition-all duration-150 text-gray-600 dark:text-gray-400 hover:bg-gray-100/80 dark:hover:bg-gray-800/60 hover:text-gray-900 dark:hover:text-white">
+            <span class="text-base shrink-0">🏗️</span>
+            <span class="truncate">App Scaffolding, Breeze & Dynamic CMS</span>
+        </a>
+
+        <a href="09-qa-deployment-checklist.html" class="flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs sm:text-sm transition-all duration-150 text-gray-600 dark:text-gray-400 hover:bg-gray-100/80 dark:hover:bg-gray-800/60 hover:text-gray-900 dark:hover:text-white">
+            <span class="text-base shrink-0">✅</span>
+            <span class="truncate">Project QA & Production Checklist</span>
+        </a>
+
+        <a href="10-math-captcha-security.html" class="flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs sm:text-sm transition-all duration-150 text-gray-600 dark:text-gray-400 hover:bg-gray-100/80 dark:hover:bg-gray-800/60 hover:text-gray-900 dark:hover:text-white">
+            <span class="text-base shrink-0">🧮</span>
+            <span class="truncate">Secure Math CAPTCHA & Anti-Spam Defense</span>
+        </a>
+
+        <a href="11-seo-metadata-schema.html" class="flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs sm:text-sm transition-all duration-150 bg-indigo-50 dark:bg-indigo-950/70 text-indigo-600 dark:text-indigo-400 font-semibold border-r-2 border-indigo-600 shadow-sm">
+            <span class="text-base shrink-0">📈</span>
+            <span class="truncate">Production Technical SEO & Schema Markup</span>
+        </a>
+
+        <a href="12-restful-api-sanctum-resources.html" class="flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs sm:text-sm transition-all duration-150 text-gray-600 dark:text-gray-400 hover:bg-gray-100/80 dark:hover:bg-gray-800/60 hover:text-gray-900 dark:hover:text-white">
+            <span class="text-base shrink-0">🌐</span>
+            <span class="truncate">RESTful API Development & Sanctum Tokens</span>
+        </a>
+
+        <a href="13-eloquent-relationships-transactions.html" class="flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs sm:text-sm transition-all duration-150 text-gray-600 dark:text-gray-400 hover:bg-gray-100/80 dark:hover:bg-gray-800/60 hover:text-gray-900 dark:hover:text-white">
+            <span class="text-base shrink-0">🗄️</span>
+            <span class="truncate">Advanced Eloquent Relationships & Transactions</span>
+        </a>
+
+        <a href="14-queues-jobs-events-scheduling.html" class="flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs sm:text-sm transition-all duration-150 text-gray-600 dark:text-gray-400 hover:bg-gray-100/80 dark:hover:bg-gray-800/60 hover:text-gray-900 dark:hover:text-white">
+            <span class="text-base shrink-0">⏱️</span>
+            <span class="truncate">Queues, Asynchronous Jobs & Task Scheduling</span>
+        </a>
+
+        <a href="15-file-storage-uploads-media.html" class="flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs sm:text-sm transition-all duration-150 text-gray-600 dark:text-gray-400 hover:bg-gray-100/80 dark:hover:bg-gray-800/60 hover:text-gray-900 dark:hover:text-white">
+            <span class="text-base shrink-0">📁</span>
+            <span class="truncate">Secure File Uploads & Cloud Storage (S3)</span>
+        </a>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Article Container: WIDE & UNCONSTRAINED -->
+        <main class="flex-1 min-w-0 py-8 lg:px-4 w-full max-w-none">
+            <!-- Breadcrumbs -->
+            <nav class="flex items-center space-x-2 text-xs text-gray-500 dark:text-gray-400 mb-6">
+                <a href="index.html" class="hover:text-indigo-600 dark:hover:text-indigo-400 transition">Docs</a>
+                <span>/</span>
+                <span class="text-gray-800 dark:text-gray-200 font-medium truncate">Production Technical SEO &amp; Schema Markup</span>
+            </nav>
+
+            <header class="mb-10 pb-6 border-b border-gray-200 dark:border-gray-800">
+                <div class="flex flex-wrap items-center gap-2 mb-3">
+                    <span class="px-3 py-1 rounded-full bg-indigo-100 text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300 text-xs font-bold uppercase tracking-wider">Step-by-Step Blueprint</span>
+                    <span class="px-3 py-1 rounded-full bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300 text-xs font-medium">Laravel 13 Verified</span>
+                </div>
+                <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-gray-900 dark:text-white mb-4 leading-tight">Production Technical SEO &amp; Schema Markup</h1>
+                <p class="text-base sm:text-lg text-gray-600 dark:text-gray-300 max-w-4xl leading-relaxed">Complete production-ready walkthrough with high-resolution code snippets, database schemas, architectural patterns, and troubleshooting steps.</p>
+            </header>
+
+            <article class="prose dark:prose-invert max-w-none text-base">
+                <p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">LARAVEL PRODUCTION TECHNICAL SEO, OPENGRAPH &amp; SCHEMA MARKUP MASTERCLASS</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">This tutorial provides a complete, production-ready guide to implementing enterprise-grade</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">Technical Search Engine Optimization (SEO), OpenGraph social cards, JSON-LD structured</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">data markup, automated XML sitemaps, robots.txt, and Google Search Console integration</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">in Laravel 11/12/13.</p>
+
+                <div id="section-1-technical-seo-architecture-head-standards" class="scroll-mt-24 pt-10 pb-4 border-b border-gray-200 dark:border-gray-800">
+                    <div class="flex items-center space-x-3">
+                        <span class="px-2.5 py-1 text-xs font-bold rounded-md bg-red-100 text-red-700 dark:bg-red-950/80 dark:text-red-300 uppercase tracking-wider">Module 1</span>
+                        <h2 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white tracking-tight">TECHNICAL SEO ARCHITECTURE &amp; HEAD STANDARDS</h2>
+                    </div>
+                </div>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">Modern Google search ranking requires strict technical standards:</p>
+<ul class="my-3 space-y-2 pl-6 list-disc text-gray-700 dark:text-gray-300 text-sm md:text-base leading-relaxed">
+<li>Title Tags: Unique per page, 50-60 characters, with brand branding (e.g., <code class="px-1.5 py-0.5 rounded text-xs font-mono bg-indigo-50 text-indigo-700 dark:bg-slate-800 dark:text-pink-400 font-semibold border border-indigo-100 dark:border-slate-700/60">Page Title - BrandName</code>).</li>
+<li>Meta Descriptions: Compelling summaries, 140-155 characters.</li>
+<li>Canonical Links: Prevent duplicate content penalties (e.g., when parameters or trailing slashes exist).</li>
+<li>Viewport &amp; Encoding: Explicit UTF-8, responsive viewport settings.</li>
+<li>Social Graph Tags: OpenGraph (Facebook/LinkedIn) and Twitter Cards for high click-through rates.</li>
+<li>JSON-LD Structured Data: Direct machine-readable entity schemas recognized by Google Rich Results.</li>
+</ul>
+
+                <div id="section-2-building-the-dynamic-blade-seo-component-x-seo-head" class="scroll-mt-24 pt-10 pb-4 border-b border-gray-200 dark:border-gray-800">
+                    <div class="flex items-center space-x-3">
+                        <span class="px-2.5 py-1 text-xs font-bold rounded-md bg-red-100 text-red-700 dark:bg-red-950/80 dark:text-red-300 uppercase tracking-wider">Module 2</span>
+                        <h2 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white tracking-tight">BUILDING THE DYNAMIC BLADE SEO COMPONENT (&lt;x-seo-head /&gt;)</h2>
+                    </div>
+                </div>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">Create <code class="px-1.5 py-0.5 rounded text-xs font-mono bg-indigo-50 text-indigo-700 dark:bg-slate-800 dark:text-pink-400 font-semibold border border-indigo-100 dark:border-slate-700/60">resources/views/components/seo-head.blade.php</code>:</p>
+
+    <div class="relative my-6 group rounded-xl overflow-hidden border border-slate-800 shadow-2xl bg-[#0c1017]">
+        <div class="flex items-center justify-between px-4 py-2.5 bg-[#161b22] border-b border-slate-800/80 text-xs text-slate-400 font-mono select-none">
+            <div class="flex items-center space-x-2">
+                <span class="w-3 h-3 rounded-full bg-[#ff5f56] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#ffbd2e] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#27c93f] inline-block shadow-sm"></span>
+                <span class="ml-2 uppercase font-semibold text-indigo-400 tracking-wider text-[11px]">html</span>
+            </div>
+            <button onclick="copyCode(this)" class="px-2.5 py-1 rounded-md bg-slate-800/90 hover:bg-slate-700 text-slate-200 transition flex items-center space-x-1.5 shadow-sm font-sans text-xs">
+                <svg class="w-3.5 h-3.5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                <span>Copy</span>
+            </button>
+        </div>
+        <pre class="p-4 sm:p-5 overflow-x-auto text-[13.5px] leading-relaxed custom-scrollbar"><code class="language-html text-slate-100">@props([
+    &#x27;title&#x27; =&gt; config(&#x27;app.name&#x27;, &#x27;Laravel Enterprise&#x27;),
+    &#x27;description&#x27; =&gt; &#x27;Enterprise web application built with high-performance Laravel framework architecture.&#x27;,
+    &#x27;keywords&#x27; =&gt; &#x27;Laravel, PHP, Web Development, SEO, Enterprise&#x27;,
+    &#x27;image&#x27; =&gt; asset(&#x27;images/og-default.jpg&#x27;),
+    &#x27;type&#x27; =&gt; &#x27;website&#x27;,
+    &#x27;canonical&#x27; =&gt; url()-&gt;current(),
+    &#x27;publishedAt&#x27; =&gt; null,
+    &#x27;author&#x27; =&gt; config(&#x27;app.name&#x27;),
+    &#x27;noindex&#x27; =&gt; false,
+])
+
+@php
+    $fullTitle = $title === config(&#x27;app.name&#x27;) ? $title : &quot;{$title} - &quot; . config(&#x27;app.name&#x27;);
+    $cleanDesc = Str::limit(strip_tags($description), 155);
+@endphp
+
+&lt;!-- Primary Meta Tags --&gt;
+&lt;title&gt;{{ $fullTitle }}&lt;/title&gt;
+&lt;meta name=&quot;title&quot; content=&quot;{{ $fullTitle }}&quot; /&gt;
+&lt;meta name=&quot;description&quot; content=&quot;{{ $cleanDesc }}&quot; /&gt;
+&lt;meta name=&quot;keywords&quot; content=&quot;{{ $keywords }}&quot; /&gt;
+&lt;meta name=&quot;author&quot; content=&quot;{{ $author }}&quot; /&gt;
+&lt;link rel=&quot;canonical&quot; href=&quot;{{ $canonical }}&quot; /&gt;
+
+@if($noindex || app()-&gt;environment(&#x27;local&#x27;, &#x27;staging&#x27;))
+    &lt;meta name=&quot;robots&quot; content=&quot;noindex, nofollow&quot; /&gt;
+@else
+    &lt;meta name=&quot;robots&quot; content=&quot;index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1&quot; /&gt;
+@endif
+
+&lt;!-- Open Graph / Facebook / LinkedIn --&gt;
+&lt;meta property=&quot;og:type&quot; content=&quot;{{ $type }}&quot; /&gt;
+&lt;meta property=&quot;og:url&quot; content=&quot;{{ $canonical }}&quot; /&gt;
+&lt;meta property=&quot;og:title&quot; content=&quot;{{ $fullTitle }}&quot; /&gt;
+&lt;meta property=&quot;og:description&quot; content=&quot;{{ $cleanDesc }}&quot; /&gt;
+&lt;meta property=&quot;og:image&quot; content=&quot;{{ $image }}&quot; /&gt;
+&lt;meta property=&quot;og:site_name&quot; content=&quot;{{ config(&#x27;app.name&#x27;) }}&quot; /&gt;
+&lt;meta property=&quot;og:locale&quot; content=&quot;{{ str_replace(&#x27;_&#x27;, &#x27;-&#x27;, app()-&gt;getLocale()) }}&quot; /&gt;
+
+@if($publishedAt)
+    &lt;meta property=&quot;article:published_time&quot; content=&quot;{{ $publishedAt }}&quot; /&gt;
+    &lt;meta property=&quot;article:author&quot; content=&quot;{{ $author }}&quot; /&gt;
+@endif
+
+&lt;!-- Twitter Cards --&gt;
+&lt;meta name=&quot;twitter:card&quot; content=&quot;summary_large_image&quot; /&gt;
+&lt;meta name=&quot;twitter:url&quot; content=&quot;{{ $canonical }}&quot; /&gt;
+&lt;meta name=&quot;twitter:title&quot; content=&quot;{{ $fullTitle }}&quot; /&gt;
+&lt;meta name=&quot;twitter:description&quot; content=&quot;{{ $cleanDesc }}&quot; /&gt;
+&lt;meta name=&quot;twitter:image&quot; content=&quot;{{ $image }}&quot; /&gt;</code></pre>
+    </div>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">Usage in your master layout (<code class="px-1.5 py-0.5 rounded text-xs font-mono bg-indigo-50 text-indigo-700 dark:bg-slate-800 dark:text-pink-400 font-semibold border border-indigo-100 dark:border-slate-700/60">resources/views/layouts/app.blade.php</code>):</p>
+
+    <div class="relative my-6 group rounded-xl overflow-hidden border border-slate-800 shadow-2xl bg-[#0c1017]">
+        <div class="flex items-center justify-between px-4 py-2.5 bg-[#161b22] border-b border-slate-800/80 text-xs text-slate-400 font-mono select-none">
+            <div class="flex items-center space-x-2">
+                <span class="w-3 h-3 rounded-full bg-[#ff5f56] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#ffbd2e] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#27c93f] inline-block shadow-sm"></span>
+                <span class="ml-2 uppercase font-semibold text-indigo-400 tracking-wider text-[11px]">html</span>
+            </div>
+            <button onclick="copyCode(this)" class="px-2.5 py-1 rounded-md bg-slate-800/90 hover:bg-slate-700 text-slate-200 transition flex items-center space-x-1.5 shadow-sm font-sans text-xs">
+                <svg class="w-3.5 h-3.5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                <span>Copy</span>
+            </button>
+        </div>
+        <pre class="p-4 sm:p-5 overflow-x-auto text-[13.5px] leading-relaxed custom-scrollbar"><code class="language-html text-slate-100">&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;{{ str_replace(&#x27;_&#x27;, &#x27;-&#x27;, app()-&gt;getLocale()) }}&quot;&gt;
+&lt;head&gt;
+    &lt;meta charset=&quot;UTF-8&quot;&gt;
+    &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;&gt;
+
+    &lt;!-- Injected SEO Head --&gt;
+    &lt;x-seo-head
+        :title=&quot;$seoTitle ?? config(&#x27;app.name&#x27;)&quot;
+        :description=&quot;$seoDesc ?? null&quot;
+        :image=&quot;$seoImage ?? null&quot;
+        :canonical=&quot;$seoCanonical ?? null&quot;
+    /&gt;
+
+    @vite([&#x27;resources/css/app.css&#x27;, &#x27;resources/js/app.js&#x27;])
+&lt;/head&gt;</code></pre>
+    </div>
+
+                <div id="section-3-structured-data-json-ld-schemas" class="scroll-mt-24 pt-10 pb-4 border-b border-gray-200 dark:border-gray-800">
+                    <div class="flex items-center space-x-3">
+                        <span class="px-2.5 py-1 text-xs font-bold rounded-md bg-red-100 text-red-700 dark:bg-red-950/80 dark:text-red-300 uppercase tracking-wider">Module 3</span>
+                        <h2 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white tracking-tight">STRUCTURED DATA (JSON-LD) SCHEMAS</h2>
+                    </div>
+                </div>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">JSON-LD allows Google to understand organizations, articles, and navigation hierarchies.</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">Create <code class="px-1.5 py-0.5 rounded text-xs font-mono bg-indigo-50 text-indigo-700 dark:bg-slate-800 dark:text-pink-400 font-semibold border border-indigo-100 dark:border-slate-700/60">resources/views/components/schema-org.blade.php</code>:</p>
+
+    <div class="relative my-6 group rounded-xl overflow-hidden border border-slate-800 shadow-2xl bg-[#0c1017]">
+        <div class="flex items-center justify-between px-4 py-2.5 bg-[#161b22] border-b border-slate-800/80 text-xs text-slate-400 font-mono select-none">
+            <div class="flex items-center space-x-2">
+                <span class="w-3 h-3 rounded-full bg-[#ff5f56] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#ffbd2e] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#27c93f] inline-block shadow-sm"></span>
+                <span class="ml-2 uppercase font-semibold text-indigo-400 tracking-wider text-[11px]">html</span>
+            </div>
+            <button onclick="copyCode(this)" class="px-2.5 py-1 rounded-md bg-slate-800/90 hover:bg-slate-700 text-slate-200 transition flex items-center space-x-1.5 shadow-sm font-sans text-xs">
+                <svg class="w-3.5 h-3.5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                <span>Copy</span>
+            </button>
+        </div>
+        <pre class="p-4 sm:p-5 overflow-x-auto text-[13.5px] leading-relaxed custom-scrollbar"><code class="language-html text-slate-100">@props([
+    &#x27;type&#x27; =&gt; &#x27;WebPage&#x27;,
+    &#x27;name&#x27; =&gt; config(&#x27;app.name&#x27;),
+    &#x27;description&#x27; =&gt; &#x27;&#x27;,
+    &#x27;url&#x27; =&gt; url()-&gt;current(),
+    &#x27;breadcrumbs&#x27; =&gt; [],
+    &#x27;article&#x27; =&gt; null,
+])
+
+&lt;!-- WebSite &amp; Organization Root Schema --&gt;
+&lt;script type=&quot;application/ld+json&quot;&gt;
+{
+  &quot;@context&quot;: &quot;https://schema.org&quot;,
+  &quot;@graph&quot;: [
+    {
+      &quot;@type&quot;: &quot;Organization&quot;,
+      &quot;@id&quot;: &quot;{{ url(&#x27;/&#x27;) }}/#organization&quot;,
+      &quot;name&quot;: &quot;{{ config(&#x27;app.name&#x27;) }}&quot;,
+      &quot;url&quot;: &quot;{{ url(&#x27;/&#x27;) }}&quot;,
+      &quot;logo&quot;: {
+        &quot;@type&quot;: &quot;ImageObject&quot;,
+        &quot;url&quot;: &quot;{{ asset(&#x27;images/logo.png&#x27;) }}&quot;
+      }
+    },
+    {
+      &quot;@type&quot;: &quot;WebSite&quot;,
+      &quot;@id&quot;: &quot;{{ url(&#x27;/&#x27;) }}/#website&quot;,
+      &quot;url&quot;: &quot;{{ url(&#x27;/&#x27;) }}&quot;,
+      &quot;name&quot;: &quot;{{ config(&#x27;app.name&#x27;) }}&quot;,
+      &quot;publisher&quot;: { &quot;@id&quot;: &quot;{{ url(&#x27;/&#x27;) }}/#organization&quot; },
+      &quot;potentialAction&quot;: {
+        &quot;@type&quot;: &quot;SearchAction&quot;,
+        &quot;target&quot;: &quot;{{ url(&#x27;/search&#x27;) }}?q={search_term_string}&quot;,
+        &quot;query-input&quot;: &quot;required name=search_term_string&quot;
+      }
+    }
+    @if(!empty($breadcrumbs))
+    ,
+    {
+      &quot;@type&quot;: &quot;BreadcrumbList&quot;,
+      &quot;itemListElement&quot;: [
+        @foreach($breadcrumbs as $index =&gt; $crumb)
+        {
+          &quot;@type&quot;: &quot;ListItem&quot;,
+          &quot;position&quot;: {{ $index + 1 }},
+          &quot;name&quot;: &quot;{{ $crumb[&#x27;name&#x27;] }}&quot;,
+          &quot;item&quot;: &quot;{{ $crumb[&#x27;url&#x27;] }}&quot;
+        }{{ !$loop-&gt;last ? &#x27;,&#x27; : &#x27;&#x27; }}
+        @endforeach
+      ]
+    }
+    @endif
+    @if($article)
+    ,
+    {
+      &quot;@type&quot;: &quot;BlogPosting&quot;,
+      &quot;headline&quot;: &quot;{{ $article[&#x27;title&#x27;] }}&quot;,
+      &quot;description&quot;: &quot;{{ $article[&#x27;description&#x27;] }}&quot;,
+      &quot;image&quot;: &quot;{{ $article[&#x27;image&#x27;] }}&quot;,
+      &quot;datePublished&quot;: &quot;{{ $article[&#x27;published_at&#x27;] }}&quot;,
+      &quot;dateModified&quot;: &quot;{{ $article[&#x27;updated_at&#x27;] }}&quot;,
+      &quot;author&quot;: {
+        &quot;@type&quot;: &quot;Person&quot;,
+        &quot;name&quot;: &quot;{{ $article[&#x27;author&#x27;] }}&quot;
+      },
+      &quot;publisher&quot;: { &quot;@id&quot;: &quot;{{ url(&#x27;/&#x27;) }}/#organization&quot; },
+      &quot;mainEntityOfPage&quot;: {
+        &quot;@type&quot;: &quot;WebPage&quot;,
+        &quot;@id&quot;: &quot;{{ $url }}&quot;
+      }
+    }
+    @endif
+  ]
+}
+&lt;/script&gt;</code></pre>
+    </div>
+
+                <div id="section-4-automated-dynamic-xml-sitemap-generator-sitemap-xml" class="scroll-mt-24 pt-10 pb-4 border-b border-gray-200 dark:border-gray-800">
+                    <div class="flex items-center space-x-3">
+                        <span class="px-2.5 py-1 text-xs font-bold rounded-md bg-red-100 text-red-700 dark:bg-red-950/80 dark:text-red-300 uppercase tracking-wider">Module 4</span>
+                        <h2 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white tracking-tight">AUTOMATED DYNAMIC XML SITEMAP GENERATOR (/sitemap.xml)</h2>
+                    </div>
+                </div>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">Instead of manual static XML files, generate a dynamic, high-speed sitemap</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">cached for 24 hours.</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">Create <code class="px-1.5 py-0.5 rounded text-xs font-mono bg-indigo-50 text-indigo-700 dark:bg-slate-800 dark:text-pink-400 font-semibold border border-indigo-100 dark:border-slate-700/60">app/Http/Controllers/SitemapController.php</code>:</p>
+
+    <div class="relative my-6 group rounded-xl overflow-hidden border border-slate-800 shadow-2xl bg-[#0c1017]">
+        <div class="flex items-center justify-between px-4 py-2.5 bg-[#161b22] border-b border-slate-800/80 text-xs text-slate-400 font-mono select-none">
+            <div class="flex items-center space-x-2">
+                <span class="w-3 h-3 rounded-full bg-[#ff5f56] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#ffbd2e] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#27c93f] inline-block shadow-sm"></span>
+                <span class="ml-2 uppercase font-semibold text-indigo-400 tracking-wider text-[11px]">bash</span>
+            </div>
+            <button onclick="copyCode(this)" class="px-2.5 py-1 rounded-md bg-slate-800/90 hover:bg-slate-700 text-slate-200 transition flex items-center space-x-1.5 shadow-sm font-sans text-xs">
+                <svg class="w-3.5 h-3.5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                <span>Copy</span>
+            </button>
+        </div>
+        <pre class="p-4 sm:p-5 overflow-x-auto text-[13.5px] leading-relaxed custom-scrollbar"><code class="language-bash text-slate-100">php artisan make:controller SitemapController</code></pre>
+    </div>
+
+    <div class="relative my-6 group rounded-xl overflow-hidden border border-slate-800 shadow-2xl bg-[#0c1017]">
+        <div class="flex items-center justify-between px-4 py-2.5 bg-[#161b22] border-b border-slate-800/80 text-xs text-slate-400 font-mono select-none">
+            <div class="flex items-center space-x-2">
+                <span class="w-3 h-3 rounded-full bg-[#ff5f56] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#ffbd2e] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#27c93f] inline-block shadow-sm"></span>
+                <span class="ml-2 uppercase font-semibold text-indigo-400 tracking-wider text-[11px]">php</span>
+            </div>
+            <button onclick="copyCode(this)" class="px-2.5 py-1 rounded-md bg-slate-800/90 hover:bg-slate-700 text-slate-200 transition flex items-center space-x-1.5 shadow-sm font-sans text-xs">
+                <svg class="w-3.5 h-3.5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                <span>Copy</span>
+            </button>
+        </div>
+        <pre class="p-4 sm:p-5 overflow-x-auto text-[13.5px] leading-relaxed custom-scrollbar"><code class="language-php text-slate-100">&lt;?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Cache;
+
+class SitemapController extends Controller
+{
+    public function index(): Response
+    {
+        $xml = Cache::remember(&#x27;site_sitemap_xml&#x27;, 86400, function () {
+            // Static core pages
+            $urls = [
+                [&#x27;loc&#x27; =&gt; url(&#x27;/&#x27;), &#x27;lastmod&#x27; =&gt; now()-&gt;toAtomString(), &#x27;changefreq&#x27; =&gt; &#x27;daily&#x27;, &#x27;priority&#x27; =&gt; &#x27;1.0&#x27;],
+                [&#x27;loc&#x27; =&gt; url(&#x27;/about&#x27;), &#x27;lastmod&#x27; =&gt; now()-&gt;toAtomString(), &#x27;changefreq&#x27; =&gt; &#x27;monthly&#x27;, &#x27;priority&#x27; =&gt; &#x27;0.8&#x27;],
+                [&#x27;loc&#x27; =&gt; url(&#x27;/contact&#x27;), &#x27;lastmod&#x27; =&gt; now()-&gt;toAtomString(), &#x27;changefreq&#x27; =&gt; &#x27;monthly&#x27;, &#x27;priority&#x27; =&gt; &#x27;0.7&#x27;],
+            ];
+
+            // Dynamic CMS pages (e.g. from Page model)
+            if (class_exists(\App\Models\Page::class)) {
+                $pages = \App\Models\Page::where(&#x27;is_published&#x27;, true)-&gt;get([&#x27;slug&#x27;, &#x27;updated_at&#x27;]);
+                foreach ($pages as $p) {
+                    $urls[] = [
+                        &#x27;loc&#x27; =&gt; url(&#x27;/&#x27; . $p-&gt;slug),
+                        &#x27;lastmod&#x27; =&gt; $p-&gt;updated_at-&gt;toAtomString(),
+                        &#x27;changefreq&#x27; =&gt; &#x27;weekly&#x27;,
+                        &#x27;priority&#x27; =&gt; &#x27;0.8&#x27;,
+                    ];
+                }
+            }
+
+            // Build XML structure
+            $output = &#x27;&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&#x27;;
+            $output .= &#x27;&lt;urlset xmlns=&quot;http://www.sitemaps.org/schemas/sitemap/0.9&quot;&gt;&#x27;;
+            foreach ($urls as $u) {
+                $output .= &#x27;&lt;url&gt;&#x27;;
+                $output .= &#x27;&lt;loc&gt;&#x27; . htmlspecialchars($u[&#x27;loc&#x27;]) . &#x27;&lt;/loc&gt;&#x27;;
+                $output .= &#x27;&lt;lastmod&gt;&#x27; . $u[&#x27;lastmod&#x27;] . &#x27;&lt;/lastmod&gt;&#x27;;
+                $output .= &#x27;&lt;changefreq&gt;&#x27; . $u[&#x27;changefreq&#x27;] . &#x27;&lt;/changefreq&gt;&#x27;;
+                $output .= &#x27;&lt;priority&gt;&#x27; . $u[&#x27;priority&#x27;] . &#x27;&lt;/priority&gt;&#x27;;
+                $output .= &#x27;&lt;/url&gt;&#x27;;
+            }
+            $output .= &#x27;&lt;/urlset&gt;&#x27;;
+
+            return $output;
+        });
+
+        return response($xml, 200, [&#x27;Content-Type&#x27; =&gt; &#x27;application/xml&#x27;]);
+    }
+}</code></pre>
+    </div>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">Register route in <code class="px-1.5 py-0.5 rounded text-xs font-mono bg-indigo-50 text-indigo-700 dark:bg-slate-800 dark:text-pink-400 font-semibold border border-indigo-100 dark:border-slate-700/60">routes/web.php</code>:</p>
+
+    <div class="relative my-6 group rounded-xl overflow-hidden border border-slate-800 shadow-2xl bg-[#0c1017]">
+        <div class="flex items-center justify-between px-4 py-2.5 bg-[#161b22] border-b border-slate-800/80 text-xs text-slate-400 font-mono select-none">
+            <div class="flex items-center space-x-2">
+                <span class="w-3 h-3 rounded-full bg-[#ff5f56] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#ffbd2e] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#27c93f] inline-block shadow-sm"></span>
+                <span class="ml-2 uppercase font-semibold text-indigo-400 tracking-wider text-[11px]">php</span>
+            </div>
+            <button onclick="copyCode(this)" class="px-2.5 py-1 rounded-md bg-slate-800/90 hover:bg-slate-700 text-slate-200 transition flex items-center space-x-1.5 shadow-sm font-sans text-xs">
+                <svg class="w-3.5 h-3.5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                <span>Copy</span>
+            </button>
+        </div>
+        <pre class="p-4 sm:p-5 overflow-x-auto text-[13.5px] leading-relaxed custom-scrollbar"><code class="language-php text-slate-100">Route::get(&#x27;/sitemap.xml&#x27;, [\App\Http\Controllers\SitemapController::class, &#x27;index&#x27;])-&gt;name(&#x27;sitemap&#x27;);</code></pre>
+    </div>
+
+                <div id="section-5-dynamic-robots-txt-controller-crawler-rules" class="scroll-mt-24 pt-10 pb-4 border-b border-gray-200 dark:border-gray-800">
+                    <div class="flex items-center space-x-3">
+                        <span class="px-2.5 py-1 text-xs font-bold rounded-md bg-red-100 text-red-700 dark:bg-red-950/80 dark:text-red-300 uppercase tracking-wider">Module 5</span>
+                        <h2 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white tracking-tight">DYNAMIC ROBOTS.TXT CONTROLLER &amp; CRAWLER RULES</h2>
+                    </div>
+                </div>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">Create a dynamic <code class="px-1.5 py-0.5 rounded text-xs font-mono bg-indigo-50 text-indigo-700 dark:bg-slate-800 dark:text-pink-400 font-semibold border border-indigo-100 dark:border-slate-700/60">robots.txt</code> route that prevents staging indexing while</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">exposing the sitemap URL automatically.</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">In <code class="px-1.5 py-0.5 rounded text-xs font-mono bg-indigo-50 text-indigo-700 dark:bg-slate-800 dark:text-pink-400 font-semibold border border-indigo-100 dark:border-slate-700/60">routes/web.php</code>:</p>
+
+    <div class="relative my-6 group rounded-xl overflow-hidden border border-slate-800 shadow-2xl bg-[#0c1017]">
+        <div class="flex items-center justify-between px-4 py-2.5 bg-[#161b22] border-b border-slate-800/80 text-xs text-slate-400 font-mono select-none">
+            <div class="flex items-center space-x-2">
+                <span class="w-3 h-3 rounded-full bg-[#ff5f56] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#ffbd2e] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#27c93f] inline-block shadow-sm"></span>
+                <span class="ml-2 uppercase font-semibold text-indigo-400 tracking-wider text-[11px]">php</span>
+            </div>
+            <button onclick="copyCode(this)" class="px-2.5 py-1 rounded-md bg-slate-800/90 hover:bg-slate-700 text-slate-200 transition flex items-center space-x-1.5 shadow-sm font-sans text-xs">
+                <svg class="w-3.5 h-3.5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                <span>Copy</span>
+            </button>
+        </div>
+        <pre class="p-4 sm:p-5 overflow-x-auto text-[13.5px] leading-relaxed custom-scrollbar"><code class="language-php text-slate-100">Route::get(&#x27;/robots.txt&#x27;, function () {
+    $sitemapUrl = route(&#x27;sitemap&#x27;);
+
+    if (app()-&gt;environment(&#x27;production&#x27;)) {
+        $content = &lt;&lt;&lt;ROBOTS
+        User-agent: *
+        Allow: /
+        Disallow: /admin/
+        Disallow: /login
+        Disallow: /register
+        Disallow: /password/
+
+        Sitemap: {$sitemapUrl}
+        ROBOTS;
+    } else {
+        // Disallow all crawlers on staging, local, and testing environments
+        $content = &lt;&lt;&lt;ROBOTS
+        User-agent: *
+        Disallow: /
+        ROBOTS;
+    }
+
+    return response($content, 200, [&#x27;Content-Type&#x27; =&gt; &#x27;text/plain&#x27;]);
+});</code></pre>
+    </div>
+
+                <div id="section-6-google-search-console-ga4-integration" class="scroll-mt-24 pt-10 pb-4 border-b border-gray-200 dark:border-gray-800">
+                    <div class="flex items-center space-x-3">
+                        <span class="px-2.5 py-1 text-xs font-bold rounded-md bg-red-100 text-red-700 dark:bg-red-950/80 dark:text-red-300 uppercase tracking-wider">Module 6</span>
+                        <h2 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white tracking-tight">GOOGLE SEARCH CONSOLE &amp; GA4 INTEGRATION</h2>
+                    </div>
+                </div>
+
+                <div id="section-1-google-search-console-verification" class="scroll-mt-24 pt-10 pb-4 border-b border-gray-200 dark:border-gray-800">
+                    <div class="flex items-center space-x-3">
+                        <span class="px-2.5 py-1 text-xs font-bold rounded-md bg-red-100 text-red-700 dark:bg-red-950/80 dark:text-red-300 uppercase tracking-wider">Module 1</span>
+                        <h2 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white tracking-tight">Google Search Console Verification:</h2>
+                    </div>
+                </div>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">Add to <code class="px-1.5 py-0.5 rounded text-xs font-mono bg-indigo-50 text-indigo-700 dark:bg-slate-800 dark:text-pink-400 font-semibold border border-indigo-100 dark:border-slate-700/60">.env</code>:</p>
+
+    <div class="relative my-6 group rounded-xl overflow-hidden border border-slate-800 shadow-2xl bg-[#0c1017]">
+        <div class="flex items-center justify-between px-4 py-2.5 bg-[#161b22] border-b border-slate-800/80 text-xs text-slate-400 font-mono select-none">
+            <div class="flex items-center space-x-2">
+                <span class="w-3 h-3 rounded-full bg-[#ff5f56] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#ffbd2e] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#27c93f] inline-block shadow-sm"></span>
+                <span class="ml-2 uppercase font-semibold text-indigo-400 tracking-wider text-[11px]">env</span>
+            </div>
+            <button onclick="copyCode(this)" class="px-2.5 py-1 rounded-md bg-slate-800/90 hover:bg-slate-700 text-slate-200 transition flex items-center space-x-1.5 shadow-sm font-sans text-xs">
+                <svg class="w-3.5 h-3.5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                <span>Copy</span>
+            </button>
+        </div>
+        <pre class="p-4 sm:p-5 overflow-x-auto text-[13.5px] leading-relaxed custom-scrollbar"><code class="language-env text-slate-100">GOOGLE_SITE_VERIFICATION=&quot;your-google-verification-token-string&quot;</code></pre>
+    </div>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">In <code class="px-1.5 py-0.5 rounded text-xs font-mono bg-indigo-50 text-indigo-700 dark:bg-slate-800 dark:text-pink-400 font-semibold border border-indigo-100 dark:border-slate-700/60">resources/views/layouts/app.blade.php</code>:</p>
+
+    <div class="relative my-6 group rounded-xl overflow-hidden border border-slate-800 shadow-2xl bg-[#0c1017]">
+        <div class="flex items-center justify-between px-4 py-2.5 bg-[#161b22] border-b border-slate-800/80 text-xs text-slate-400 font-mono select-none">
+            <div class="flex items-center space-x-2">
+                <span class="w-3 h-3 rounded-full bg-[#ff5f56] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#ffbd2e] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#27c93f] inline-block shadow-sm"></span>
+                <span class="ml-2 uppercase font-semibold text-indigo-400 tracking-wider text-[11px]">html</span>
+            </div>
+            <button onclick="copyCode(this)" class="px-2.5 py-1 rounded-md bg-slate-800/90 hover:bg-slate-700 text-slate-200 transition flex items-center space-x-1.5 shadow-sm font-sans text-xs">
+                <svg class="w-3.5 h-3.5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                <span>Copy</span>
+            </button>
+        </div>
+        <pre class="p-4 sm:p-5 overflow-x-auto text-[13.5px] leading-relaxed custom-scrollbar"><code class="language-html text-slate-100">@if(config(&#x27;services.google.site_verification&#x27;))
+    &lt;meta name=&quot;google-site-verification&quot; content=&quot;{{ config(&#x27;services.google.site_verification&#x27;) }}&quot; /&gt;
+@endif</code></pre>
+    </div>
+
+                <div id="section-2-google-analytics-4-ga4-global-site-tag" class="scroll-mt-24 pt-10 pb-4 border-b border-gray-200 dark:border-gray-800">
+                    <div class="flex items-center space-x-3">
+                        <span class="px-2.5 py-1 text-xs font-bold rounded-md bg-red-100 text-red-700 dark:bg-red-950/80 dark:text-red-300 uppercase tracking-wider">Module 2</span>
+                        <h2 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white tracking-tight">Google Analytics 4 (GA4) Global Site Tag:</h2>
+                    </div>
+                </div>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">Add to <code class="px-1.5 py-0.5 rounded text-xs font-mono bg-indigo-50 text-indigo-700 dark:bg-slate-800 dark:text-pink-400 font-semibold border border-indigo-100 dark:border-slate-700/60">.env</code>:</p>
+
+    <div class="relative my-6 group rounded-xl overflow-hidden border border-slate-800 shadow-2xl bg-[#0c1017]">
+        <div class="flex items-center justify-between px-4 py-2.5 bg-[#161b22] border-b border-slate-800/80 text-xs text-slate-400 font-mono select-none">
+            <div class="flex items-center space-x-2">
+                <span class="w-3 h-3 rounded-full bg-[#ff5f56] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#ffbd2e] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#27c93f] inline-block shadow-sm"></span>
+                <span class="ml-2 uppercase font-semibold text-indigo-400 tracking-wider text-[11px]">env</span>
+            </div>
+            <button onclick="copyCode(this)" class="px-2.5 py-1 rounded-md bg-slate-800/90 hover:bg-slate-700 text-slate-200 transition flex items-center space-x-1.5 shadow-sm font-sans text-xs">
+                <svg class="w-3.5 h-3.5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                <span>Copy</span>
+            </button>
+        </div>
+        <pre class="p-4 sm:p-5 overflow-x-auto text-[13.5px] leading-relaxed custom-scrollbar"><code class="language-env text-slate-100">GA4_MEASUREMENT_ID=&quot;G-XXXXXXXXXX&quot;</code></pre>
+    </div>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">In <code class="px-1.5 py-0.5 rounded text-xs font-mono bg-indigo-50 text-indigo-700 dark:bg-slate-800 dark:text-pink-400 font-semibold border border-indigo-100 dark:border-slate-700/60">resources/views/partials/analytics.blade.php</code>:</p>
+
+    <div class="relative my-6 group rounded-xl overflow-hidden border border-slate-800 shadow-2xl bg-[#0c1017]">
+        <div class="flex items-center justify-between px-4 py-2.5 bg-[#161b22] border-b border-slate-800/80 text-xs text-slate-400 font-mono select-none">
+            <div class="flex items-center space-x-2">
+                <span class="w-3 h-3 rounded-full bg-[#ff5f56] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#ffbd2e] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#27c93f] inline-block shadow-sm"></span>
+                <span class="ml-2 uppercase font-semibold text-indigo-400 tracking-wider text-[11px]">html</span>
+            </div>
+            <button onclick="copyCode(this)" class="px-2.5 py-1 rounded-md bg-slate-800/90 hover:bg-slate-700 text-slate-200 transition flex items-center space-x-1.5 shadow-sm font-sans text-xs">
+                <svg class="w-3.5 h-3.5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                <span>Copy</span>
+            </button>
+        </div>
+        <pre class="p-4 sm:p-5 overflow-x-auto text-[13.5px] leading-relaxed custom-scrollbar"><code class="language-html text-slate-100">@if(app()-&gt;environment(&#x27;production&#x27;) &amp;&amp; env(&#x27;GA4_MEASUREMENT_ID&#x27;))
+    &lt;!-- Google tag (gtag.js) --&gt;
+    &lt;script async src=&quot;https://www.googletagmanager.com/gtag/js?id={{ env(&#x27;GA4_MEASUREMENT_ID&#x27;) }}&quot;&gt;&lt;/script&gt;
+    &lt;script&gt;
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag(&#x27;js&#x27;, new Date());
+      gtag(&#x27;config&#x27;, &#x27;{{ env(&#x27;GA4_MEASUREMENT_ID&#x27;) }}&#x27;);
+    &lt;/script&gt;
+@endif</code></pre>
+    </div>
+
+                <div id="section-7-seo-middleware-for-automatic-meta-injection" class="scroll-mt-24 pt-10 pb-4 border-b border-gray-200 dark:border-gray-800">
+                    <div class="flex items-center space-x-3">
+                        <span class="px-2.5 py-1 text-xs font-bold rounded-md bg-red-100 text-red-700 dark:bg-red-950/80 dark:text-red-300 uppercase tracking-wider">Module 7</span>
+                        <h2 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white tracking-tight">SEO MIDDLEWARE FOR AUTOMATIC META INJECTION</h2>
+                    </div>
+                </div>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">Create <code class="px-1.5 py-0.5 rounded text-xs font-mono bg-indigo-50 text-indigo-700 dark:bg-slate-800 dark:text-pink-400 font-semibold border border-indigo-100 dark:border-slate-700/60">app/Http/Middleware/SeoDefaultsMiddleware.php</code>:</p>
+
+    <div class="relative my-6 group rounded-xl overflow-hidden border border-slate-800 shadow-2xl bg-[#0c1017]">
+        <div class="flex items-center justify-between px-4 py-2.5 bg-[#161b22] border-b border-slate-800/80 text-xs text-slate-400 font-mono select-none">
+            <div class="flex items-center space-x-2">
+                <span class="w-3 h-3 rounded-full bg-[#ff5f56] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#ffbd2e] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#27c93f] inline-block shadow-sm"></span>
+                <span class="ml-2 uppercase font-semibold text-indigo-400 tracking-wider text-[11px]">bash</span>
+            </div>
+            <button onclick="copyCode(this)" class="px-2.5 py-1 rounded-md bg-slate-800/90 hover:bg-slate-700 text-slate-200 transition flex items-center space-x-1.5 shadow-sm font-sans text-xs">
+                <svg class="w-3.5 h-3.5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                <span>Copy</span>
+            </button>
+        </div>
+        <pre class="p-4 sm:p-5 overflow-x-auto text-[13.5px] leading-relaxed custom-scrollbar"><code class="language-bash text-slate-100">php artisan make:middleware SeoDefaultsMiddleware</code></pre>
+    </div>
+
+    <div class="relative my-6 group rounded-xl overflow-hidden border border-slate-800 shadow-2xl bg-[#0c1017]">
+        <div class="flex items-center justify-between px-4 py-2.5 bg-[#161b22] border-b border-slate-800/80 text-xs text-slate-400 font-mono select-none">
+            <div class="flex items-center space-x-2">
+                <span class="w-3 h-3 rounded-full bg-[#ff5f56] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#ffbd2e] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#27c93f] inline-block shadow-sm"></span>
+                <span class="ml-2 uppercase font-semibold text-indigo-400 tracking-wider text-[11px]">php</span>
+            </div>
+            <button onclick="copyCode(this)" class="px-2.5 py-1 rounded-md bg-slate-800/90 hover:bg-slate-700 text-slate-200 transition flex items-center space-x-1.5 shadow-sm font-sans text-xs">
+                <svg class="w-3.5 h-3.5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                <span>Copy</span>
+            </button>
+        </div>
+        <pre class="p-4 sm:p-5 overflow-x-auto text-[13.5px] leading-relaxed custom-scrollbar"><code class="language-php text-slate-100">&lt;?php
+
+namespace App\Http\Middleware;
+
+use Closure;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\View;
+
+class SeoDefaultsMiddleware
+{
+    public function handle(Request $request, Closure $next)
+    {
+        // Share standard canonical URL with all views
+        View::share(&#x27;seoCanonical&#x27;, $request-&gt;url());
+
+        return $next($request);
+    }
+}</code></pre>
+    </div>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">Register globally in <code class="px-1.5 py-0.5 rounded text-xs font-mono bg-indigo-50 text-indigo-700 dark:bg-slate-800 dark:text-pink-400 font-semibold border border-indigo-100 dark:border-slate-700/60">bootstrap/app.php</code>:</p>
+
+    <div class="relative my-6 group rounded-xl overflow-hidden border border-slate-800 shadow-2xl bg-[#0c1017]">
+        <div class="flex items-center justify-between px-4 py-2.5 bg-[#161b22] border-b border-slate-800/80 text-xs text-slate-400 font-mono select-none">
+            <div class="flex items-center space-x-2">
+                <span class="w-3 h-3 rounded-full bg-[#ff5f56] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#ffbd2e] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#27c93f] inline-block shadow-sm"></span>
+                <span class="ml-2 uppercase font-semibold text-indigo-400 tracking-wider text-[11px]">php</span>
+            </div>
+            <button onclick="copyCode(this)" class="px-2.5 py-1 rounded-md bg-slate-800/90 hover:bg-slate-700 text-slate-200 transition flex items-center space-x-1.5 shadow-sm font-sans text-xs">
+                <svg class="w-3.5 h-3.5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                <span>Copy</span>
+            </button>
+        </div>
+        <pre class="p-4 sm:p-5 overflow-x-auto text-[13.5px] leading-relaxed custom-scrollbar"><code class="language-php text-slate-100">-&gt;withMiddleware(function (Middleware $middleware) {
+    $middleware-&gt;web(append: [
+        \App\Http\Middleware\SeoDefaultsMiddleware::class,
+    ]);
+})</code></pre>
+    </div>
+
+                <div id="section-8-complete-pre-launch-5-part-seo-performance-audit-checklist" class="scroll-mt-24 pt-10 pb-4 border-b border-gray-200 dark:border-gray-800">
+                    <div class="flex items-center space-x-3">
+                        <span class="px-2.5 py-1 text-xs font-bold rounded-md bg-red-100 text-red-700 dark:bg-red-950/80 dark:text-red-300 uppercase tracking-wider">Module 8</span>
+                        <h2 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white tracking-tight">COMPLETE PRE-LAUNCH 5-PART SEO &amp; PERFORMANCE AUDIT CHECKLIST</h2>
+                    </div>
+                </div>
+
+            <label class="flex items-start space-x-3 my-2 text-gray-700 dark:text-gray-300 text-sm hover:text-gray-900 dark:hover:text-white cursor-pointer select-none">
+                <input type="checkbox" checked class="mt-1 h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
+                <span>1. Technical SEO &amp; Crawlability:</span>
+            </label>
+
+            <label class="flex items-start space-x-3 my-2 text-gray-700 dark:text-gray-300 text-sm hover:text-gray-900 dark:hover:text-white cursor-pointer select-none">
+                <input type="checkbox" checked class="mt-1 h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
+                <span>HTTPS enforced across all URLs with valid SSL certificate</span>
+            </label>
+
+            <label class="flex items-start space-x-3 my-2 text-gray-700 dark:text-gray-300 text-sm hover:text-gray-900 dark:hover:text-white cursor-pointer select-none">
+                <input type="checkbox" checked class="mt-1 h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
+                <span>Explicit <code class="px-1.5 py-0.5 rounded text-xs font-mono bg-indigo-50 text-indigo-700 dark:bg-slate-800 dark:text-pink-400 font-semibold border border-indigo-100 dark:border-slate-700/60">&lt;link rel=&quot;canonical&quot;&gt;</code> rendered on every page</span>
+            </label>
+
+            <label class="flex items-start space-x-3 my-2 text-gray-700 dark:text-gray-300 text-sm hover:text-gray-900 dark:hover:text-white cursor-pointer select-none">
+                <input type="checkbox" checked class="mt-1 h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
+                <span>Responsive <code class="px-1.5 py-0.5 rounded text-xs font-mono bg-indigo-50 text-indigo-700 dark:bg-slate-800 dark:text-pink-400 font-semibold border border-indigo-100 dark:border-slate-700/60">&lt;meta name=&quot;viewport&quot;&gt;</code> properly configured</span>
+            </label>
+
+            <label class="flex items-start space-x-3 my-2 text-gray-700 dark:text-gray-300 text-sm hover:text-gray-900 dark:hover:text-white cursor-pointer select-none">
+                <input type="checkbox" checked class="mt-1 h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
+                <span>Dynamic <code class="px-1.5 py-0.5 rounded text-xs font-mono bg-indigo-50 text-indigo-700 dark:bg-slate-800 dark:text-pink-400 font-semibold border border-indigo-100 dark:border-slate-700/60">/sitemap.xml</code> accessible and verified in Google Search Console</span>
+            </label>
+
+            <label class="flex items-start space-x-3 my-2 text-gray-700 dark:text-gray-300 text-sm hover:text-gray-900 dark:hover:text-white cursor-pointer select-none">
+                <input type="checkbox" checked class="mt-1 h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
+                <span>Clean <code class="px-1.5 py-0.5 rounded text-xs font-mono bg-indigo-50 text-indigo-700 dark:bg-slate-800 dark:text-pink-400 font-semibold border border-indigo-100 dark:border-slate-700/60">/robots.txt</code> disallowing <code class="px-1.5 py-0.5 rounded text-xs font-mono bg-indigo-50 text-indigo-700 dark:bg-slate-800 dark:text-pink-400 font-semibold border border-indigo-100 dark:border-slate-700/60">/admin/</code> while exposing sitemap link</span>
+            </label>
+
+            <label class="flex items-start space-x-3 my-2 text-gray-700 dark:text-gray-300 text-sm hover:text-gray-900 dark:hover:text-white cursor-pointer select-none">
+                <input type="checkbox" checked class="mt-1 h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
+                <span>301 Permanent Redirects configured for legacy or trailing-slash URLs</span>
+            </label>
+
+            <label class="flex items-start space-x-3 my-2 text-gray-700 dark:text-gray-300 text-sm hover:text-gray-900 dark:hover:text-white cursor-pointer select-none">
+                <input type="checkbox" checked class="mt-1 h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
+                <span>2. On-Page SEO &amp; Content Quality:</span>
+            </label>
+
+            <label class="flex items-start space-x-3 my-2 text-gray-700 dark:text-gray-300 text-sm hover:text-gray-900 dark:hover:text-white cursor-pointer select-none">
+                <input type="checkbox" checked class="mt-1 h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
+                <span>Unique, descriptive <code class="px-1.5 py-0.5 rounded text-xs font-mono bg-indigo-50 text-indigo-700 dark:bg-slate-800 dark:text-pink-400 font-semibold border border-indigo-100 dark:border-slate-700/60">&lt;title&gt;</code> tag on every single page (&lt;60 chars)</span>
+            </label>
+
+            <label class="flex items-start space-x-3 my-2 text-gray-700 dark:text-gray-300 text-sm hover:text-gray-900 dark:hover:text-white cursor-pointer select-none">
+                <input type="checkbox" checked class="mt-1 h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
+                <span>Meta description between 140-155 characters with call-to-action</span>
+            </label>
+
+            <label class="flex items-start space-x-3 my-2 text-gray-700 dark:text-gray-300 text-sm hover:text-gray-900 dark:hover:text-white cursor-pointer select-none">
+                <input type="checkbox" checked class="mt-1 h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
+                <span>Exactly one <code class="px-1.5 py-0.5 rounded text-xs font-mono bg-indigo-50 text-indigo-700 dark:bg-slate-800 dark:text-pink-400 font-semibold border border-indigo-100 dark:border-slate-700/60">&lt;h1&gt;</code> element per page representing main headline</span>
+            </label>
+
+            <label class="flex items-start space-x-3 my-2 text-gray-700 dark:text-gray-300 text-sm hover:text-gray-900 dark:hover:text-white cursor-pointer select-none">
+                <input type="checkbox" checked class="mt-1 h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
+                <span>Descriptive <code class="px-1.5 py-0.5 rounded text-xs font-mono bg-indigo-50 text-indigo-700 dark:bg-slate-800 dark:text-pink-400 font-semibold border border-indigo-100 dark:border-slate-700/60">alt=&quot;...&quot;</code> attributes on every <code class="px-1.5 py-0.5 rounded text-xs font-mono bg-indigo-50 text-indigo-700 dark:bg-slate-800 dark:text-pink-400 font-semibold border border-indigo-100 dark:border-slate-700/60">&lt;img&gt;</code> tag</span>
+            </label>
+
+            <label class="flex items-start space-x-3 my-2 text-gray-700 dark:text-gray-300 text-sm hover:text-gray-900 dark:hover:text-white cursor-pointer select-none">
+                <input type="checkbox" checked class="mt-1 h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
+                <span>Clean semantic HTML5 elements (<code class="px-1.5 py-0.5 rounded text-xs font-mono bg-indigo-50 text-indigo-700 dark:bg-slate-800 dark:text-pink-400 font-semibold border border-indigo-100 dark:border-slate-700/60">&lt;header&gt;</code>, <code class="px-1.5 py-0.5 rounded text-xs font-mono bg-indigo-50 text-indigo-700 dark:bg-slate-800 dark:text-pink-400 font-semibold border border-indigo-100 dark:border-slate-700/60">&lt;nav&gt;</code>, <code class="px-1.5 py-0.5 rounded text-xs font-mono bg-indigo-50 text-indigo-700 dark:bg-slate-800 dark:text-pink-400 font-semibold border border-indigo-100 dark:border-slate-700/60">&lt;main&gt;</code>, <code class="px-1.5 py-0.5 rounded text-xs font-mono bg-indigo-50 text-indigo-700 dark:bg-slate-800 dark:text-pink-400 font-semibold border border-indigo-100 dark:border-slate-700/60">&lt;article&gt;</code>, <code class="px-1.5 py-0.5 rounded text-xs font-mono bg-indigo-50 text-indigo-700 dark:bg-slate-800 dark:text-pink-400 font-semibold border border-indigo-100 dark:border-slate-700/60">&lt;footer&gt;</code>)</span>
+            </label>
+
+            <label class="flex items-start space-x-3 my-2 text-gray-700 dark:text-gray-300 text-sm hover:text-gray-900 dark:hover:text-white cursor-pointer select-none">
+                <input type="checkbox" checked class="mt-1 h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
+                <span>3. Social Media Sharing &amp; OpenGraph:</span>
+            </label>
+
+            <label class="flex items-start space-x-3 my-2 text-gray-700 dark:text-gray-300 text-sm hover:text-gray-900 dark:hover:text-white cursor-pointer select-none">
+                <input type="checkbox" checked class="mt-1 h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
+                <span><code class="px-1.5 py-0.5 rounded text-xs font-mono bg-indigo-50 text-indigo-700 dark:bg-slate-800 dark:text-pink-400 font-semibold border border-indigo-100 dark:border-slate-700/60">og:title</code>, <code class="px-1.5 py-0.5 rounded text-xs font-mono bg-indigo-50 text-indigo-700 dark:bg-slate-800 dark:text-pink-400 font-semibold border border-indigo-100 dark:border-slate-700/60">og:description</code>, <code class="px-1.5 py-0.5 rounded text-xs font-mono bg-indigo-50 text-indigo-700 dark:bg-slate-800 dark:text-pink-400 font-semibold border border-indigo-100 dark:border-slate-700/60">og:image</code>, <code class="px-1.5 py-0.5 rounded text-xs font-mono bg-indigo-50 text-indigo-700 dark:bg-slate-800 dark:text-pink-400 font-semibold border border-indigo-100 dark:border-slate-700/60">og:url</code> present</span>
+            </label>
+
+            <label class="flex items-start space-x-3 my-2 text-gray-700 dark:text-gray-300 text-sm hover:text-gray-900 dark:hover:text-white cursor-pointer select-none">
+                <input type="checkbox" checked class="mt-1 h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
+                <span>OpenGraph images formatted at optimal 1200x630px resolution</span>
+            </label>
+
+            <label class="flex items-start space-x-3 my-2 text-gray-700 dark:text-gray-300 text-sm hover:text-gray-900 dark:hover:text-white cursor-pointer select-none">
+                <input type="checkbox" checked class="mt-1 h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
+                <span>Twitter Card <code class="px-1.5 py-0.5 rounded text-xs font-mono bg-indigo-50 text-indigo-700 dark:bg-slate-800 dark:text-pink-400 font-semibold border border-indigo-100 dark:border-slate-700/60">twitter:card=&quot;summary_large_image&quot;</code> tested with Twitter Card Validator</span>
+            </label>
+
+            <label class="flex items-start space-x-3 my-2 text-gray-700 dark:text-gray-300 text-sm hover:text-gray-900 dark:hover:text-white cursor-pointer select-none">
+                <input type="checkbox" checked class="mt-1 h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
+                <span>4. Structured Data &amp; Rich Results:</span>
+            </label>
+
+            <label class="flex items-start space-x-3 my-2 text-gray-700 dark:text-gray-300 text-sm hover:text-gray-900 dark:hover:text-white cursor-pointer select-none">
+                <input type="checkbox" checked class="mt-1 h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
+                <span>JSON-LD <code class="px-1.5 py-0.5 rounded text-xs font-mono bg-indigo-50 text-indigo-700 dark:bg-slate-800 dark:text-pink-400 font-semibold border border-indigo-100 dark:border-slate-700/60">WebSite</code> &amp; <code class="px-1.5 py-0.5 rounded text-xs font-mono bg-indigo-50 text-indigo-700 dark:bg-slate-800 dark:text-pink-400 font-semibold border border-indigo-100 dark:border-slate-700/60">Organization</code> schema active on homepage</span>
+            </label>
+
+            <label class="flex items-start space-x-3 my-2 text-gray-700 dark:text-gray-300 text-sm hover:text-gray-900 dark:hover:text-white cursor-pointer select-none">
+                <input type="checkbox" checked class="mt-1 h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
+                <span>JSON-LD <code class="px-1.5 py-0.5 rounded text-xs font-mono bg-indigo-50 text-indigo-700 dark:bg-slate-800 dark:text-pink-400 font-semibold border border-indigo-100 dark:border-slate-700/60">BreadcrumbList</code> schema active on hierarchical interior pages</span>
+            </label>
+
+            <label class="flex items-start space-x-3 my-2 text-gray-700 dark:text-gray-300 text-sm hover:text-gray-900 dark:hover:text-white cursor-pointer select-none">
+                <input type="checkbox" checked class="mt-1 h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
+                <span>JSON-LD <code class="px-1.5 py-0.5 rounded text-xs font-mono bg-indigo-50 text-indigo-700 dark:bg-slate-800 dark:text-pink-400 font-semibold border border-indigo-100 dark:border-slate-700/60">BlogPosting</code> schema active on dynamic article/blog routes</span>
+            </label>
+
+            <label class="flex items-start space-x-3 my-2 text-gray-700 dark:text-gray-300 text-sm hover:text-gray-900 dark:hover:text-white cursor-pointer select-none">
+                <input type="checkbox" checked class="mt-1 h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
+                <span>Verified zero syntax errors via Google Rich Results Test tool</span>
+            </label>
+
+            <label class="flex items-start space-x-3 my-2 text-gray-700 dark:text-gray-300 text-sm hover:text-gray-900 dark:hover:text-white cursor-pointer select-none">
+                <input type="checkbox" checked class="mt-1 h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
+                <span>5. Web Performance &amp; Speed:</span>
+            </label>
+
+            <label class="flex items-start space-x-3 my-2 text-gray-700 dark:text-gray-300 text-sm hover:text-gray-900 dark:hover:text-white cursor-pointer select-none">
+                <input type="checkbox" checked class="mt-1 h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
+                <span>Images converted to modern WebP/AVIF formats</span>
+            </label>
+
+            <label class="flex items-start space-x-3 my-2 text-gray-700 dark:text-gray-300 text-sm hover:text-gray-900 dark:hover:text-white cursor-pointer select-none">
+                <input type="checkbox" checked class="mt-1 h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
+                <span>CSS &amp; JS minified and bundled via Vite (<code class="px-1.5 py-0.5 rounded text-xs font-mono bg-indigo-50 text-indigo-700 dark:bg-slate-800 dark:text-pink-400 font-semibold border border-indigo-100 dark:border-slate-700/60">npm run build</code>)</span>
+            </label>
+
+            <label class="flex items-start space-x-3 my-2 text-gray-700 dark:text-gray-300 text-sm hover:text-gray-900 dark:hover:text-white cursor-pointer select-none">
+                <input type="checkbox" checked class="mt-1 h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
+                <span>Route, configuration and view caching enabled (<code class="px-1.5 py-0.5 rounded text-xs font-mono bg-indigo-50 text-indigo-700 dark:bg-slate-800 dark:text-pink-400 font-semibold border border-indigo-100 dark:border-slate-700/60">php artisan optimize</code>)</span>
+            </label>
+
+            <label class="flex items-start space-x-3 my-2 text-gray-700 dark:text-gray-300 text-sm hover:text-gray-900 dark:hover:text-white cursor-pointer select-none">
+                <input type="checkbox" checked class="mt-1 h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
+                <span>Gzip / Brotli compression enabled at web server level (Nginx/Apache)</span>
+            </label>
+            </article>
+
+            <!-- Bottom Navigation -->
+            <div class="mt-16 pt-8 border-t border-gray-200 dark:border-gray-800 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4">
+                <a href="10-math-captcha-security.html" class="group flex items-center space-x-3 px-5 py-3 rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-800/50 text-sm font-medium text-gray-700 dark:text-gray-300 hover:border-indigo-500 dark:hover:border-indigo-500 hover:shadow-md transition-all">
+        <span class="text-indigo-600 dark:text-indigo-400 group-hover:-translate-x-1 transition-transform">←</span>
+        <div>
+            <div class="text-[10px] uppercase tracking-wider text-gray-400">Previous</div>
+            <div class="font-semibold text-gray-900 dark:text-white truncate max-w-[200px] sm:max-w-xs">Secure Math CAPTCHA & Anti-Spam Defense</div>
+        </div>
+    </a>
+                <a href="12-restful-api-sanctum-resources.html" class="group flex items-center space-x-3 px-5 py-3 rounded-xl border border-indigo-600 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium shadow-md hover:shadow-xl transition-all">
+        <div class="text-right">
+            <div class="text-[10px] uppercase tracking-wider text-indigo-200">Next</div>
+            <div class="font-semibold truncate max-w-[200px] sm:max-w-xs">RESTful API Development & Sanctum Tokens</div>
+        </div>
+        <span class="group-hover:translate-x-1 transition-transform">→</span>
+    </a>
+            </div>
+        </main>
+
+        <!-- Right TOC Sidebar (Desktop) with ScrollSpy -->
+        <aside class="hidden xl:block w-72 shrink-0 py-8 pl-4">
+            <div class="sticky top-24">
+                <div class="flex items-center space-x-2 mb-3 px-1">
+                    <span class="w-2 h-2 rounded-full bg-indigo-500 animate-pulse"></span>
+                    <h3 class="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">On This Page</h3>
+                </div>
+                <div id="toc-nav" class="space-y-1 border-l-2 border-gray-200 dark:border-gray-800 pl-3 max-h-[75vh] overflow-y-auto custom-scrollbar">
+                    
+        <a href="#section-1-technical-seo-architecture-head-standards" class="toc-link block py-1.5 text-xs text-gray-500 hover:text-indigo-600 dark:text-gray-400 dark:hover:text-indigo-400 truncate transition-all duration-150" data-target="section-1-technical-seo-architecture-head-standards">
+            1. TECHNICAL SEO ARCHITECTURE &amp; HEAD STANDARDS
+        </a>
+
+        <a href="#section-2-building-the-dynamic-blade-seo-component-x-seo-head" class="toc-link block py-1.5 text-xs text-gray-500 hover:text-indigo-600 dark:text-gray-400 dark:hover:text-indigo-400 truncate transition-all duration-150" data-target="section-2-building-the-dynamic-blade-seo-component-x-seo-head">
+            2. BUILDING THE DYNAMIC BLADE SEO COMPONENT (&lt;x-seo-head /&gt;)
+        </a>
+
+        <a href="#section-3-structured-data-json-ld-schemas" class="toc-link block py-1.5 text-xs text-gray-500 hover:text-indigo-600 dark:text-gray-400 dark:hover:text-indigo-400 truncate transition-all duration-150" data-target="section-3-structured-data-json-ld-schemas">
+            3. STRUCTURED DATA (JSON-LD) SCHEMAS
+        </a>
+
+        <a href="#section-4-automated-dynamic-xml-sitemap-generator-sitemap-xml" class="toc-link block py-1.5 text-xs text-gray-500 hover:text-indigo-600 dark:text-gray-400 dark:hover:text-indigo-400 truncate transition-all duration-150" data-target="section-4-automated-dynamic-xml-sitemap-generator-sitemap-xml">
+            4. AUTOMATED DYNAMIC XML SITEMAP GENERATOR (/sitemap.xml)
+        </a>
+
+        <a href="#section-5-dynamic-robots-txt-controller-crawler-rules" class="toc-link block py-1.5 text-xs text-gray-500 hover:text-indigo-600 dark:text-gray-400 dark:hover:text-indigo-400 truncate transition-all duration-150" data-target="section-5-dynamic-robots-txt-controller-crawler-rules">
+            5. DYNAMIC ROBOTS.TXT CONTROLLER &amp; CRAWLER RULES
+        </a>
+
+        <a href="#section-6-google-search-console-ga4-integration" class="toc-link block py-1.5 text-xs text-gray-500 hover:text-indigo-600 dark:text-gray-400 dark:hover:text-indigo-400 truncate transition-all duration-150" data-target="section-6-google-search-console-ga4-integration">
+            6. GOOGLE SEARCH CONSOLE &amp; GA4 INTEGRATION
+        </a>
+
+        <a href="#section-1-google-search-console-verification" class="toc-link block py-1.5 text-xs text-gray-500 hover:text-indigo-600 dark:text-gray-400 dark:hover:text-indigo-400 truncate transition-all duration-150" data-target="section-1-google-search-console-verification">
+            1. Google Search Console Verification:
+        </a>
+
+        <a href="#section-2-google-analytics-4-ga4-global-site-tag" class="toc-link block py-1.5 text-xs text-gray-500 hover:text-indigo-600 dark:text-gray-400 dark:hover:text-indigo-400 truncate transition-all duration-150" data-target="section-2-google-analytics-4-ga4-global-site-tag">
+            2. Google Analytics 4 (GA4) Global Site Tag:
+        </a>
+
+        <a href="#section-7-seo-middleware-for-automatic-meta-injection" class="toc-link block py-1.5 text-xs text-gray-500 hover:text-indigo-600 dark:text-gray-400 dark:hover:text-indigo-400 truncate transition-all duration-150" data-target="section-7-seo-middleware-for-automatic-meta-injection">
+            7. SEO MIDDLEWARE FOR AUTOMATIC META INJECTION
+        </a>
+
+        <a href="#section-8-complete-pre-launch-5-part-seo-performance-audit-checklist" class="toc-link block py-1.5 text-xs text-gray-500 hover:text-indigo-600 dark:text-gray-400 dark:hover:text-indigo-400 truncate transition-all duration-150" data-target="section-8-complete-pre-launch-5-part-seo-performance-audit-checklist">
+            8. COMPLETE PRE-LAUNCH 5-PART SEO &amp; PERFORMANCE AUDIT CHECKLIST
+        </a>
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <!-- Floating Back to Top Button -->
+    <button id="back-to-top" onclick="window.scrollTo({top: 0, behavior: 'smooth'})" class="fixed bottom-6 right-6 p-3 rounded-full bg-indigo-600 text-white shadow-2xl hover:bg-indigo-700 transition-all opacity-0 pointer-events-none translate-y-3 z-40 focus:outline-none flex items-center justify-center group" title="Back to top">
+        <svg class="w-5 h-5 group-hover:-translate-y-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 10l7-7m0 0l7 7m-7-7v18"></path></svg>
+    </button>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-php.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-json.min.js"></script>
+    <script>
+        // Dark Mode Logic
+        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+            document.getElementById('theme-icon').textContent = '☀️';
+        } else {
+            document.documentElement.classList.remove('dark');
+            document.getElementById('theme-icon').textContent = '🌙';
+        }
+
+        function toggleDarkMode() {
+            const isDark = document.documentElement.classList.toggle('dark');
+            localStorage.theme = isDark ? 'dark' : 'light';
+            document.getElementById('theme-icon').textContent = isDark ? '☀️' : '🌙';
+        }
+
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('-translate-x-full');
+        }
+
+        function copyCode(btn) {
+            const codeEl = btn.closest('.group').querySelector('code');
+            navigator.clipboard.writeText(codeEl.innerText).then(() => {
+                const span = btn.querySelector('span');
+                const orig = span.textContent;
+                span.textContent = 'Copied! ✓';
+                btn.classList.add('bg-emerald-600', 'text-white');
+                btn.classList.remove('bg-slate-800/90', 'hover:bg-slate-700');
+                setTimeout(() => {
+                    span.textContent = orig;
+                    btn.classList.remove('bg-emerald-600', 'text-white');
+                    btn.classList.add('bg-slate-800/90', 'hover:bg-slate-700');
+                }, 2000);
+            });
+        }
+
+        // Reading Progress Bar & Back-to-Top Toggle
+        const btt = document.getElementById('back-to-top');
+        const progressBar = document.getElementById('scroll-progress');
+        window.addEventListener('scroll', () => {
+            const winScroll = document.documentElement.scrollTop || document.body.scrollTop;
+            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrolled = height > 0 ? (winScroll / height) * 100 : 0;
+            if (progressBar) progressBar.style.width = scrolled + '%';
+
+            if (btt) {
+                if (winScroll > 400) {
+                    btt.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-3');
+                    btt.classList.add('opacity-100', 'translate-y-0');
+                } else {
+                    btt.classList.add('opacity-0', 'pointer-events-none', 'translate-y-3');
+                    btt.classList.remove('opacity-100', 'translate-y-0');
+                }
+            }
+        });
+
+        // Active TOC ScrollSpy using IntersectionObserver
+        const tocLinks = document.querySelectorAll('.toc-link');
+        const headingElements = document.querySelectorAll('div[id]');
+        if (tocLinks.length > 0 && headingElements.length > 0) {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const id = entry.target.getAttribute('id');
+                        if (!id) return;
+                        tocLinks.forEach(link => {
+                            if (link.getAttribute('href') === '#' + id) {
+                                link.classList.add('text-indigo-600', 'dark:text-indigo-400', 'font-bold', 'border-l-2', 'border-indigo-600', '-ml-[14px]', 'pl-3', 'bg-indigo-50/70', 'dark:bg-indigo-950/60', 'rounded-r');
+                                link.classList.remove('text-gray-500', 'dark:text-gray-400');
+                            } else {
+                                link.classList.remove('text-indigo-600', 'dark:text-indigo-400', 'font-bold', 'border-l-2', 'border-indigo-600', '-ml-[14px]', 'pl-3', 'bg-indigo-50/70', 'dark:bg-indigo-950/60', 'rounded-r');
+                                link.classList.add('text-gray-500', 'dark:text-gray-400');
+                            }
+                        });
+                    }
+                });
+            }, { rootMargin: '0px 0px -75% 0px' });
+
+            headingElements.forEach(el => observer.observe(el));
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,1512 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>App Scaffolding, Breeze &amp; Dynamic CMS - Laravel Master Docs</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: '#f9322c',
+                        darkbg: '#0b0f19',
+                        darkpanel: '#111827',
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" />
+    <style>
+        /* Custom scrollbar */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 5px;
+            height: 5px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: rgba(156, 163, 175, 0.25);
+            border-radius: 9999px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: rgba(156, 163, 175, 0.45);
+        }
+        /* Ensure maximum readable width for code & tables */
+        .prose {
+            max-width: 100% !important;
+        }
+        .prose p, .prose li {
+            line-height: 1.8;
+        }
+        pre[class*="language-"] {
+            margin: 0;
+            background: transparent;
+        }
+        code[class*="language-"] {
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-900 dark:bg-[#0b0f19] dark:text-gray-100 min-h-screen flex flex-col font-sans transition-colors duration-200 antialiased">
+    <!-- Top Reading Progress Indicator -->
+    <div id="scroll-progress" class="fixed top-0 left-0 h-[3px] bg-gradient-to-r from-red-500 via-indigo-500 to-cyan-400 z-50 transition-all duration-75" style="width: 0%"></div>
+
+    <!-- Header / Navbar -->
+    <header class="sticky top-0 z-40 bg-white/90 dark:bg-[#0b0f19]/90 backdrop-blur-md border-b border-gray-200 dark:border-gray-800 transition-colors">
+        <div class="max-w-[1780px] w-full mx-auto px-4 sm:px-6 lg:px-8 xl:px-10 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <button onclick="toggleSidebar()" class="lg:hidden p-2 rounded-lg text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800 transition" aria-label="Toggle navigation">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+                </button>
+                <a href="index.html" class="flex items-center space-x-3">
+                    <span class="text-2xl drop-shadow-sm">🔴</span>
+                    <span class="font-extrabold text-lg sm:text-xl tracking-tight bg-gradient-to-r from-red-600 via-pink-600 to-indigo-600 bg-clip-text text-transparent">Laravel Master Docs</span>
+                </a>
+                <span class="hidden sm:inline-flex items-center px-2.5 py-0.5 text-xs font-semibold rounded-full bg-red-100 text-red-700 dark:bg-red-950/80 dark:text-red-300 border border-red-200 dark:border-red-900/40">Laravel 13</span>
+            </div>
+
+            <div class="flex items-center space-x-4">
+                <a href="index.html" class="text-xs sm:text-sm font-medium text-gray-600 hover:text-indigo-600 dark:text-gray-300 dark:hover:text-indigo-400 flex items-center space-x-1.5 transition">
+                    <span>📚</span>
+                    <span class="hidden md:inline">Browse All</span> <span>Tutorials</span>
+                </a>
+                <!-- Dark Mode Toggle -->
+                <button onclick="toggleDarkMode()" class="p-2 rounded-xl bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 transition" title="Toggle Dark/Light Mode">
+                    <span id="theme-icon">🌙</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Elite Wide Container -->
+    <div class="max-w-[1780px] w-full mx-auto px-4 sm:px-6 lg:px-8 xl:px-10 flex-1 flex gap-8 xl:gap-10">
+        <!-- Sidebar Navigation (Desktop & Mobile Drawer) -->
+        <aside id="sidebar" class="fixed inset-y-0 left-0 z-30 w-72 bg-white dark:bg-[#0b0f19] border-r border-gray-200 dark:border-gray-800 transform -translate-x-full lg:translate-x-0 lg:static lg:w-72 pt-20 lg:pt-6 pb-10 transition-transform duration-200 ease-in-out overflow-y-auto shrink-0 custom-scrollbar">
+            <div class="px-3 mb-6">
+                <div class="flex items-center justify-between px-3 mb-3">
+                    <p class="text-[11px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider">Tutorial Chapters (15)</p>
+                    <span class="text-[10px] px-2 py-0.5 rounded-full bg-indigo-50 dark:bg-indigo-950 text-indigo-600 dark:text-indigo-400 font-semibold">100% Complete</span>
+                </div>
+                <div class="space-y-1">
+                    
+        <a href="01-create-laravel-project.html" class="flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs sm:text-sm transition-all duration-150 text-gray-600 dark:text-gray-400 hover:bg-gray-100/80 dark:hover:bg-gray-800/60 hover:text-gray-900 dark:hover:text-white">
+            <span class="text-base shrink-0">🚀</span>
+            <span class="truncate">Laravel Project Creation & Setup Guide</span>
+        </a>
+
+        <a href="02-workflow-command-playbook.html" class="flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs sm:text-sm transition-all duration-150 text-gray-600 dark:text-gray-400 hover:bg-gray-100/80 dark:hover:bg-gray-800/60 hover:text-gray-900 dark:hover:text-white">
+            <span class="text-base shrink-0">⚡</span>
+            <span class="truncate">Full-Cycle Command Playbook</span>
+        </a>
+
+        <a href="03-laravel-100-tips.html" class="flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs sm:text-sm transition-all duration-150 text-gray-600 dark:text-gray-400 hover:bg-gray-100/80 dark:hover:bg-gray-800/60 hover:text-gray-900 dark:hover:text-white">
+            <span class="text-base shrink-0">💡</span>
+            <span class="truncate">Laravel 100 Pro Tips Masterclass</span>
+        </a>
+
+        <a href="04-admin-multi-auth-fortify.html" class="flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs sm:text-sm transition-all duration-150 text-gray-600 dark:text-gray-400 hover:bg-gray-100/80 dark:hover:bg-gray-800/60 hover:text-gray-900 dark:hover:text-white">
+            <span class="text-base shrink-0">🛡️</span>
+            <span class="truncate">Admin Multi-Auth (Fortify & Jetstream)</span>
+        </a>
+
+        <a href="05-admin-login-step-by-step.html" class="flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs sm:text-sm transition-all duration-150 text-gray-600 dark:text-gray-400 hover:bg-gray-100/80 dark:hover:bg-gray-800/60 hover:text-gray-900 dark:hover:text-white">
+            <span class="text-base shrink-0">🔐</span>
+            <span class="truncate">Admin Login & Dashboard (16 Steps)</span>
+        </a>
+
+        <a href="06-multi-auth-master-system.html" class="flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs sm:text-sm transition-all duration-150 text-gray-600 dark:text-gray-400 hover:bg-gray-100/80 dark:hover:bg-gray-800/60 hover:text-gray-900 dark:hover:text-white">
+            <span class="text-base shrink-0">👥</span>
+            <span class="truncate">Multi-Authentication Master System & OTP</span>
+        </a>
+
+        <a href="07-dynamic-menu-crud.html" class="flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs sm:text-sm transition-all duration-150 text-gray-600 dark:text-gray-400 hover:bg-gray-100/80 dark:hover:bg-gray-800/60 hover:text-gray-900 dark:hover:text-white">
+            <span class="text-base shrink-0">📋</span>
+            <span class="truncate">Dynamic Menu Builder & Admin CRUD</span>
+        </a>
+
+        <a href="08-scaffolding-breeze-cms.html" class="flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs sm:text-sm transition-all duration-150 bg-indigo-50 dark:bg-indigo-950/70 text-indigo-600 dark:text-indigo-400 font-semibold border-r-2 border-indigo-600 shadow-sm">
+            <span class="text-base shrink-0">🏗️</span>
+            <span class="truncate">App Scaffolding, Breeze & Dynamic CMS</span>
+        </a>
+
+        <a href="09-qa-deployment-checklist.html" class="flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs sm:text-sm transition-all duration-150 text-gray-600 dark:text-gray-400 hover:bg-gray-100/80 dark:hover:bg-gray-800/60 hover:text-gray-900 dark:hover:text-white">
+            <span class="text-base shrink-0">✅</span>
+            <span class="truncate">Project QA & Production Checklist</span>
+        </a>
+
+        <a href="10-math-captcha-security.html" class="flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs sm:text-sm transition-all duration-150 text-gray-600 dark:text-gray-400 hover:bg-gray-100/80 dark:hover:bg-gray-800/60 hover:text-gray-900 dark:hover:text-white">
+            <span class="text-base shrink-0">🧮</span>
+            <span class="truncate">Secure Math CAPTCHA & Anti-Spam Defense</span>
+        </a>
+
+        <a href="11-seo-metadata-schema.html" class="flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs sm:text-sm transition-all duration-150 text-gray-600 dark:text-gray-400 hover:bg-gray-100/80 dark:hover:bg-gray-800/60 hover:text-gray-900 dark:hover:text-white">
+            <span class="text-base shrink-0">📈</span>
+            <span class="truncate">Production Technical SEO & Schema Markup</span>
+        </a>
+
+        <a href="12-restful-api-sanctum-resources.html" class="flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs sm:text-sm transition-all duration-150 text-gray-600 dark:text-gray-400 hover:bg-gray-100/80 dark:hover:bg-gray-800/60 hover:text-gray-900 dark:hover:text-white">
+            <span class="text-base shrink-0">🌐</span>
+            <span class="truncate">RESTful API Development & Sanctum Tokens</span>
+        </a>
+
+        <a href="13-eloquent-relationships-transactions.html" class="flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs sm:text-sm transition-all duration-150 text-gray-600 dark:text-gray-400 hover:bg-gray-100/80 dark:hover:bg-gray-800/60 hover:text-gray-900 dark:hover:text-white">
+            <span class="text-base shrink-0">🗄️</span>
+            <span class="truncate">Advanced Eloquent Relationships & Transactions</span>
+        </a>
+
+        <a href="14-queues-jobs-events-scheduling.html" class="flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs sm:text-sm transition-all duration-150 text-gray-600 dark:text-gray-400 hover:bg-gray-100/80 dark:hover:bg-gray-800/60 hover:text-gray-900 dark:hover:text-white">
+            <span class="text-base shrink-0">⏱️</span>
+            <span class="truncate">Queues, Asynchronous Jobs & Task Scheduling</span>
+        </a>
+
+        <a href="15-file-storage-uploads-media.html" class="flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs sm:text-sm transition-all duration-150 text-gray-600 dark:text-gray-400 hover:bg-gray-100/80 dark:hover:bg-gray-800/60 hover:text-gray-900 dark:hover:text-white">
+            <span class="text-base shrink-0">📁</span>
+            <span class="truncate">Secure File Uploads & Cloud Storage (S3)</span>
+        </a>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Article Container: WIDE & UNCONSTRAINED -->
+        <main class="flex-1 min-w-0 py-8 lg:px-4 w-full max-w-none">
+            <!-- Breadcrumbs -->
+            <nav class="flex items-center space-x-2 text-xs text-gray-500 dark:text-gray-400 mb-6">
+                <a href="index.html" class="hover:text-indigo-600 dark:hover:text-indigo-400 transition">Docs</a>
+                <span>/</span>
+                <span class="text-gray-800 dark:text-gray-200 font-medium truncate">App Scaffolding, Breeze &amp; Dynamic CMS</span>
+            </nav>
+
+            <header class="mb-10 pb-6 border-b border-gray-200 dark:border-gray-800">
+                <div class="flex flex-wrap items-center gap-2 mb-3">
+                    <span class="px-3 py-1 rounded-full bg-indigo-100 text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300 text-xs font-bold uppercase tracking-wider">Step-by-Step Blueprint</span>
+                    <span class="px-3 py-1 rounded-full bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300 text-xs font-medium">Laravel 13 Verified</span>
+                </div>
+                <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-gray-900 dark:text-white mb-4 leading-tight">App Scaffolding, Breeze &amp; Dynamic CMS</h1>
+                <p class="text-base sm:text-lg text-gray-600 dark:text-gray-300 max-w-4xl leading-relaxed">Complete production-ready walkthrough with high-resolution code snippets, database schemas, architectural patterns, and troubleshooting steps.</p>
+            </header>
+
+            <article class="prose dark:prose-invert max-w-none text-base">
+                <p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">LARAVEL APPLICATION SCAFFOLDING, BREEZE AUTH &amp; DYNAMIC CMS ARCHITECTURE</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">(COMPLETE STEP-BY-STEP MASTER GUIDE)</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">This comprehensive guide merges and completes the application scaffolding blueprint,</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">Laravel Breeze starter kit installation, dynamic CMS page management, multi-layout</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">architecture, and essential production commands into a unified master tutorial.</p>
+
+                <div id="section-1-laravel-breeze-authentication-setup-frontend-stacks" class="scroll-mt-24 pt-10 pb-4 border-b border-gray-200 dark:border-gray-800">
+                    <div class="flex items-center space-x-3">
+                        <span class="px-2.5 py-1 text-xs font-bold rounded-md bg-red-100 text-red-700 dark:bg-red-950/80 dark:text-red-300 uppercase tracking-wider">Module 1</span>
+                        <h2 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white tracking-tight">LARAVEL BREEZE AUTHENTICATION SETUP &amp; FRONTEND STACKS</h2>
+                    </div>
+                </div>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">Laravel Breeze provides a minimal, clean, and robust starting point for building</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">authentication into your application with Tailwind CSS.</p>
+
+            <div id="step-1-install-breeze-package-via-composer" class="scroll-mt-24 pt-10 pb-4 border-b border-gray-200 dark:border-gray-800">
+                <div class="flex items-center space-x-3">
+                    <span class="px-2.5 py-1 text-xs font-bold rounded-md bg-indigo-100 text-indigo-700 dark:bg-indigo-950/80 dark:text-indigo-300 uppercase tracking-wider">STEP 1</span>
+                    <h2 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white tracking-tight">Install Breeze package via Composer:</h2>
+                </div>
+            </div>
+
+    <div class="relative my-6 group rounded-xl overflow-hidden border border-slate-800 shadow-2xl bg-[#0c1017]">
+        <div class="flex items-center justify-between px-4 py-2.5 bg-[#161b22] border-b border-slate-800/80 text-xs text-slate-400 font-mono select-none">
+            <div class="flex items-center space-x-2">
+                <span class="w-3 h-3 rounded-full bg-[#ff5f56] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#ffbd2e] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#27c93f] inline-block shadow-sm"></span>
+                <span class="ml-2 uppercase font-semibold text-indigo-400 tracking-wider text-[11px]">bash</span>
+            </div>
+            <button onclick="copyCode(this)" class="px-2.5 py-1 rounded-md bg-slate-800/90 hover:bg-slate-700 text-slate-200 transition flex items-center space-x-1.5 shadow-sm font-sans text-xs">
+                <svg class="w-3.5 h-3.5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                <span>Copy</span>
+            </button>
+        </div>
+        <pre class="p-4 sm:p-5 overflow-x-auto text-[13.5px] leading-relaxed custom-scrollbar"><code class="language-bash text-slate-100">composer require laravel/breeze --dev</code></pre>
+    </div>
+
+            <div id="step-2-run-the-breeze-installation-command" class="scroll-mt-24 pt-10 pb-4 border-b border-gray-200 dark:border-gray-800">
+                <div class="flex items-center space-x-3">
+                    <span class="px-2.5 py-1 text-xs font-bold rounded-md bg-indigo-100 text-indigo-700 dark:bg-indigo-950/80 dark:text-indigo-300 uppercase tracking-wider">STEP 2</span>
+                    <h2 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white tracking-tight">Run the Breeze installation command:</h2>
+                </div>
+            </div>
+
+    <div class="relative my-6 group rounded-xl overflow-hidden border border-slate-800 shadow-2xl bg-[#0c1017]">
+        <div class="flex items-center justify-between px-4 py-2.5 bg-[#161b22] border-b border-slate-800/80 text-xs text-slate-400 font-mono select-none">
+            <div class="flex items-center space-x-2">
+                <span class="w-3 h-3 rounded-full bg-[#ff5f56] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#ffbd2e] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#27c93f] inline-block shadow-sm"></span>
+                <span class="ml-2 uppercase font-semibold text-indigo-400 tracking-wider text-[11px]">bash</span>
+            </div>
+            <button onclick="copyCode(this)" class="px-2.5 py-1 rounded-md bg-slate-800/90 hover:bg-slate-700 text-slate-200 transition flex items-center space-x-1.5 shadow-sm font-sans text-xs">
+                <svg class="w-3.5 h-3.5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                <span>Copy</span>
+            </button>
+        </div>
+        <pre class="p-4 sm:p-5 overflow-x-auto text-[13.5px] leading-relaxed custom-scrollbar"><code class="language-bash text-slate-100">php artisan breeze:install</code></pre>
+    </div>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">When prompted, select your preferred stack:</p>
+<ul class="my-3 space-y-2 pl-6 list-disc text-gray-700 dark:text-gray-300 text-sm md:text-base leading-relaxed">
+<li>blade       : Traditional server-rendered Blade templates (Default)</li>
+<li>livewire    : Reactive UI with Livewire and Volt</li>
+<li>vue         : Inertia.js with Vue 3</li>
+<li>react       : Inertia.js with React</li>
+<li>api         : API only (Headless with Laravel Sanctum)</li>
+</ul>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">You can also specify options directly:</p>
+
+    <div class="relative my-6 group rounded-xl overflow-hidden border border-slate-800 shadow-2xl bg-[#0c1017]">
+        <div class="flex items-center justify-between px-4 py-2.5 bg-[#161b22] border-b border-slate-800/80 text-xs text-slate-400 font-mono select-none">
+            <div class="flex items-center space-x-2">
+                <span class="w-3 h-3 rounded-full bg-[#ff5f56] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#ffbd2e] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#27c93f] inline-block shadow-sm"></span>
+                <span class="ml-2 uppercase font-semibold text-indigo-400 tracking-wider text-[11px]">bash</span>
+            </div>
+            <button onclick="copyCode(this)" class="px-2.5 py-1 rounded-md bg-slate-800/90 hover:bg-slate-700 text-slate-200 transition flex items-center space-x-1.5 shadow-sm font-sans text-xs">
+                <svg class="w-3.5 h-3.5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                <span>Copy</span>
+            </button>
+        </div>
+        <pre class="p-4 sm:p-5 overflow-x-auto text-[13.5px] leading-relaxed custom-scrollbar"><code class="language-bash text-slate-100">php artisan breeze:install blade --dark --pest
+php artisan breeze:install livewire --dark</code></pre>
+    </div>
+
+            <div id="step-3-run-database-migrations-and-compile-frontend-assets" class="scroll-mt-24 pt-10 pb-4 border-b border-gray-200 dark:border-gray-800">
+                <div class="flex items-center space-x-3">
+                    <span class="px-2.5 py-1 text-xs font-bold rounded-md bg-indigo-100 text-indigo-700 dark:bg-indigo-950/80 dark:text-indigo-300 uppercase tracking-wider">STEP 3</span>
+                    <h2 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white tracking-tight">Run database migrations and compile frontend assets:</h2>
+                </div>
+            </div>
+
+    <div class="relative my-6 group rounded-xl overflow-hidden border border-slate-800 shadow-2xl bg-[#0c1017]">
+        <div class="flex items-center justify-between px-4 py-2.5 bg-[#161b22] border-b border-slate-800/80 text-xs text-slate-400 font-mono select-none">
+            <div class="flex items-center space-x-2">
+                <span class="w-3 h-3 rounded-full bg-[#ff5f56] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#ffbd2e] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#27c93f] inline-block shadow-sm"></span>
+                <span class="ml-2 uppercase font-semibold text-indigo-400 tracking-wider text-[11px]">bash</span>
+            </div>
+            <button onclick="copyCode(this)" class="px-2.5 py-1 rounded-md bg-slate-800/90 hover:bg-slate-700 text-slate-200 transition flex items-center space-x-1.5 shadow-sm font-sans text-xs">
+                <svg class="w-3.5 h-3.5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                <span>Copy</span>
+            </button>
+        </div>
+        <pre class="p-4 sm:p-5 overflow-x-auto text-[13.5px] leading-relaxed custom-scrollbar"><code class="language-bash text-slate-100">php artisan migrate
+npm install
+npm run dev</code></pre>
+    </div>
+<ul class="my-3 space-y-2 pl-6 list-disc text-gray-700 dark:text-gray-300 text-sm md:text-base leading-relaxed">
+<li>For production deployment:</li>
+</ul>
+
+    <div class="relative my-6 group rounded-xl overflow-hidden border border-slate-800 shadow-2xl bg-[#0c1017]">
+        <div class="flex items-center justify-between px-4 py-2.5 bg-[#161b22] border-b border-slate-800/80 text-xs text-slate-400 font-mono select-none">
+            <div class="flex items-center space-x-2">
+                <span class="w-3 h-3 rounded-full bg-[#ff5f56] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#ffbd2e] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#27c93f] inline-block shadow-sm"></span>
+                <span class="ml-2 uppercase font-semibold text-indigo-400 tracking-wider text-[11px]">bash</span>
+            </div>
+            <button onclick="copyCode(this)" class="px-2.5 py-1 rounded-md bg-slate-800/90 hover:bg-slate-700 text-slate-200 transition flex items-center space-x-1.5 shadow-sm font-sans text-xs">
+                <svg class="w-3.5 h-3.5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                <span>Copy</span>
+            </button>
+        </div>
+        <pre class="p-4 sm:p-5 overflow-x-auto text-[13.5px] leading-relaxed custom-scrollbar"><code class="language-bash text-slate-100">npm run build</code></pre>
+    </div>
+
+                <div id="section-2-master-scaffolding-blueprint-models-migrations-seeders-controllers" class="scroll-mt-24 pt-10 pb-4 border-b border-gray-200 dark:border-gray-800">
+                    <div class="flex items-center space-x-3">
+                        <span class="px-2.5 py-1 text-xs font-bold rounded-md bg-red-100 text-red-700 dark:bg-red-950/80 dark:text-red-300 uppercase tracking-wider">Module 2</span>
+                        <h2 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white tracking-tight">MASTER SCAFFOLDING BLUEPRINT: MODELS, MIGRATIONS, SEEDERS &amp; CONTROLLERS</h2>
+                    </div>
+                </div>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">Use the following Artisan commands to scaffold a complete, modular, enterprise</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">web application (Admin, CMS, E-Commerce, Academic, Blog, Media):</p>
+
+                <div id="section-1-core-administration-navigation" class="scroll-mt-24 pt-10 pb-4 border-b border-gray-200 dark:border-gray-800">
+                    <div class="flex items-center space-x-3">
+                        <span class="px-2.5 py-1 text-xs font-bold rounded-md bg-red-100 text-red-700 dark:bg-red-950/80 dark:text-red-300 uppercase tracking-wider">Module 1</span>
+                        <h2 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white tracking-tight">Core Administration &amp; Navigation:</h2>
+                    </div>
+                </div>
+
+    <div class="relative my-6 group rounded-xl overflow-hidden border border-slate-800 shadow-2xl bg-[#0c1017]">
+        <div class="flex items-center justify-between px-4 py-2.5 bg-[#161b22] border-b border-slate-800/80 text-xs text-slate-400 font-mono select-none">
+            <div class="flex items-center space-x-2">
+                <span class="w-3 h-3 rounded-full bg-[#ff5f56] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#ffbd2e] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#27c93f] inline-block shadow-sm"></span>
+                <span class="ml-2 uppercase font-semibold text-indigo-400 tracking-wider text-[11px]">bash</span>
+            </div>
+            <button onclick="copyCode(this)" class="px-2.5 py-1 rounded-md bg-slate-800/90 hover:bg-slate-700 text-slate-200 transition flex items-center space-x-1.5 shadow-sm font-sans text-xs">
+                <svg class="w-3.5 h-3.5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                <span>Copy</span>
+            </button>
+        </div>
+        <pre class="p-4 sm:p-5 overflow-x-auto text-[13.5px] leading-relaxed custom-scrollbar"><code class="language-bash text-slate-100">   php artisan make:model Admin -mfs
+   php artisan make:controller Admin/AdminController --model=Admin
+
+   php artisan make:model Menu -mfs
+   php artisan make:controller Admin/MenuController --model=Menu
+
+   php artisan make:model Footer -mfs
+   php artisan make:controller Admin/FooterController --model=Footer</code></pre>
+    </div>
+
+                <div id="section-2-cms-dynamic-page-content" class="scroll-mt-24 pt-10 pb-4 border-b border-gray-200 dark:border-gray-800">
+                    <div class="flex items-center space-x-3">
+                        <span class="px-2.5 py-1 text-xs font-bold rounded-md bg-red-100 text-red-700 dark:bg-red-950/80 dark:text-red-300 uppercase tracking-wider">Module 2</span>
+                        <h2 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white tracking-tight">CMS &amp; Dynamic Page Content:</h2>
+                    </div>
+                </div>
+
+    <div class="relative my-6 group rounded-xl overflow-hidden border border-slate-800 shadow-2xl bg-[#0c1017]">
+        <div class="flex items-center justify-between px-4 py-2.5 bg-[#161b22] border-b border-slate-800/80 text-xs text-slate-400 font-mono select-none">
+            <div class="flex items-center space-x-2">
+                <span class="w-3 h-3 rounded-full bg-[#ff5f56] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#ffbd2e] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#27c93f] inline-block shadow-sm"></span>
+                <span class="ml-2 uppercase font-semibold text-indigo-400 tracking-wider text-[11px]">bash</span>
+            </div>
+            <button onclick="copyCode(this)" class="px-2.5 py-1 rounded-md bg-slate-800/90 hover:bg-slate-700 text-slate-200 transition flex items-center space-x-1.5 shadow-sm font-sans text-xs">
+                <svg class="w-3.5 h-3.5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                <span>Copy</span>
+            </button>
+        </div>
+        <pre class="p-4 sm:p-5 overflow-x-auto text-[13.5px] leading-relaxed custom-scrollbar"><code class="language-bash text-slate-100">   php artisan make:model Page -mfs
+   php artisan make:controller Admin/PageController --model=Page</code></pre>
+    </div>
+
+                <div id="section-3-blog-editorial-system" class="scroll-mt-24 pt-10 pb-4 border-b border-gray-200 dark:border-gray-800">
+                    <div class="flex items-center space-x-3">
+                        <span class="px-2.5 py-1 text-xs font-bold rounded-md bg-red-100 text-red-700 dark:bg-red-950/80 dark:text-red-300 uppercase tracking-wider">Module 3</span>
+                        <h2 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white tracking-tight">Blog &amp; Editorial System:</h2>
+                    </div>
+                </div>
+
+    <div class="relative my-6 group rounded-xl overflow-hidden border border-slate-800 shadow-2xl bg-[#0c1017]">
+        <div class="flex items-center justify-between px-4 py-2.5 bg-[#161b22] border-b border-slate-800/80 text-xs text-slate-400 font-mono select-none">
+            <div class="flex items-center space-x-2">
+                <span class="w-3 h-3 rounded-full bg-[#ff5f56] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#ffbd2e] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#27c93f] inline-block shadow-sm"></span>
+                <span class="ml-2 uppercase font-semibold text-indigo-400 tracking-wider text-[11px]">bash</span>
+            </div>
+            <button onclick="copyCode(this)" class="px-2.5 py-1 rounded-md bg-slate-800/90 hover:bg-slate-700 text-slate-200 transition flex items-center space-x-1.5 shadow-sm font-sans text-xs">
+                <svg class="w-3.5 h-3.5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                <span>Copy</span>
+            </button>
+        </div>
+        <pre class="p-4 sm:p-5 overflow-x-auto text-[13.5px] leading-relaxed custom-scrollbar"><code class="language-bash text-slate-100">   php artisan make:model Category -mfs
+   php artisan make:controller Admin/CategoryController --model=Category
+
+   php artisan make:model Author -mfs
+   php artisan make:controller Admin/AuthorController --model=Author
+
+   php artisan make:model Post -mfs
+   php artisan make:controller Admin/PostController --model=Post
+
+   php artisan make:model Comment -mfs
+   php artisan make:controller Admin/CommentController --model=Comment
+
+   php artisan make:model Tag -mfs
+   php artisan make:controller Admin/TagController --model=Tag</code></pre>
+    </div>
+
+                <div id="section-4-media-assets-galleries" class="scroll-mt-24 pt-10 pb-4 border-b border-gray-200 dark:border-gray-800">
+                    <div class="flex items-center space-x-3">
+                        <span class="px-2.5 py-1 text-xs font-bold rounded-md bg-red-100 text-red-700 dark:bg-red-950/80 dark:text-red-300 uppercase tracking-wider">Module 4</span>
+                        <h2 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white tracking-tight">Media, Assets &amp; Galleries:</h2>
+                    </div>
+                </div>
+
+    <div class="relative my-6 group rounded-xl overflow-hidden border border-slate-800 shadow-2xl bg-[#0c1017]">
+        <div class="flex items-center justify-between px-4 py-2.5 bg-[#161b22] border-b border-slate-800/80 text-xs text-slate-400 font-mono select-none">
+            <div class="flex items-center space-x-2">
+                <span class="w-3 h-3 rounded-full bg-[#ff5f56] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#ffbd2e] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#27c93f] inline-block shadow-sm"></span>
+                <span class="ml-2 uppercase font-semibold text-indigo-400 tracking-wider text-[11px]">bash</span>
+            </div>
+            <button onclick="copyCode(this)" class="px-2.5 py-1 rounded-md bg-slate-800/90 hover:bg-slate-700 text-slate-200 transition flex items-center space-x-1.5 shadow-sm font-sans text-xs">
+                <svg class="w-3.5 h-3.5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                <span>Copy</span>
+            </button>
+        </div>
+        <pre class="p-4 sm:p-5 overflow-x-auto text-[13.5px] leading-relaxed custom-scrollbar"><code class="language-bash text-slate-100">   php artisan make:model Picture -mfs
+   php artisan make:controller Admin/PictureController --model=Picture
+
+   php artisan make:model Gallery -mfs
+   php artisan make:controller Admin/GalleryController --model=Gallery</code></pre>
+    </div>
+
+                <div id="section-5-e-commerce-inventory" class="scroll-mt-24 pt-10 pb-4 border-b border-gray-200 dark:border-gray-800">
+                    <div class="flex items-center space-x-3">
+                        <span class="px-2.5 py-1 text-xs font-bold rounded-md bg-red-100 text-red-700 dark:bg-red-950/80 dark:text-red-300 uppercase tracking-wider">Module 5</span>
+                        <h2 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white tracking-tight">E-Commerce &amp; Inventory:</h2>
+                    </div>
+                </div>
+
+    <div class="relative my-6 group rounded-xl overflow-hidden border border-slate-800 shadow-2xl bg-[#0c1017]">
+        <div class="flex items-center justify-between px-4 py-2.5 bg-[#161b22] border-b border-slate-800/80 text-xs text-slate-400 font-mono select-none">
+            <div class="flex items-center space-x-2">
+                <span class="w-3 h-3 rounded-full bg-[#ff5f56] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#ffbd2e] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#27c93f] inline-block shadow-sm"></span>
+                <span class="ml-2 uppercase font-semibold text-indigo-400 tracking-wider text-[11px]">bash</span>
+            </div>
+            <button onclick="copyCode(this)" class="px-2.5 py-1 rounded-md bg-slate-800/90 hover:bg-slate-700 text-slate-200 transition flex items-center space-x-1.5 shadow-sm font-sans text-xs">
+                <svg class="w-3.5 h-3.5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                <span>Copy</span>
+            </button>
+        </div>
+        <pre class="p-4 sm:p-5 overflow-x-auto text-[13.5px] leading-relaxed custom-scrollbar"><code class="language-bash text-slate-100">   php artisan make:model Product -mfs
+   php artisan make:controller Admin/ProductController --model=Product</code></pre>
+    </div>
+
+                <div id="section-6-academic-staff-profiles" class="scroll-mt-24 pt-10 pb-4 border-b border-gray-200 dark:border-gray-800">
+                    <div class="flex items-center space-x-3">
+                        <span class="px-2.5 py-1 text-xs font-bold rounded-md bg-red-100 text-red-700 dark:bg-red-950/80 dark:text-red-300 uppercase tracking-wider">Module 6</span>
+                        <h2 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white tracking-tight">Academic, Staff &amp; Profiles:</h2>
+                    </div>
+                </div>
+
+    <div class="relative my-6 group rounded-xl overflow-hidden border border-slate-800 shadow-2xl bg-[#0c1017]">
+        <div class="flex items-center justify-between px-4 py-2.5 bg-[#161b22] border-b border-slate-800/80 text-xs text-slate-400 font-mono select-none">
+            <div class="flex items-center space-x-2">
+                <span class="w-3 h-3 rounded-full bg-[#ff5f56] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#ffbd2e] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#27c93f] inline-block shadow-sm"></span>
+                <span class="ml-2 uppercase font-semibold text-indigo-400 tracking-wider text-[11px]">bash</span>
+            </div>
+            <button onclick="copyCode(this)" class="px-2.5 py-1 rounded-md bg-slate-800/90 hover:bg-slate-700 text-slate-200 transition flex items-center space-x-1.5 shadow-sm font-sans text-xs">
+                <svg class="w-3.5 h-3.5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                <span>Copy</span>
+            </button>
+        </div>
+        <pre class="p-4 sm:p-5 overflow-x-auto text-[13.5px] leading-relaxed custom-scrollbar"><code class="language-bash text-slate-100">   php artisan make:model Teacher -mfs
+   php artisan make:controller Admin/TeacherController --model=Teacher
+
+   php artisan make:model Profile -mfs
+   php artisan make:controller Admin/ProfileController --model=Profile</code></pre>
+    </div>
+
+                <div id="section-7-custom-program-fellowship-controllers" class="scroll-mt-24 pt-10 pb-4 border-b border-gray-200 dark:border-gray-800">
+                    <div class="flex items-center space-x-3">
+                        <span class="px-2.5 py-1 text-xs font-bold rounded-md bg-red-100 text-red-700 dark:bg-red-950/80 dark:text-red-300 uppercase tracking-wider">Module 7</span>
+                        <h2 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white tracking-tight">Custom Program &amp; Fellowship Controllers:</h2>
+                    </div>
+                </div>
+
+    <div class="relative my-6 group rounded-xl overflow-hidden border border-slate-800 shadow-2xl bg-[#0c1017]">
+        <div class="flex items-center justify-between px-4 py-2.5 bg-[#161b22] border-b border-slate-800/80 text-xs text-slate-400 font-mono select-none">
+            <div class="flex items-center space-x-2">
+                <span class="w-3 h-3 rounded-full bg-[#ff5f56] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#ffbd2e] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#27c93f] inline-block shadow-sm"></span>
+                <span class="ml-2 uppercase font-semibold text-indigo-400 tracking-wider text-[11px]">bash</span>
+            </div>
+            <button onclick="copyCode(this)" class="px-2.5 py-1 rounded-md bg-slate-800/90 hover:bg-slate-700 text-slate-200 transition flex items-center space-x-1.5 shadow-sm font-sans text-xs">
+                <svg class="w-3.5 h-3.5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                <span>Copy</span>
+            </button>
+        </div>
+        <pre class="p-4 sm:p-5 overflow-x-auto text-[13.5px] leading-relaxed custom-scrollbar"><code class="language-bash text-slate-100">   php artisan make:controller NkbFellowshipController
+   php artisan make:controller MgbFellowshipController
+   php artisan make:controller SrFellowshipController
+   php artisan make:controller SkpFellowshipController
+   php artisan make:controller SkmFellowshipController</code></pre>
+    </div>
+
+                <div id="section-8-role-user-many-to-many-pivot-table-migration" class="scroll-mt-24 pt-10 pb-4 border-b border-gray-200 dark:border-gray-800">
+                    <div class="flex items-center space-x-3">
+                        <span class="px-2.5 py-1 text-xs font-bold rounded-md bg-red-100 text-red-700 dark:bg-red-950/80 dark:text-red-300 uppercase tracking-wider">Module 8</span>
+                        <h2 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white tracking-tight">Role-User Many-to-Many Pivot Table Migration:</h2>
+                    </div>
+                </div>
+
+    <div class="relative my-6 group rounded-xl overflow-hidden border border-slate-800 shadow-2xl bg-[#0c1017]">
+        <div class="flex items-center justify-between px-4 py-2.5 bg-[#161b22] border-b border-slate-800/80 text-xs text-slate-400 font-mono select-none">
+            <div class="flex items-center space-x-2">
+                <span class="w-3 h-3 rounded-full bg-[#ff5f56] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#ffbd2e] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#27c93f] inline-block shadow-sm"></span>
+                <span class="ml-2 uppercase font-semibold text-indigo-400 tracking-wider text-[11px]">bash</span>
+            </div>
+            <button onclick="copyCode(this)" class="px-2.5 py-1 rounded-md bg-slate-800/90 hover:bg-slate-700 text-slate-200 transition flex items-center space-x-1.5 shadow-sm font-sans text-xs">
+                <svg class="w-3.5 h-3.5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                <span>Copy</span>
+            </button>
+        </div>
+        <pre class="p-4 sm:p-5 overflow-x-auto text-[13.5px] leading-relaxed custom-scrollbar"><code class="language-bash text-slate-100">   php artisan make:migration create_role_user_table --create=role_user</code></pre>
+    </div>
+
+                <div id="section-3-multi-layout-partial-modular-architecture" class="scroll-mt-24 pt-10 pb-4 border-b border-gray-200 dark:border-gray-800">
+                    <div class="flex items-center space-x-3">
+                        <span class="px-2.5 py-1 text-xs font-bold rounded-md bg-red-100 text-red-700 dark:bg-red-950/80 dark:text-red-300 uppercase tracking-wider">Module 3</span>
+                        <h2 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white tracking-tight">MULTI-LAYOUT &amp; PARTIAL MODULAR ARCHITECTURE</h2>
+                    </div>
+                </div>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">For clean separation of concerns, scaffold dedicated layout files and reusable</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">partials across 5 main application sections: Admin, User, Academic, Home, and Blog.</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">A. Generate Master Layout View Templates:</p>
+
+    <div class="relative my-6 group rounded-xl overflow-hidden border border-slate-800 shadow-2xl bg-[#0c1017]">
+        <div class="flex items-center justify-between px-4 py-2.5 bg-[#161b22] border-b border-slate-800/80 text-xs text-slate-400 font-mono select-none">
+            <div class="flex items-center space-x-2">
+                <span class="w-3 h-3 rounded-full bg-[#ff5f56] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#ffbd2e] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#27c93f] inline-block shadow-sm"></span>
+                <span class="ml-2 uppercase font-semibold text-indigo-400 tracking-wider text-[11px]">bash</span>
+            </div>
+            <button onclick="copyCode(this)" class="px-2.5 py-1 rounded-md bg-slate-800/90 hover:bg-slate-700 text-slate-200 transition flex items-center space-x-1.5 shadow-sm font-sans text-xs">
+                <svg class="w-3.5 h-3.5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                <span>Copy</span>
+            </button>
+        </div>
+        <pre class="p-4 sm:p-5 overflow-x-auto text-[13.5px] leading-relaxed custom-scrollbar"><code class="language-bash text-slate-100">php artisan make:view layouts.admin-layout
+php artisan make:view layouts.user-layout
+php artisan make:view layouts.academic-layout
+php artisan make:view layouts.home-layout
+php artisan make:view layouts.blog-layout</code></pre>
+    </div>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">B. Generate Modular Partials for Each Section:</p>
+
+                <div id="section-1-admin-partials" class="scroll-mt-24 pt-10 pb-4 border-b border-gray-200 dark:border-gray-800">
+                    <div class="flex items-center space-x-3">
+                        <span class="px-2.5 py-1 text-xs font-bold rounded-md bg-red-100 text-red-700 dark:bg-red-950/80 dark:text-red-300 uppercase tracking-wider">Module 1</span>
+                        <h2 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white tracking-tight">Admin Partials:</h2>
+                    </div>
+                </div>
+
+    <div class="relative my-6 group rounded-xl overflow-hidden border border-slate-800 shadow-2xl bg-[#0c1017]">
+        <div class="flex items-center justify-between px-4 py-2.5 bg-[#161b22] border-b border-slate-800/80 text-xs text-slate-400 font-mono select-none">
+            <div class="flex items-center space-x-2">
+                <span class="w-3 h-3 rounded-full bg-[#ff5f56] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#ffbd2e] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#27c93f] inline-block shadow-sm"></span>
+                <span class="ml-2 uppercase font-semibold text-indigo-400 tracking-wider text-[11px]">bash</span>
+            </div>
+            <button onclick="copyCode(this)" class="px-2.5 py-1 rounded-md bg-slate-800/90 hover:bg-slate-700 text-slate-200 transition flex items-center space-x-1.5 shadow-sm font-sans text-xs">
+                <svg class="w-3.5 h-3.5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                <span>Copy</span>
+            </button>
+        </div>
+        <pre class="p-4 sm:p-5 overflow-x-auto text-[13.5px] leading-relaxed custom-scrollbar"><code class="language-bash text-slate-100">   php artisan make:view admin.admin-partials.head
+   php artisan make:view admin.admin-partials.header
+   php artisan make:view admin.admin-partials.navbar
+   php artisan make:view admin.admin-partials.sidebar
+   php artisan make:view admin.admin-partials.footer
+   php artisan make:view admin.admin-partials.styles
+   php artisan make:view admin.admin-partials.scripts
+   php artisan make:view admin.main
+   php artisan make:view admin.admin-main</code></pre>
+    </div>
+
+                <div id="section-2-user-portal-partials" class="scroll-mt-24 pt-10 pb-4 border-b border-gray-200 dark:border-gray-800">
+                    <div class="flex items-center space-x-3">
+                        <span class="px-2.5 py-1 text-xs font-bold rounded-md bg-red-100 text-red-700 dark:bg-red-950/80 dark:text-red-300 uppercase tracking-wider">Module 2</span>
+                        <h2 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white tracking-tight">User Portal Partials:</h2>
+                    </div>
+                </div>
+
+    <div class="relative my-6 group rounded-xl overflow-hidden border border-slate-800 shadow-2xl bg-[#0c1017]">
+        <div class="flex items-center justify-between px-4 py-2.5 bg-[#161b22] border-b border-slate-800/80 text-xs text-slate-400 font-mono select-none">
+            <div class="flex items-center space-x-2">
+                <span class="w-3 h-3 rounded-full bg-[#ff5f56] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#ffbd2e] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#27c93f] inline-block shadow-sm"></span>
+                <span class="ml-2 uppercase font-semibold text-indigo-400 tracking-wider text-[11px]">bash</span>
+            </div>
+            <button onclick="copyCode(this)" class="px-2.5 py-1 rounded-md bg-slate-800/90 hover:bg-slate-700 text-slate-200 transition flex items-center space-x-1.5 shadow-sm font-sans text-xs">
+                <svg class="w-3.5 h-3.5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                <span>Copy</span>
+            </button>
+        </div>
+        <pre class="p-4 sm:p-5 overflow-x-auto text-[13.5px] leading-relaxed custom-scrollbar"><code class="language-bash text-slate-100">   php artisan make:view user.user-partials.head
+   php artisan make:view user.user-partials.header
+   php artisan make:view user.user-partials.navbar
+   php artisan make:view user.user-partials.sidebar
+   php artisan make:view user.user-partials.footer
+   php artisan make:view user.user-partials.styles
+   php artisan make:view user.user-partials.scripts
+   php artisan make:view user.main
+   php artisan make:view user.user-main</code></pre>
+    </div>
+
+                <div id="section-3-academic-section-partials" class="scroll-mt-24 pt-10 pb-4 border-b border-gray-200 dark:border-gray-800">
+                    <div class="flex items-center space-x-3">
+                        <span class="px-2.5 py-1 text-xs font-bold rounded-md bg-red-100 text-red-700 dark:bg-red-950/80 dark:text-red-300 uppercase tracking-wider">Module 3</span>
+                        <h2 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white tracking-tight">Academic Section Partials:</h2>
+                    </div>
+                </div>
+
+    <div class="relative my-6 group rounded-xl overflow-hidden border border-slate-800 shadow-2xl bg-[#0c1017]">
+        <div class="flex items-center justify-between px-4 py-2.5 bg-[#161b22] border-b border-slate-800/80 text-xs text-slate-400 font-mono select-none">
+            <div class="flex items-center space-x-2">
+                <span class="w-3 h-3 rounded-full bg-[#ff5f56] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#ffbd2e] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#27c93f] inline-block shadow-sm"></span>
+                <span class="ml-2 uppercase font-semibold text-indigo-400 tracking-wider text-[11px]">bash</span>
+            </div>
+            <button onclick="copyCode(this)" class="px-2.5 py-1 rounded-md bg-slate-800/90 hover:bg-slate-700 text-slate-200 transition flex items-center space-x-1.5 shadow-sm font-sans text-xs">
+                <svg class="w-3.5 h-3.5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                <span>Copy</span>
+            </button>
+        </div>
+        <pre class="p-4 sm:p-5 overflow-x-auto text-[13.5px] leading-relaxed custom-scrollbar"><code class="language-bash text-slate-100">   php artisan make:view academic.academic-partials.head
+   php artisan make:view academic.academic-partials.header
+   php artisan make:view academic.academic-partials.navbar
+   php artisan make:view academic.academic-partials.sidebar
+   php artisan make:view academic.academic-partials.footer
+   php artisan make:view academic.academic-partials.styles
+   php artisan make:view academic.academic-partials.scripts
+   php artisan make:view academic.main
+   php artisan make:view academic.academic-main</code></pre>
+    </div>
+
+                <div id="section-4-home-landing-partials" class="scroll-mt-24 pt-10 pb-4 border-b border-gray-200 dark:border-gray-800">
+                    <div class="flex items-center space-x-3">
+                        <span class="px-2.5 py-1 text-xs font-bold rounded-md bg-red-100 text-red-700 dark:bg-red-950/80 dark:text-red-300 uppercase tracking-wider">Module 4</span>
+                        <h2 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white tracking-tight">Home &amp; Landing Partials:</h2>
+                    </div>
+                </div>
+
+    <div class="relative my-6 group rounded-xl overflow-hidden border border-slate-800 shadow-2xl bg-[#0c1017]">
+        <div class="flex items-center justify-between px-4 py-2.5 bg-[#161b22] border-b border-slate-800/80 text-xs text-slate-400 font-mono select-none">
+            <div class="flex items-center space-x-2">
+                <span class="w-3 h-3 rounded-full bg-[#ff5f56] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#ffbd2e] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#27c93f] inline-block shadow-sm"></span>
+                <span class="ml-2 uppercase font-semibold text-indigo-400 tracking-wider text-[11px]">bash</span>
+            </div>
+            <button onclick="copyCode(this)" class="px-2.5 py-1 rounded-md bg-slate-800/90 hover:bg-slate-700 text-slate-200 transition flex items-center space-x-1.5 shadow-sm font-sans text-xs">
+                <svg class="w-3.5 h-3.5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                <span>Copy</span>
+            </button>
+        </div>
+        <pre class="p-4 sm:p-5 overflow-x-auto text-[13.5px] leading-relaxed custom-scrollbar"><code class="language-bash text-slate-100">   php artisan make:view home.home-partials.head
+   php artisan make:view home.home-partials.header
+   php artisan make:view home.home-partials.navbar
+   php artisan make:view home.home-partials.sidebar
+   php artisan make:view home.home-partials.footer
+   php artisan make:view home.home-partials.styles
+   php artisan make:view home.home-partials.scripts
+   php artisan make:view home.main
+   php artisan make:view home.home-main</code></pre>
+    </div>
+
+                <div id="section-5-blog-section-partials" class="scroll-mt-24 pt-10 pb-4 border-b border-gray-200 dark:border-gray-800">
+                    <div class="flex items-center space-x-3">
+                        <span class="px-2.5 py-1 text-xs font-bold rounded-md bg-red-100 text-red-700 dark:bg-red-950/80 dark:text-red-300 uppercase tracking-wider">Module 5</span>
+                        <h2 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white tracking-tight">Blog Section Partials:</h2>
+                    </div>
+                </div>
+
+    <div class="relative my-6 group rounded-xl overflow-hidden border border-slate-800 shadow-2xl bg-[#0c1017]">
+        <div class="flex items-center justify-between px-4 py-2.5 bg-[#161b22] border-b border-slate-800/80 text-xs text-slate-400 font-mono select-none">
+            <div class="flex items-center space-x-2">
+                <span class="w-3 h-3 rounded-full bg-[#ff5f56] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#ffbd2e] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#27c93f] inline-block shadow-sm"></span>
+                <span class="ml-2 uppercase font-semibold text-indigo-400 tracking-wider text-[11px]">bash</span>
+            </div>
+            <button onclick="copyCode(this)" class="px-2.5 py-1 rounded-md bg-slate-800/90 hover:bg-slate-700 text-slate-200 transition flex items-center space-x-1.5 shadow-sm font-sans text-xs">
+                <svg class="w-3.5 h-3.5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                <span>Copy</span>
+            </button>
+        </div>
+        <pre class="p-4 sm:p-5 overflow-x-auto text-[13.5px] leading-relaxed custom-scrollbar"><code class="language-bash text-slate-100">   php artisan make:view blog.blog-partials.head
+   php artisan make:view blog.blog-partials.header
+   php artisan make:view blog.blog-partials.navbar
+   php artisan make:view blog.blog-partials.sidebar
+   php artisan make:view blog.blog-partials.footer
+   php artisan make:view blog.blog-partials.styles
+   php artisan make:view blog.blog-partials.scripts
+   php artisan make:view blog.main
+   php artisan make:view blog.blog-main</code></pre>
+    </div>
+
+                <div id="section-6-global-layout-partials" class="scroll-mt-24 pt-10 pb-4 border-b border-gray-200 dark:border-gray-800">
+                    <div class="flex items-center space-x-3">
+                        <span class="px-2.5 py-1 text-xs font-bold rounded-md bg-red-100 text-red-700 dark:bg-red-950/80 dark:text-red-300 uppercase tracking-wider">Module 6</span>
+                        <h2 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white tracking-tight">Global Layout Partials:</h2>
+                    </div>
+                </div>
+
+    <div class="relative my-6 group rounded-xl overflow-hidden border border-slate-800 shadow-2xl bg-[#0c1017]">
+        <div class="flex items-center justify-between px-4 py-2.5 bg-[#161b22] border-b border-slate-800/80 text-xs text-slate-400 font-mono select-none">
+            <div class="flex items-center space-x-2">
+                <span class="w-3 h-3 rounded-full bg-[#ff5f56] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#ffbd2e] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#27c93f] inline-block shadow-sm"></span>
+                <span class="ml-2 uppercase font-semibold text-indigo-400 tracking-wider text-[11px]">bash</span>
+            </div>
+            <button onclick="copyCode(this)" class="px-2.5 py-1 rounded-md bg-slate-800/90 hover:bg-slate-700 text-slate-200 transition flex items-center space-x-1.5 shadow-sm font-sans text-xs">
+                <svg class="w-3.5 h-3.5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                <span>Copy</span>
+            </button>
+        </div>
+        <pre class="p-4 sm:p-5 overflow-x-auto text-[13.5px] leading-relaxed custom-scrollbar"><code class="language-bash text-slate-100">   php artisan make:view layouts.partials.head
+   php artisan make:view layouts.partials.header
+   php artisan make:view layouts.partials.navbar
+   php artisan make:view layouts.partials.slider
+   php artisan make:view layouts.partials.sidebar
+   php artisan make:view layouts.partials.news-section
+   php artisan make:view layouts.partials.footer
+   php artisan make:view layouts.partials.scripts</code></pre>
+    </div>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">C. Structure of a Master Layout Template (e.g. layouts/admin-layout.blade.php):</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">&lt;!DOCTYPE html&gt;</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">&lt;html lang=&quot;en&quot;&gt;</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">&lt;head&gt;</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">@include(&#x27;admin.admin-partials.head&#x27;)</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">@include(&#x27;admin.admin-partials.styles&#x27;)</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">@stack(&#x27;styles&#x27;)</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">&lt;/head&gt;</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">&lt;body class=&quot;bg-gray-100 font-sans leading-normal tracking-normal&quot;&gt;</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">@include(&#x27;admin.admin-partials.header&#x27;)</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">@include(&#x27;admin.admin-partials.navbar&#x27;)</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">&lt;div class=&quot;flex flex-col md:flex-row&quot;&gt;</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">@include(&#x27;admin.admin-partials.sidebar&#x27;)</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">&lt;main class=&quot;main-content flex-1 bg-gray-100 mt-12 md:mt-2 pb-24 md:pb-5&quot;&gt;</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">@yield(&#x27;content&#x27;)</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">&lt;/main&gt;</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">&lt;/div&gt;</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">@include(&#x27;admin.admin-partials.footer&#x27;)</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">@include(&#x27;admin.admin-partials.scripts&#x27;)</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">@stack(&#x27;scripts&#x27;)</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">&lt;/body&gt;</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">&lt;/html&gt;</p>
+
+                <div id="section-4-dynamic-cms-page-content-management-caching-system" class="scroll-mt-24 pt-10 pb-4 border-b border-gray-200 dark:border-gray-800">
+                    <div class="flex items-center space-x-3">
+                        <span class="px-2.5 py-1 text-xs font-bold rounded-md bg-red-100 text-red-700 dark:bg-red-950/80 dark:text-red-300 uppercase tracking-wider">Module 4</span>
+                        <h2 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white tracking-tight">DYNAMIC CMS PAGE CONTENT MANAGEMENT &amp; CACHING SYSTEM</h2>
+                    </div>
+                </div>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">When website pages (About, Services, Privacy, Terms, FAQ) share the same layout</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">and store their content in the database, implement a unified dynamic controller:</p>
+
+            <div id="step-1-pages-database-schema" class="scroll-mt-24 pt-10 pb-4 border-b border-gray-200 dark:border-gray-800">
+                <div class="flex items-center space-x-3">
+                    <span class="px-2.5 py-1 text-xs font-bold rounded-md bg-indigo-100 text-indigo-700 dark:bg-indigo-950/80 dark:text-indigo-300 uppercase tracking-wider">STEP 1</span>
+                    <h2 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white tracking-tight">Pages Database Schema</h2>
+                </div>
+            </div>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">Open <code class="px-1.5 py-0.5 rounded text-xs font-mono bg-indigo-50 text-indigo-700 dark:bg-slate-800 dark:text-pink-400 font-semibold border border-indigo-100 dark:border-slate-700/60">database/migrations/xxxx_create_pages_table.php</code>:</p>
+
+    <div class="relative my-6 group rounded-xl overflow-hidden border border-slate-800 shadow-2xl bg-[#0c1017]">
+        <div class="flex items-center justify-between px-4 py-2.5 bg-[#161b22] border-b border-slate-800/80 text-xs text-slate-400 font-mono select-none">
+            <div class="flex items-center space-x-2">
+                <span class="w-3 h-3 rounded-full bg-[#ff5f56] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#ffbd2e] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#27c93f] inline-block shadow-sm"></span>
+                <span class="ml-2 uppercase font-semibold text-indigo-400 tracking-wider text-[11px]">php</span>
+            </div>
+            <button onclick="copyCode(this)" class="px-2.5 py-1 rounded-md bg-slate-800/90 hover:bg-slate-700 text-slate-200 transition flex items-center space-x-1.5 shadow-sm font-sans text-xs">
+                <svg class="w-3.5 h-3.5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                <span>Copy</span>
+            </button>
+        </div>
+        <pre class="p-4 sm:p-5 overflow-x-auto text-[13.5px] leading-relaxed custom-scrollbar"><code class="language-php text-slate-100">Schema::create(&#x27;pages&#x27;, function (Blueprint $table) {
+    $table-&gt;id();
+    $table-&gt;string(&#x27;title&#x27;);
+    $table-&gt;string(&#x27;slug&#x27;)-&gt;unique();
+    $table-&gt;text(&#x27;content&#x27;);
+    $table-&gt;string(&#x27;meta_title&#x27;)-&gt;nullable();
+    $table-&gt;string(&#x27;meta_description&#x27;)-&gt;nullable();
+    $table-&gt;boolean(&#x27;is_active&#x27;)-&gt;default(true);
+    $table-&gt;timestamps();
+});</code></pre>
+    </div>
+
+            <div id="step-2-page-controller-with-high-performance-caching" class="scroll-mt-24 pt-10 pb-4 border-b border-gray-200 dark:border-gray-800">
+                <div class="flex items-center space-x-3">
+                    <span class="px-2.5 py-1 text-xs font-bold rounded-md bg-indigo-100 text-indigo-700 dark:bg-indigo-950/80 dark:text-indigo-300 uppercase tracking-wider">STEP 2</span>
+                    <h2 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white tracking-tight">Page Controller with High-Performance Caching</h2>
+                </div>
+            </div>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">Open <code class="px-1.5 py-0.5 rounded text-xs font-mono bg-indigo-50 text-indigo-700 dark:bg-slate-800 dark:text-pink-400 font-semibold border border-indigo-100 dark:border-slate-700/60">app/Http/Controllers/PageController.php</code>:</p>
+
+    <div class="relative my-6 group rounded-xl overflow-hidden border border-slate-800 shadow-2xl bg-[#0c1017]">
+        <div class="flex items-center justify-between px-4 py-2.5 bg-[#161b22] border-b border-slate-800/80 text-xs text-slate-400 font-mono select-none">
+            <div class="flex items-center space-x-2">
+                <span class="w-3 h-3 rounded-full bg-[#ff5f56] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#ffbd2e] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#27c93f] inline-block shadow-sm"></span>
+                <span class="ml-2 uppercase font-semibold text-indigo-400 tracking-wider text-[11px]">php</span>
+            </div>
+            <button onclick="copyCode(this)" class="px-2.5 py-1 rounded-md bg-slate-800/90 hover:bg-slate-700 text-slate-200 transition flex items-center space-x-1.5 shadow-sm font-sans text-xs">
+                <svg class="w-3.5 h-3.5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                <span>Copy</span>
+            </button>
+        </div>
+        <pre class="p-4 sm:p-5 overflow-x-auto text-[13.5px] leading-relaxed custom-scrollbar"><code class="language-php text-slate-100">&lt;?php</code></pre>
+    </div>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">namespace App\Http\Controllers;</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">use App\Models\Page;</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">use Illuminate\Support\Facades\Cache;</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">use Illuminate\View\View;</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">class PageController extends Controller</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">{</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">/**</p>
+<ul class="my-3 space-y-2 pl-6 list-disc text-gray-700 dark:text-gray-300 text-sm md:text-base leading-relaxed">
+<li>Display a dynamic CMS page by slug.</li>
+</ul>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">*/</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">public function show(string $slug): View</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">{</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">// Cache static page content for 24 hours to eliminate repetitive DB queries:</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">$page = Cache::remember(&quot;page_{$slug}&quot;, now()-&gt;addHours(24), function () use ($slug) {</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">return Page::where(&#x27;slug&#x27;, $slug)</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">-&gt;where(&#x27;is_active&#x27;, true)</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">-&gt;firstOrFail();</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">});</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">return view(&#x27;pages.show&#x27;, compact(&#x27;page&#x27;));</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">}</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">}</p>
+
+            <div id="step-3-define-dynamic-route-in-routes-web-php" class="scroll-mt-24 pt-10 pb-4 border-b border-gray-200 dark:border-gray-800">
+                <div class="flex items-center space-x-3">
+                    <span class="px-2.5 py-1 text-xs font-bold rounded-md bg-indigo-100 text-indigo-700 dark:bg-indigo-950/80 dark:text-indigo-300 uppercase tracking-wider">STEP 3</span>
+                    <h2 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white tracking-tight">Define Dynamic Route in routes/web.php</h2>
+                </div>
+            </div>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">Place this route near the bottom of <code class="px-1.5 py-0.5 rounded text-xs font-mono bg-indigo-50 text-indigo-700 dark:bg-slate-800 dark:text-pink-400 font-semibold border border-indigo-100 dark:border-slate-700/60">routes/web.php</code>:</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">use App\Http\Controllers\PageController;</p>
+
+    <div class="relative my-6 group rounded-xl overflow-hidden border border-slate-800 shadow-2xl bg-[#0c1017]">
+        <div class="flex items-center justify-between px-4 py-2.5 bg-[#161b22] border-b border-slate-800/80 text-xs text-slate-400 font-mono select-none">
+            <div class="flex items-center space-x-2">
+                <span class="w-3 h-3 rounded-full bg-[#ff5f56] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#ffbd2e] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#27c93f] inline-block shadow-sm"></span>
+                <span class="ml-2 uppercase font-semibold text-indigo-400 tracking-wider text-[11px]">php</span>
+            </div>
+            <button onclick="copyCode(this)" class="px-2.5 py-1 rounded-md bg-slate-800/90 hover:bg-slate-700 text-slate-200 transition flex items-center space-x-1.5 shadow-sm font-sans text-xs">
+                <svg class="w-3.5 h-3.5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                <span>Copy</span>
+            </button>
+        </div>
+        <pre class="p-4 sm:p-5 overflow-x-auto text-[13.5px] leading-relaxed custom-scrollbar"><code class="language-php text-slate-100">Route::get(&#x27;/page/{slug}&#x27;, [PageController::class, &#x27;show&#x27;])-&gt;name(&#x27;page.show&#x27;);</code></pre>
+    </div>
+
+            <div id="step-4-reusable-page-blade-template-resources-views-pages-show-blade-php" class="scroll-mt-24 pt-10 pb-4 border-b border-gray-200 dark:border-gray-800">
+                <div class="flex items-center space-x-3">
+                    <span class="px-2.5 py-1 text-xs font-bold rounded-md bg-indigo-100 text-indigo-700 dark:bg-indigo-950/80 dark:text-indigo-300 uppercase tracking-wider">STEP 4</span>
+                    <h2 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white tracking-tight">Reusable Page Blade Template (resources/views/pages/show.blade.php)</h2>
+                </div>
+            </div>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">@extends(&#x27;layouts.home-layout&#x27;)</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">@section(&#x27;title&#x27;, $page-&gt;meta_title ?? $page-&gt;title)</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">@section(&#x27;content&#x27;)</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">&lt;div class=&quot;container mx-auto px-4 py-12 max-w-4xl&quot;&gt;</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">&lt;article class=&quot;prose lg:prose-xl bg-white p-8 rounded-lg shadow&quot;&gt;</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">&lt;h1 class=&quot;text-3xl font-bold text-gray-900 mb-6&quot;&gt;{{ $page-&gt;title }}&lt;/h1&gt;</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">&lt;div class=&quot;page-body text-gray-700 leading-relaxed&quot;&gt;</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">{!! $page-&gt;content !!}</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">&lt;/div&gt;</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">&lt;/article&gt;</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">&lt;/div&gt;</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">@endsection</p>
+
+                <div id="section-5-pagination-indexing-timezones-blade-practical-helpers" class="scroll-mt-24 pt-10 pb-4 border-b border-gray-200 dark:border-gray-800">
+                    <div class="flex items-center space-x-3">
+                        <span class="px-2.5 py-1 text-xs font-bold rounded-md bg-red-100 text-red-700 dark:bg-red-950/80 dark:text-red-300 uppercase tracking-wider">Module 5</span>
+                        <h2 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white tracking-tight">PAGINATION INDEXING, TIMEZONES &amp; BLADE PRACTICAL HELPERS</h2>
+                    </div>
+                </div>
+
+                <div id="section-1-continuous-pagination-row-indexing-formula" class="scroll-mt-24 pt-10 pb-4 border-b border-gray-200 dark:border-gray-800">
+                    <div class="flex items-center space-x-3">
+                        <span class="px-2.5 py-1 text-xs font-bold rounded-md bg-red-100 text-red-700 dark:bg-red-950/80 dark:text-red-300 uppercase tracking-wider">Module 1</span>
+                        <h2 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white tracking-tight">Continuous Pagination Row Indexing Formula:</h2>
+                    </div>
+                </div>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">When using pagination (<code class="px-1.5 py-0.5 rounded text-xs font-mono bg-indigo-50 text-indigo-700 dark:bg-slate-800 dark:text-pink-400 font-semibold border border-indigo-100 dark:border-slate-700/60">$products-&gt;paginate(10)</code>), <code class="px-1.5 py-0.5 rounded text-xs font-mono bg-indigo-50 text-indigo-700 dark:bg-slate-800 dark:text-pink-400 font-semibold border border-indigo-100 dark:border-slate-700/60">$loop-&gt;iteration</code> resets to 1</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">on every page. To display continuous row numbers (e.g. 1-10 on page 1, 11-20 on page 2):</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">&lt;tbody&gt;</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">@foreach ($products as $product)</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">@php</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">$rowNumber = $loop-&gt;iteration + $products-&gt;firstItem() - 1;</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">@endphp</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">&lt;tr&gt;</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">&lt;th scope=&quot;row&quot;&gt;{{ $rowNumber }}&lt;/th&gt;</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">&lt;td&gt;{{ $product-&gt;name }}&lt;/td&gt;</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">&lt;td&gt;${{ number_format($product-&gt;price, 2) }}&lt;/td&gt;</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">&lt;/tr&gt;</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">@endforeach</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">&lt;/tbody&gt;</p>
+
+                <div id="section-2-setting-default-application-timezone" class="scroll-mt-24 pt-10 pb-4 border-b border-gray-200 dark:border-gray-800">
+                    <div class="flex items-center space-x-3">
+                        <span class="px-2.5 py-1 text-xs font-bold rounded-md bg-red-100 text-red-700 dark:bg-red-950/80 dark:text-red-300 uppercase tracking-wider">Module 2</span>
+                        <h2 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white tracking-tight">Setting Default Application Timezone:</h2>
+                    </div>
+                </div>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">Open <code class="px-1.5 py-0.5 rounded text-xs font-mono bg-indigo-50 text-indigo-700 dark:bg-slate-800 dark:text-pink-400 font-semibold border border-indigo-100 dark:border-slate-700/60">config/app.php</code>:</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">&#x27;timezone&#x27; =&gt; &#x27;Asia/Kolkata&#x27;,</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">In Laravel 11/12/13, set in <code class="px-1.5 py-0.5 rounded text-xs font-mono bg-indigo-50 text-indigo-700 dark:bg-slate-800 dark:text-pink-400 font-semibold border border-indigo-100 dark:border-slate-700/60">.env</code>:</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">APP_TIMEZONE=Asia/Kolkata</p>
+
+                <div id="section-3-dynamic-read-more-button-helper" class="scroll-mt-24 pt-10 pb-4 border-b border-gray-200 dark:border-gray-800">
+                    <div class="flex items-center space-x-3">
+                        <span class="px-2.5 py-1 text-xs font-bold rounded-md bg-red-100 text-red-700 dark:bg-red-950/80 dark:text-red-300 uppercase tracking-wider">Module 3</span>
+                        <h2 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white tracking-tight">Dynamic Read More Button Helper:</h2>
+                    </div>
+                </div>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">&lt;div class=&quot;text-end mt-2&quot;&gt;</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">&lt;a href=&quot;{{ url(&#x27;nkb-fellowship&#x27;) }}&quot; class=&quot;font-bold btn btn-outline-danger&quot;&gt;</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">Read More Here &lt;i class=&quot;fas fa-arrow-right me-2&quot;&gt;&lt;/i&gt;</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">&lt;/a&gt;</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">&lt;/div&gt;</p>
+
+                <div id="section-6-database-management-migrations-seeders" class="scroll-mt-24 pt-10 pb-4 border-b border-gray-200 dark:border-gray-800">
+                    <div class="flex items-center space-x-3">
+                        <span class="px-2.5 py-1 text-xs font-bold rounded-md bg-red-100 text-red-700 dark:bg-red-950/80 dark:text-red-300 uppercase tracking-wider">Module 6</span>
+                        <h2 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white tracking-tight">DATABASE MANAGEMENT, MIGRATIONS &amp; SEEDERS</h2>
+                    </div>
+                </div>
+
+                <div id="section-1-run-all-migrations" class="scroll-mt-24 pt-10 pb-4 border-b border-gray-200 dark:border-gray-800">
+                    <div class="flex items-center space-x-3">
+                        <span class="px-2.5 py-1 text-xs font-bold rounded-md bg-red-100 text-red-700 dark:bg-red-950/80 dark:text-red-300 uppercase tracking-wider">Module 1</span>
+                        <h2 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white tracking-tight">Run all migrations:</h2>
+                    </div>
+                </div>
+
+    <div class="relative my-6 group rounded-xl overflow-hidden border border-slate-800 shadow-2xl bg-[#0c1017]">
+        <div class="flex items-center justify-between px-4 py-2.5 bg-[#161b22] border-b border-slate-800/80 text-xs text-slate-400 font-mono select-none">
+            <div class="flex items-center space-x-2">
+                <span class="w-3 h-3 rounded-full bg-[#ff5f56] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#ffbd2e] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#27c93f] inline-block shadow-sm"></span>
+                <span class="ml-2 uppercase font-semibold text-indigo-400 tracking-wider text-[11px]">bash</span>
+            </div>
+            <button onclick="copyCode(this)" class="px-2.5 py-1 rounded-md bg-slate-800/90 hover:bg-slate-700 text-slate-200 transition flex items-center space-x-1.5 shadow-sm font-sans text-xs">
+                <svg class="w-3.5 h-3.5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                <span>Copy</span>
+            </button>
+        </div>
+        <pre class="p-4 sm:p-5 overflow-x-auto text-[13.5px] leading-relaxed custom-scrollbar"><code class="language-bash text-slate-100">   php artisan migrate</code></pre>
+    </div>
+
+                <div id="section-2-fresh-migration-drops-all-tables-and-seeds-database" class="scroll-mt-24 pt-10 pb-4 border-b border-gray-200 dark:border-gray-800">
+                    <div class="flex items-center space-x-3">
+                        <span class="px-2.5 py-1 text-xs font-bold rounded-md bg-red-100 text-red-700 dark:bg-red-950/80 dark:text-red-300 uppercase tracking-wider">Module 2</span>
+                        <h2 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white tracking-tight">Fresh migration (drops all tables) and seeds database:</h2>
+                    </div>
+                </div>
+
+    <div class="relative my-6 group rounded-xl overflow-hidden border border-slate-800 shadow-2xl bg-[#0c1017]">
+        <div class="flex items-center justify-between px-4 py-2.5 bg-[#161b22] border-b border-slate-800/80 text-xs text-slate-400 font-mono select-none">
+            <div class="flex items-center space-x-2">
+                <span class="w-3 h-3 rounded-full bg-[#ff5f56] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#ffbd2e] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#27c93f] inline-block shadow-sm"></span>
+                <span class="ml-2 uppercase font-semibold text-indigo-400 tracking-wider text-[11px]">bash</span>
+            </div>
+            <button onclick="copyCode(this)" class="px-2.5 py-1 rounded-md bg-slate-800/90 hover:bg-slate-700 text-slate-200 transition flex items-center space-x-1.5 shadow-sm font-sans text-xs">
+                <svg class="w-3.5 h-3.5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                <span>Copy</span>
+            </button>
+        </div>
+        <pre class="p-4 sm:p-5 overflow-x-auto text-[13.5px] leading-relaxed custom-scrollbar"><code class="language-bash text-slate-100">   php artisan migrate:fresh --seed</code></pre>
+    </div>
+
+                <div id="section-3-run-a-specific-database-seeder" class="scroll-mt-24 pt-10 pb-4 border-b border-gray-200 dark:border-gray-800">
+                    <div class="flex items-center space-x-3">
+                        <span class="px-2.5 py-1 text-xs font-bold rounded-md bg-red-100 text-red-700 dark:bg-red-950/80 dark:text-red-300 uppercase tracking-wider">Module 3</span>
+                        <h2 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white tracking-tight">Run a specific database seeder:</h2>
+                    </div>
+                </div>
+
+    <div class="relative my-6 group rounded-xl overflow-hidden border border-slate-800 shadow-2xl bg-[#0c1017]">
+        <div class="flex items-center justify-between px-4 py-2.5 bg-[#161b22] border-b border-slate-800/80 text-xs text-slate-400 font-mono select-none">
+            <div class="flex items-center space-x-2">
+                <span class="w-3 h-3 rounded-full bg-[#ff5f56] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#ffbd2e] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#27c93f] inline-block shadow-sm"></span>
+                <span class="ml-2 uppercase font-semibold text-indigo-400 tracking-wider text-[11px]">bash</span>
+            </div>
+            <button onclick="copyCode(this)" class="px-2.5 py-1 rounded-md bg-slate-800/90 hover:bg-slate-700 text-slate-200 transition flex items-center space-x-1.5 shadow-sm font-sans text-xs">
+                <svg class="w-3.5 h-3.5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                <span>Copy</span>
+            </button>
+        </div>
+        <pre class="p-4 sm:p-5 overflow-x-auto text-[13.5px] leading-relaxed custom-scrollbar"><code class="language-bash text-slate-100">   php artisan db:seed --class=FooterSeeder
+   php artisan db:seed --class=PageSeeder</code></pre>
+    </div>
+
+                <div id="section-4-create-public-storage-symlink-for-uploaded-files" class="scroll-mt-24 pt-10 pb-4 border-b border-gray-200 dark:border-gray-800">
+                    <div class="flex items-center space-x-3">
+                        <span class="px-2.5 py-1 text-xs font-bold rounded-md bg-red-100 text-red-700 dark:bg-red-950/80 dark:text-red-300 uppercase tracking-wider">Module 4</span>
+                        <h2 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white tracking-tight">Create public storage symlink for uploaded files:</h2>
+                    </div>
+                </div>
+
+    <div class="relative my-6 group rounded-xl overflow-hidden border border-slate-800 shadow-2xl bg-[#0c1017]">
+        <div class="flex items-center justify-between px-4 py-2.5 bg-[#161b22] border-b border-slate-800/80 text-xs text-slate-400 font-mono select-none">
+            <div class="flex items-center space-x-2">
+                <span class="w-3 h-3 rounded-full bg-[#ff5f56] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#ffbd2e] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#27c93f] inline-block shadow-sm"></span>
+                <span class="ml-2 uppercase font-semibold text-indigo-400 tracking-wider text-[11px]">bash</span>
+            </div>
+            <button onclick="copyCode(this)" class="px-2.5 py-1 rounded-md bg-slate-800/90 hover:bg-slate-700 text-slate-200 transition flex items-center space-x-1.5 shadow-sm font-sans text-xs">
+                <svg class="w-3.5 h-3.5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                <span>Copy</span>
+            </button>
+        </div>
+        <pre class="p-4 sm:p-5 overflow-x-auto text-[13.5px] leading-relaxed custom-scrollbar"><code class="language-bash text-slate-100">   php artisan storage:link</code></pre>
+    </div>
+
+                <div id="section-5-rollback-or-refresh-migrations" class="scroll-mt-24 pt-10 pb-4 border-b border-gray-200 dark:border-gray-800">
+                    <div class="flex items-center space-x-3">
+                        <span class="px-2.5 py-1 text-xs font-bold rounded-md bg-red-100 text-red-700 dark:bg-red-950/80 dark:text-red-300 uppercase tracking-wider">Module 5</span>
+                        <h2 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white tracking-tight">Rollback or refresh migrations:</h2>
+                    </div>
+                </div>
+
+    <div class="relative my-6 group rounded-xl overflow-hidden border border-slate-800 shadow-2xl bg-[#0c1017]">
+        <div class="flex items-center justify-between px-4 py-2.5 bg-[#161b22] border-b border-slate-800/80 text-xs text-slate-400 font-mono select-none">
+            <div class="flex items-center space-x-2">
+                <span class="w-3 h-3 rounded-full bg-[#ff5f56] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#ffbd2e] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#27c93f] inline-block shadow-sm"></span>
+                <span class="ml-2 uppercase font-semibold text-indigo-400 tracking-wider text-[11px]">bash</span>
+            </div>
+            <button onclick="copyCode(this)" class="px-2.5 py-1 rounded-md bg-slate-800/90 hover:bg-slate-700 text-slate-200 transition flex items-center space-x-1.5 shadow-sm font-sans text-xs">
+                <svg class="w-3.5 h-3.5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                <span>Copy</span>
+            </button>
+        </div>
+        <pre class="p-4 sm:p-5 overflow-x-auto text-[13.5px] leading-relaxed custom-scrollbar"><code class="language-bash text-slate-100">   php artisan migrate:rollback
+   php artisan migrate:refresh</code></pre>
+    </div>
+
+                <div id="section-7-application-cache-clearing-optimization-maintenance" class="scroll-mt-24 pt-10 pb-4 border-b border-gray-200 dark:border-gray-800">
+                    <div class="flex items-center space-x-3">
+                        <span class="px-2.5 py-1 text-xs font-bold rounded-md bg-red-100 text-red-700 dark:bg-red-950/80 dark:text-red-300 uppercase tracking-wider">Module 7</span>
+                        <h2 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white tracking-tight">APPLICATION CACHE CLEARING &amp; OPTIMIZATION MAINTENANCE</h2>
+                    </div>
+                </div>
+
+                <div id="section-1-clear-all-application-caches-in-development" class="scroll-mt-24 pt-10 pb-4 border-b border-gray-200 dark:border-gray-800">
+                    <div class="flex items-center space-x-3">
+                        <span class="px-2.5 py-1 text-xs font-bold rounded-md bg-red-100 text-red-700 dark:bg-red-950/80 dark:text-red-300 uppercase tracking-wider">Module 1</span>
+                        <h2 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white tracking-tight">Clear all application caches in development:</h2>
+                    </div>
+                </div>
+
+    <div class="relative my-6 group rounded-xl overflow-hidden border border-slate-800 shadow-2xl bg-[#0c1017]">
+        <div class="flex items-center justify-between px-4 py-2.5 bg-[#161b22] border-b border-slate-800/80 text-xs text-slate-400 font-mono select-none">
+            <div class="flex items-center space-x-2">
+                <span class="w-3 h-3 rounded-full bg-[#ff5f56] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#ffbd2e] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#27c93f] inline-block shadow-sm"></span>
+                <span class="ml-2 uppercase font-semibold text-indigo-400 tracking-wider text-[11px]">bash</span>
+            </div>
+            <button onclick="copyCode(this)" class="px-2.5 py-1 rounded-md bg-slate-800/90 hover:bg-slate-700 text-slate-200 transition flex items-center space-x-1.5 shadow-sm font-sans text-xs">
+                <svg class="w-3.5 h-3.5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                <span>Copy</span>
+            </button>
+        </div>
+        <pre class="p-4 sm:p-5 overflow-x-auto text-[13.5px] leading-relaxed custom-scrollbar"><code class="language-bash text-slate-100">   php artisan optimize:clear</code></pre>
+    </div>
+
+                <div id="section-2-individual-cache-clearing-commands" class="scroll-mt-24 pt-10 pb-4 border-b border-gray-200 dark:border-gray-800">
+                    <div class="flex items-center space-x-3">
+                        <span class="px-2.5 py-1 text-xs font-bold rounded-md bg-red-100 text-red-700 dark:bg-red-950/80 dark:text-red-300 uppercase tracking-wider">Module 2</span>
+                        <h2 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white tracking-tight">Individual cache clearing commands:</h2>
+                    </div>
+                </div>
+
+    <div class="relative my-6 group rounded-xl overflow-hidden border border-slate-800 shadow-2xl bg-[#0c1017]">
+        <div class="flex items-center justify-between px-4 py-2.5 bg-[#161b22] border-b border-slate-800/80 text-xs text-slate-400 font-mono select-none">
+            <div class="flex items-center space-x-2">
+                <span class="w-3 h-3 rounded-full bg-[#ff5f56] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#ffbd2e] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#27c93f] inline-block shadow-sm"></span>
+                <span class="ml-2 uppercase font-semibold text-indigo-400 tracking-wider text-[11px]">bash</span>
+            </div>
+            <button onclick="copyCode(this)" class="px-2.5 py-1 rounded-md bg-slate-800/90 hover:bg-slate-700 text-slate-200 transition flex items-center space-x-1.5 shadow-sm font-sans text-xs">
+                <svg class="w-3.5 h-3.5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                <span>Copy</span>
+            </button>
+        </div>
+        <pre class="p-4 sm:p-5 overflow-x-auto text-[13.5px] leading-relaxed custom-scrollbar"><code class="language-bash text-slate-100">   php artisan cache:clear          # Application data cache
+   php artisan config:clear         # Configuration cache
+   php artisan route:clear          # Route registration cache
+   php artisan view:clear           # Compiled Blade templates cache</code></pre>
+    </div>
+
+                <div id="section-3-inspect-application-routes" class="scroll-mt-24 pt-10 pb-4 border-b border-gray-200 dark:border-gray-800">
+                    <div class="flex items-center space-x-3">
+                        <span class="px-2.5 py-1 text-xs font-bold rounded-md bg-red-100 text-red-700 dark:bg-red-950/80 dark:text-red-300 uppercase tracking-wider">Module 3</span>
+                        <h2 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white tracking-tight">Inspect application routes:</h2>
+                    </div>
+                </div>
+
+    <div class="relative my-6 group rounded-xl overflow-hidden border border-slate-800 shadow-2xl bg-[#0c1017]">
+        <div class="flex items-center justify-between px-4 py-2.5 bg-[#161b22] border-b border-slate-800/80 text-xs text-slate-400 font-mono select-none">
+            <div class="flex items-center space-x-2">
+                <span class="w-3 h-3 rounded-full bg-[#ff5f56] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#ffbd2e] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#27c93f] inline-block shadow-sm"></span>
+                <span class="ml-2 uppercase font-semibold text-indigo-400 tracking-wider text-[11px]">bash</span>
+            </div>
+            <button onclick="copyCode(this)" class="px-2.5 py-1 rounded-md bg-slate-800/90 hover:bg-slate-700 text-slate-200 transition flex items-center space-x-1.5 shadow-sm font-sans text-xs">
+                <svg class="w-3.5 h-3.5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                <span>Copy</span>
+            </button>
+        </div>
+        <pre class="p-4 sm:p-5 overflow-x-auto text-[13.5px] leading-relaxed custom-scrollbar"><code class="language-bash text-slate-100">   php artisan route:list</code></pre>
+    </div>
+
+                <div id="section-4-run-local-server" class="scroll-mt-24 pt-10 pb-4 border-b border-gray-200 dark:border-gray-800">
+                    <div class="flex items-center space-x-3">
+                        <span class="px-2.5 py-1 text-xs font-bold rounded-md bg-red-100 text-red-700 dark:bg-red-950/80 dark:text-red-300 uppercase tracking-wider">Module 4</span>
+                        <h2 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white tracking-tight">Run local server:</h2>
+                    </div>
+                </div>
+
+    <div class="relative my-6 group rounded-xl overflow-hidden border border-slate-800 shadow-2xl bg-[#0c1017]">
+        <div class="flex items-center justify-between px-4 py-2.5 bg-[#161b22] border-b border-slate-800/80 text-xs text-slate-400 font-mono select-none">
+            <div class="flex items-center space-x-2">
+                <span class="w-3 h-3 rounded-full bg-[#ff5f56] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#ffbd2e] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#27c93f] inline-block shadow-sm"></span>
+                <span class="ml-2 uppercase font-semibold text-indigo-400 tracking-wider text-[11px]">bash</span>
+            </div>
+            <button onclick="copyCode(this)" class="px-2.5 py-1 rounded-md bg-slate-800/90 hover:bg-slate-700 text-slate-200 transition flex items-center space-x-1.5 shadow-sm font-sans text-xs">
+                <svg class="w-3.5 h-3.5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                <span>Copy</span>
+            </button>
+        </div>
+        <pre class="p-4 sm:p-5 overflow-x-auto text-[13.5px] leading-relaxed custom-scrollbar"><code class="language-bash text-slate-100">   php artisan serve</code></pre>
+    </div>
+
+                <div id="section-5-build-production-optimized-caches" class="scroll-mt-24 pt-10 pb-4 border-b border-gray-200 dark:border-gray-800">
+                    <div class="flex items-center space-x-3">
+                        <span class="px-2.5 py-1 text-xs font-bold rounded-md bg-red-100 text-red-700 dark:bg-red-950/80 dark:text-red-300 uppercase tracking-wider">Module 5</span>
+                        <h2 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white tracking-tight">Build production optimized caches:</h2>
+                    </div>
+                </div>
+
+    <div class="relative my-6 group rounded-xl overflow-hidden border border-slate-800 shadow-2xl bg-[#0c1017]">
+        <div class="flex items-center justify-between px-4 py-2.5 bg-[#161b22] border-b border-slate-800/80 text-xs text-slate-400 font-mono select-none">
+            <div class="flex items-center space-x-2">
+                <span class="w-3 h-3 rounded-full bg-[#ff5f56] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#ffbd2e] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#27c93f] inline-block shadow-sm"></span>
+                <span class="ml-2 uppercase font-semibold text-indigo-400 tracking-wider text-[11px]">bash</span>
+            </div>
+            <button onclick="copyCode(this)" class="px-2.5 py-1 rounded-md bg-slate-800/90 hover:bg-slate-700 text-slate-200 transition flex items-center space-x-1.5 shadow-sm font-sans text-xs">
+                <svg class="w-3.5 h-3.5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                <span>Copy</span>
+            </button>
+        </div>
+        <pre class="p-4 sm:p-5 overflow-x-auto text-[13.5px] leading-relaxed custom-scrollbar"><code class="language-bash text-slate-100">   php artisan optimize             # Caches config, routes, and views for production</code></pre>
+    </div>
+            </article>
+
+            <!-- Bottom Navigation -->
+            <div class="mt-16 pt-8 border-t border-gray-200 dark:border-gray-800 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4">
+                <a href="07-dynamic-menu-crud.html" class="group flex items-center space-x-3 px-5 py-3 rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-800/50 text-sm font-medium text-gray-700 dark:text-gray-300 hover:border-indigo-500 dark:hover:border-indigo-500 hover:shadow-md transition-all">
+        <span class="text-indigo-600 dark:text-indigo-400 group-hover:-translate-x-1 transition-transform">←</span>
+        <div>
+            <div class="text-[10px] uppercase tracking-wider text-gray-400">Previous</div>
+            <div class="font-semibold text-gray-900 dark:text-white truncate max-w-[200px] sm:max-w-xs">Dynamic Menu Builder & Admin CRUD</div>
+        </div>
+    </a>
+                <a href="09-qa-deployment-checklist.html" class="group flex items-center space-x-3 px-5 py-3 rounded-xl border border-indigo-600 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium shadow-md hover:shadow-xl transition-all">
+        <div class="text-right">
+            <div class="text-[10px] uppercase tracking-wider text-indigo-200">Next</div>
+            <div class="font-semibold truncate max-w-[200px] sm:max-w-xs">Project QA & Production Checklist</div>
+        </div>
+        <span class="group-hover:translate-x-1 transition-transform">→</span>
+    </a>
+            </div>
+        </main>
+
+        <!-- Right TOC Sidebar (Desktop) with ScrollSpy -->
+        <aside class="hidden xl:block w-72 shrink-0 py-8 pl-4">
+            <div class="sticky top-24">
+                <div class="flex items-center space-x-2 mb-3 px-1">
+                    <span class="w-2 h-2 rounded-full bg-indigo-500 animate-pulse"></span>
+                    <h3 class="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">On This Page</h3>
+                </div>
+                <div id="toc-nav" class="space-y-1 border-l-2 border-gray-200 dark:border-gray-800 pl-3 max-h-[75vh] overflow-y-auto custom-scrollbar">
+                    
+        <a href="#section-1-laravel-breeze-authentication-setup-frontend-stacks" class="toc-link block py-1.5 text-xs text-gray-500 hover:text-indigo-600 dark:text-gray-400 dark:hover:text-indigo-400 truncate transition-all duration-150" data-target="section-1-laravel-breeze-authentication-setup-frontend-stacks">
+            1. LARAVEL BREEZE AUTHENTICATION SETUP &amp; FRONTEND STACKS
+        </a>
+
+        <a href="#step-1-install-breeze-package-via-composer" class="toc-link block py-1.5 text-xs text-gray-500 hover:text-indigo-600 dark:text-gray-400 dark:hover:text-indigo-400 truncate transition-all duration-150" data-target="step-1-install-breeze-package-via-composer">
+            STEP 1: Install Breeze package via Composer:
+        </a>
+
+        <a href="#step-2-run-the-breeze-installation-command" class="toc-link block py-1.5 text-xs text-gray-500 hover:text-indigo-600 dark:text-gray-400 dark:hover:text-indigo-400 truncate transition-all duration-150" data-target="step-2-run-the-breeze-installation-command">
+            STEP 2: Run the Breeze installation command:
+        </a>
+
+        <a href="#step-3-run-database-migrations-and-compile-frontend-assets" class="toc-link block py-1.5 text-xs text-gray-500 hover:text-indigo-600 dark:text-gray-400 dark:hover:text-indigo-400 truncate transition-all duration-150" data-target="step-3-run-database-migrations-and-compile-frontend-assets">
+            STEP 3: Run database migrations and compile frontend assets:
+        </a>
+
+        <a href="#section-2-master-scaffolding-blueprint-models-migrations-seeders-controllers" class="toc-link block py-1.5 text-xs text-gray-500 hover:text-indigo-600 dark:text-gray-400 dark:hover:text-indigo-400 truncate transition-all duration-150" data-target="section-2-master-scaffolding-blueprint-models-migrations-seeders-controllers">
+            2. MASTER SCAFFOLDING BLUEPRINT: MODELS, MIGRATIONS, SEEDERS &amp; CONTROLLERS
+        </a>
+
+        <a href="#section-1-core-administration-navigation" class="toc-link block py-1.5 text-xs text-gray-500 hover:text-indigo-600 dark:text-gray-400 dark:hover:text-indigo-400 truncate transition-all duration-150" data-target="section-1-core-administration-navigation">
+            1. Core Administration &amp; Navigation:
+        </a>
+
+        <a href="#section-2-cms-dynamic-page-content" class="toc-link block py-1.5 text-xs text-gray-500 hover:text-indigo-600 dark:text-gray-400 dark:hover:text-indigo-400 truncate transition-all duration-150" data-target="section-2-cms-dynamic-page-content">
+            2. CMS &amp; Dynamic Page Content:
+        </a>
+
+        <a href="#section-3-blog-editorial-system" class="toc-link block py-1.5 text-xs text-gray-500 hover:text-indigo-600 dark:text-gray-400 dark:hover:text-indigo-400 truncate transition-all duration-150" data-target="section-3-blog-editorial-system">
+            3. Blog &amp; Editorial System:
+        </a>
+
+        <a href="#section-4-media-assets-galleries" class="toc-link block py-1.5 text-xs text-gray-500 hover:text-indigo-600 dark:text-gray-400 dark:hover:text-indigo-400 truncate transition-all duration-150" data-target="section-4-media-assets-galleries">
+            4. Media, Assets &amp; Galleries:
+        </a>
+
+        <a href="#section-5-e-commerce-inventory" class="toc-link block py-1.5 text-xs text-gray-500 hover:text-indigo-600 dark:text-gray-400 dark:hover:text-indigo-400 truncate transition-all duration-150" data-target="section-5-e-commerce-inventory">
+            5. E-Commerce &amp; Inventory:
+        </a>
+
+        <a href="#section-6-academic-staff-profiles" class="toc-link block py-1.5 text-xs text-gray-500 hover:text-indigo-600 dark:text-gray-400 dark:hover:text-indigo-400 truncate transition-all duration-150" data-target="section-6-academic-staff-profiles">
+            6. Academic, Staff &amp; Profiles:
+        </a>
+
+        <a href="#section-7-custom-program-fellowship-controllers" class="toc-link block py-1.5 text-xs text-gray-500 hover:text-indigo-600 dark:text-gray-400 dark:hover:text-indigo-400 truncate transition-all duration-150" data-target="section-7-custom-program-fellowship-controllers">
+            7. Custom Program &amp; Fellowship Controllers:
+        </a>
+
+        <a href="#section-8-role-user-many-to-many-pivot-table-migration" class="toc-link block py-1.5 text-xs text-gray-500 hover:text-indigo-600 dark:text-gray-400 dark:hover:text-indigo-400 truncate transition-all duration-150" data-target="section-8-role-user-many-to-many-pivot-table-migration">
+            8. Role-User Many-to-Many Pivot Table Migration:
+        </a>
+
+        <a href="#section-3-multi-layout-partial-modular-architecture" class="toc-link block py-1.5 text-xs text-gray-500 hover:text-indigo-600 dark:text-gray-400 dark:hover:text-indigo-400 truncate transition-all duration-150" data-target="section-3-multi-layout-partial-modular-architecture">
+            3. MULTI-LAYOUT &amp; PARTIAL MODULAR ARCHITECTURE
+        </a>
+
+        <a href="#section-1-admin-partials" class="toc-link block py-1.5 text-xs text-gray-500 hover:text-indigo-600 dark:text-gray-400 dark:hover:text-indigo-400 truncate transition-all duration-150" data-target="section-1-admin-partials">
+            1. Admin Partials:
+        </a>
+
+        <a href="#section-2-user-portal-partials" class="toc-link block py-1.5 text-xs text-gray-500 hover:text-indigo-600 dark:text-gray-400 dark:hover:text-indigo-400 truncate transition-all duration-150" data-target="section-2-user-portal-partials">
+            2. User Portal Partials:
+        </a>
+
+        <a href="#section-3-academic-section-partials" class="toc-link block py-1.5 text-xs text-gray-500 hover:text-indigo-600 dark:text-gray-400 dark:hover:text-indigo-400 truncate transition-all duration-150" data-target="section-3-academic-section-partials">
+            3. Academic Section Partials:
+        </a>
+
+        <a href="#section-4-home-landing-partials" class="toc-link block py-1.5 text-xs text-gray-500 hover:text-indigo-600 dark:text-gray-400 dark:hover:text-indigo-400 truncate transition-all duration-150" data-target="section-4-home-landing-partials">
+            4. Home &amp; Landing Partials:
+        </a>
+
+        <a href="#section-5-blog-section-partials" class="toc-link block py-1.5 text-xs text-gray-500 hover:text-indigo-600 dark:text-gray-400 dark:hover:text-indigo-400 truncate transition-all duration-150" data-target="section-5-blog-section-partials">
+            5. Blog Section Partials:
+        </a>
+
+        <a href="#section-6-global-layout-partials" class="toc-link block py-1.5 text-xs text-gray-500 hover:text-indigo-600 dark:text-gray-400 dark:hover:text-indigo-400 truncate transition-all duration-150" data-target="section-6-global-layout-partials">
+            6. Global Layout Partials:
+        </a>
+
+        <a href="#section-4-dynamic-cms-page-content-management-caching-system" class="toc-link block py-1.5 text-xs text-gray-500 hover:text-indigo-600 dark:text-gray-400 dark:hover:text-indigo-400 truncate transition-all duration-150" data-target="section-4-dynamic-cms-page-content-management-caching-system">
+            4. DYNAMIC CMS PAGE CONTENT MANAGEMENT &amp; CACHING SYSTEM
+        </a>
+
+        <a href="#step-1-pages-database-schema" class="toc-link block py-1.5 text-xs text-gray-500 hover:text-indigo-600 dark:text-gray-400 dark:hover:text-indigo-400 truncate transition-all duration-150" data-target="step-1-pages-database-schema">
+            STEP 1: Pages Database Schema
+        </a>
+
+        <a href="#step-2-page-controller-with-high-performance-caching" class="toc-link block py-1.5 text-xs text-gray-500 hover:text-indigo-600 dark:text-gray-400 dark:hover:text-indigo-400 truncate transition-all duration-150" data-target="step-2-page-controller-with-high-performance-caching">
+            STEP 2: Page Controller with High-Performance Caching
+        </a>
+
+        <a href="#step-3-define-dynamic-route-in-routes-web-php" class="toc-link block py-1.5 text-xs text-gray-500 hover:text-indigo-600 dark:text-gray-400 dark:hover:text-indigo-400 truncate transition-all duration-150" data-target="step-3-define-dynamic-route-in-routes-web-php">
+            STEP 3: Define Dynamic Route in routes/web.php
+        </a>
+
+        <a href="#step-4-reusable-page-blade-template-resources-views-pages-show-blade-php" class="toc-link block py-1.5 text-xs text-gray-500 hover:text-indigo-600 dark:text-gray-400 dark:hover:text-indigo-400 truncate transition-all duration-150" data-target="step-4-reusable-page-blade-template-resources-views-pages-show-blade-php">
+            STEP 4: Reusable Page Blade Template (resources/views/pages/show.blade.php)
+        </a>
+
+        <a href="#section-5-pagination-indexing-timezones-blade-practical-helpers" class="toc-link block py-1.5 text-xs text-gray-500 hover:text-indigo-600 dark:text-gray-400 dark:hover:text-indigo-400 truncate transition-all duration-150" data-target="section-5-pagination-indexing-timezones-blade-practical-helpers">
+            5. PAGINATION INDEXING, TIMEZONES &amp; BLADE PRACTICAL HELPERS
+        </a>
+
+        <a href="#section-1-continuous-pagination-row-indexing-formula" class="toc-link block py-1.5 text-xs text-gray-500 hover:text-indigo-600 dark:text-gray-400 dark:hover:text-indigo-400 truncate transition-all duration-150" data-target="section-1-continuous-pagination-row-indexing-formula">
+            1. Continuous Pagination Row Indexing Formula:
+        </a>
+
+        <a href="#section-2-setting-default-application-timezone" class="toc-link block py-1.5 text-xs text-gray-500 hover:text-indigo-600 dark:text-gray-400 dark:hover:text-indigo-400 truncate transition-all duration-150" data-target="section-2-setting-default-application-timezone">
+            2. Setting Default Application Timezone:
+        </a>
+
+        <a href="#section-3-dynamic-read-more-button-helper" class="toc-link block py-1.5 text-xs text-gray-500 hover:text-indigo-600 dark:text-gray-400 dark:hover:text-indigo-400 truncate transition-all duration-150" data-target="section-3-dynamic-read-more-button-helper">
+            3. Dynamic Read More Button Helper:
+        </a>
+
+        <a href="#section-6-database-management-migrations-seeders" class="toc-link block py-1.5 text-xs text-gray-500 hover:text-indigo-600 dark:text-gray-400 dark:hover:text-indigo-400 truncate transition-all duration-150" data-target="section-6-database-management-migrations-seeders">
+            6. DATABASE MANAGEMENT, MIGRATIONS &amp; SEEDERS
+        </a>
+
+        <a href="#section-1-run-all-migrations" class="toc-link block py-1.5 text-xs text-gray-500 hover:text-indigo-600 dark:text-gray-400 dark:hover:text-indigo-400 truncate transition-all duration-150" data-target="section-1-run-all-migrations">
+            1. Run all migrations:
+        </a>
+
+        <a href="#section-2-fresh-migration-drops-all-tables-and-seeds-database" class="toc-link block py-1.5 text-xs text-gray-500 hover:text-indigo-600 dark:text-gray-400 dark:hover:text-indigo-400 truncate transition-all duration-150" data-target="section-2-fresh-migration-drops-all-tables-and-seeds-database">
+            2. Fresh migration (drops all tables) and seeds database:
+        </a>
+
+        <a href="#section-3-run-a-specific-database-seeder" class="toc-link block py-1.5 text-xs text-gray-500 hover:text-indigo-600 dark:text-gray-400 dark:hover:text-indigo-400 truncate transition-all duration-150" data-target="section-3-run-a-specific-database-seeder">
+            3. Run a specific database seeder:
+        </a>
+
+        <a href="#section-4-create-public-storage-symlink-for-uploaded-files" class="toc-link block py-1.5 text-xs text-gray-500 hover:text-indigo-600 dark:text-gray-400 dark:hover:text-indigo-400 truncate transition-all duration-150" data-target="section-4-create-public-storage-symlink-for-uploaded-files">
+            4. Create public storage symlink for uploaded files:
+        </a>
+
+        <a href="#section-5-rollback-or-refresh-migrations" class="toc-link block py-1.5 text-xs text-gray-500 hover:text-indigo-600 dark:text-gray-400 dark:hover:text-indigo-400 truncate transition-all duration-150" data-target="section-5-rollback-or-refresh-migrations">
+            5. Rollback or refresh migrations:
+        </a>
+
+        <a href="#section-7-application-cache-clearing-optimization-maintenance" class="toc-link block py-1.5 text-xs text-gray-500 hover:text-indigo-600 dark:text-gray-400 dark:hover:text-indigo-400 truncate transition-all duration-150" data-target="section-7-application-cache-clearing-optimization-maintenance">
+            7. APPLICATION CACHE CLEARING &amp; OPTIMIZATION MAINTENANCE
+        </a>
+
+        <a href="#section-1-clear-all-application-caches-in-development" class="toc-link block py-1.5 text-xs text-gray-500 hover:text-indigo-600 dark:text-gray-400 dark:hover:text-indigo-400 truncate transition-all duration-150" data-target="section-1-clear-all-application-caches-in-development">
+            1. Clear all application caches in development:
+        </a>
+
+        <a href="#section-2-individual-cache-clearing-commands" class="toc-link block py-1.5 text-xs text-gray-500 hover:text-indigo-600 dark:text-gray-400 dark:hover:text-indigo-400 truncate transition-all duration-150" data-target="section-2-individual-cache-clearing-commands">
+            2. Individual cache clearing commands:
+        </a>
+
+        <a href="#section-3-inspect-application-routes" class="toc-link block py-1.5 text-xs text-gray-500 hover:text-indigo-600 dark:text-gray-400 dark:hover:text-indigo-400 truncate transition-all duration-150" data-target="section-3-inspect-application-routes">
+            3. Inspect application routes:
+        </a>
+
+        <a href="#section-4-run-local-server" class="toc-link block py-1.5 text-xs text-gray-500 hover:text-indigo-600 dark:text-gray-400 dark:hover:text-indigo-400 truncate transition-all duration-150" data-target="section-4-run-local-server">
+            4. Run local server:
+        </a>
+
+        <a href="#section-5-build-production-optimized-caches" class="toc-link block py-1.5 text-xs text-gray-500 hover:text-indigo-600 dark:text-gray-400 dark:hover:text-indigo-400 truncate transition-all duration-150" data-target="section-5-build-production-optimized-caches">
+            5. Build production optimized caches:
+        </a>
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <!-- Floating Back to Top Button -->
+    <button id="back-to-top" onclick="window.scrollTo({top: 0, behavior: 'smooth'})" class="fixed bottom-6 right-6 p-3 rounded-full bg-indigo-600 text-white shadow-2xl hover:bg-indigo-700 transition-all opacity-0 pointer-events-none translate-y-3 z-40 focus:outline-none flex items-center justify-center group" title="Back to top">
+        <svg class="w-5 h-5 group-hover:-translate-y-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 10l7-7m0 0l7 7m-7-7v18"></path></svg>
+    </button>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-php.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-json.min.js"></script>
+    <script>
+        // Dark Mode Logic
+        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+            document.getElementById('theme-icon').textContent = '☀️';
+        } else {
+            document.documentElement.classList.remove('dark');
+            document.getElementById('theme-icon').textContent = '🌙';
+        }
+
+        function toggleDarkMode() {
+            const isDark = document.documentElement.classList.toggle('dark');
+            localStorage.theme = isDark ? 'dark' : 'light';
+            document.getElementById('theme-icon').textContent = isDark ? '☀️' : '🌙';
+        }
+
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('-translate-x-full');
+        }
+
+        function copyCode(btn) {
+            const codeEl = btn.closest('.group').querySelector('code');
+            navigator.clipboard.writeText(codeEl.innerText).then(() => {
+                const span = btn.querySelector('span');
+                const orig = span.textContent;
+                span.textContent = 'Copied! ✓';
+                btn.classList.add('bg-emerald-600', 'text-white');
+                btn.classList.remove('bg-slate-800/90', 'hover:bg-slate-700');
+                setTimeout(() => {
+                    span.textContent = orig;
+                    btn.classList.remove('bg-emerald-600', 'text-white');
+                    btn.classList.add('bg-slate-800/90', 'hover:bg-slate-700');
+                }, 2000);
+            });
+        }
+
+        // Reading Progress Bar & Back-to-Top Toggle
+        const btt = document.getElementById('back-to-top');
+        const progressBar = document.getElementById('scroll-progress');
+        window.addEventListener('scroll', () => {
+            const winScroll = document.documentElement.scrollTop || document.body.scrollTop;
+            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrolled = height > 0 ? (winScroll / height) * 100 : 0;
+            if (progressBar) progressBar.style.width = scrolled + '%';
+
+            if (btt) {
+                if (winScroll > 400) {
+                    btt.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-3');
+                    btt.classList.add('opacity-100', 'translate-y-0');
+                } else {
+                    btt.classList.add('opacity-0', 'pointer-events-none', 'translate-y-3');
+                    btt.classList.remove('opacity-100', 'translate-y-0');
+                }
+            }
+        });
+
+        // Active TOC ScrollSpy using IntersectionObserver
+        const tocLinks = document.querySelectorAll('.toc-link');
+        const headingElements = document.querySelectorAll('div[id]');
+        if (tocLinks.length > 0 && headingElements.length > 0) {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const id = entry.target.getAttribute('id');
+                        if (!id) return;
+                        tocLinks.forEach(link => {
+                            if (link.getAttribute('href') === '#' + id) {
+                                link.classList.add('text-indigo-600', 'dark:text-indigo-400', 'font-bold', 'border-l-2', 'border-indigo-600', '-ml-[14px]', 'pl-3', 'bg-indigo-50/70', 'dark:bg-indigo-950/60', 'rounded-r');
+                                link.classList.remove('text-gray-500', 'dark:text-gray-400');
+                            } else {
+                                link.classList.remove('text-indigo-600', 'dark:text-indigo-400', 'font-bold', 'border-l-2', 'border-indigo-600', '-ml-[14px]', 'pl-3', 'bg-indigo-50/70', 'dark:bg-indigo-950/60', 'rounded-r');
+                                link.classList.add('text-gray-500', 'dark:text-gray-400');
+                            }
+                        });
+                    }
+                });
+            }, { rootMargin: '0px 0px -75% 0px' });
+
+            headingElements.forEach(el => observer.observe(el));
+        }
+    </script>
+</body>
+</html>

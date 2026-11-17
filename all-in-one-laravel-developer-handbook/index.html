@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en" data-theme="dark">
 <head>
   <meta charset="UTF-8">
@@ -136,10 +136,12 @@
     .track-2 { background: rgba(239,68,68,0.18); color: #fca5a5; }
     .track-3 { background: rgba(16,185,129,0.18); color: #6ee7b7; }
     .track-quiz { background: rgba(245,158,11,0.18); color: #fcd34d; }
+    .track-4 { background: rgba(236,72,153,0.18); color: #f472b6; }
     html[data-theme="light"] .track-1 { color: #4338ca; }
     html[data-theme="light"] .track-2 { color: #b91c1c; }
     html[data-theme="light"] .track-3 { color: #047857; }
     html[data-theme="light"] .track-quiz { color: #b45309; }
+    html[data-theme="light"] .track-4 { color: #be185d; }
     .source-link, .md-link { color: var(--accent-2); text-decoration: none; font-weight: 600; font-size: 0.85rem; }
     .source-link:hover, .md-link:hover { text-decoration: underline; }
     .title-row { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.75rem; }
@@ -220,12 +222,14 @@
       <div class="logo">L</div>
       <div>
         <span class="brand-title">All-in-One Laravel Developer Handbook</span>
-        <span class="brand-sub">Laravel 12 / 13 &bull; PHP 8.3–8.5 &bull; 19 Chapters, Runnable Labs &amp; Mastery Quiz</span>
+        <span class="brand-sub">Laravel 12 / 13 &bull; PHP 8.3–8.5 &bull; 34 Chapters (4 Tracks), Runnable Labs &amp; Mastery Quiz</span>
       </div>
     </div>
     <div class="controls">
       <input type="search" id="searchInput" class="search-input" placeholder="Search chapters &amp; commands (press /)...">
       <button type="button" class="btn" id="themeBtn" onclick="toggleTheme()">Light Mode</button>
+      <a class="btn" href="./README.md" title="Repository Overview &amp; Map">📄 Repo Map</a>
+      <a class="btn" href="./laravel-html-tutorials/index.html" title="15 HTML Tutorials">📚 15 Modules</a>
       <a class="btn" href="./README.md">README</a>
       <a class="btn" href="./CHEATSHEET.md">Cheatsheet</a>
     </div>
@@ -236,7 +240,7 @@
       <div class="progress-box">
         <div class="progress-meta">
           <span>Handbook Progress</span>
-          <strong id="progressLabel">0 / 19</strong>
+          <strong id="progressLabel">0 / 34</strong>
         </div>
         <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
       </div>
@@ -268,6 +272,21 @@
 <a class="nav-item" href="#ch-17" data-track="track-3"><span class="nav-num">17</span><span class="nav-title">Chapter 17 — Troubleshooting Playbook &amp; CLI Diagnostics</span></a>
 <a class="nav-item" href="#ch-18" data-track="track-3"><span class="nav-num">18</span><span class="nav-title">Chapter 18 — Clean Architecture, Automated Scaffolder, Capstone CMS &amp; 12-Week Roadmap</span></a>
 <a class="nav-item" href="#ch-19" data-track="track-3"><span class="nav-num">19</span><span class="nav-title">Chapter 19 — Full-Stack Reactivity (Livewire 4, Inertia 2, Echo), Localization &amp; Official Packages</span></a>
+<a class="nav-item" href="#ch-20" data-track="track-4"><span class="nav-num">20</span><span class="nav-title">Chapter 20 — Laravel Project Creation &amp; Setup Guide</span></a>
+<a class="nav-item" href="#ch-21" data-track="track-4"><span class="nav-num">21</span><span class="nav-title">Chapter 21 — Full-Cycle Workflow Command Playbook</span></a>
+<a class="nav-item" href="#ch-22" data-track="track-4"><span class="nav-num">22</span><span class="nav-title">Chapter 22 — Laravel 100 Pro Tips &amp; Initial Env Setup</span></a>
+<a class="nav-item" href="#ch-23" data-track="track-4"><span class="nav-num">23</span><span class="nav-title">Chapter 23 — Admin Multi-Auth Architecture (Fortify &amp; Jetstream)</span></a>
+<a class="nav-item" href="#ch-24" data-track="track-4"><span class="nav-num">24</span><span class="nav-title">Chapter 24 — Step-by-Step Admin Login &amp; Dashboard (16 Steps)</span></a>
+<a class="nav-item" href="#ch-25" data-track="track-4"><span class="nav-num">25</span><span class="nav-title">Chapter 25 — Multi-Authentication Master System &amp; OTP</span></a>
+<a class="nav-item" href="#ch-26" data-track="track-4"><span class="nav-num">26</span><span class="nav-title">Chapter 26 — Dynamic Menu Builder &amp; Recursive Admin CRUD</span></a>
+<a class="nav-item" href="#ch-27" data-track="track-4"><span class="nav-num">27</span><span class="nav-title">Chapter 27 — App Scaffolding, Breeze &amp; Dynamic CMS</span></a>
+<a class="nav-item" href="#ch-28" data-track="track-4"><span class="nav-num">28</span><span class="nav-title">Chapter 28 — Project QA, Security Audit &amp; Deployment Checklist</span></a>
+<a class="nav-item" href="#ch-29" data-track="track-4"><span class="nav-num">29</span><span class="nav-title">Chapter 29 — Pure PHP Vector SVG Math CAPTCHA &amp; Anti-Spam</span></a>
+<a class="nav-item" href="#ch-30" data-track="track-4"><span class="nav-num">30</span><span class="nav-title">Chapter 30 — Production Technical SEO, OpenGraph &amp; Schema Markup</span></a>
+<a class="nav-item" href="#ch-31" data-track="track-4"><span class="nav-num">31</span><span class="nav-title">Chapter 31 — RESTful APIs, Sanctum Tokens &amp; JsonResources</span></a>
+<a class="nav-item" href="#ch-32" data-track="track-4"><span class="nav-num">32</span><span class="nav-title">Chapter 32 — Advanced Eloquent Relationships, Locks &amp; Transactions</span></a>
+<a class="nav-item" href="#ch-33" data-track="track-4"><span class="nav-num">33</span><span class="nav-title">Chapter 33 — Queues, Asynchronous Jobs &amp; Task Scheduling</span></a>
+<a class="nav-item" href="#ch-34" data-track="track-4"><span class="nav-num">34</span><span class="nav-title">Chapter 34 — Secure File Uploads, Disks &amp; AWS S3 Cloud Storage</span></a>
 <a class="nav-item" href="#quiz-section" data-track="track-quiz"><span class="nav-num">QZ</span><span class="nav-title">Mastery Quiz (15 Qs)</span></a>
 
       </nav>
@@ -278,10 +297,11 @@
         <h1>Modern Laravel 12/13 &amp; PHP 8.3–8.5 Developer Handbook</h1>
         <p>Complete end-to-end guide uniting PHP 8.3–8.5 OOP &amp; Container Reflection DI, Starter Kits, Blade Admin/Blog Partials &amp; Directives, Faker/Seeders, Polymorphic Eloquent &amp; Locking, Multi-Guard Auth &amp; RBAC, Sanctum APIs &amp; Rate Limiting, Mail/Notifications/Commands/Queues/<code>defer()</code>, Pest testing, Nginx/cPanel/Sail/Horizon CI/CD, Troubleshooting, EliteBlog Pro CMS, and Livewire 4 / Inertia 2 / Echo / i18n / Packages.</p>
         <div class="filter-pills">
-          <button type="button" class="btn active" onclick="setTrack('all', this)">All (19 + Quiz)</button>
-          <button type="button" class="btn" onclick="setTrack('track-1', this)">Track 1: PHP &amp; OOP</button>
-          <button type="button" class="btn" onclick="setTrack('track-2', this)">Track 2: Laravel Core</button>
-          <button type="button" class="btn" onclick="setTrack('track-3', this)">Track 3: Production &amp; Ecosystem</button>
+          <button type="button" class="btn active" onclick="setTrack('all', this)">All (34 + Quiz)</button>
+          <button type="button" class="btn" onclick="setTrack('track-1', this)">Track 1: PHP &amp; OOP (6)</button>
+          <button type="button" class="btn" onclick="setTrack('track-2', this)">Track 2: Laravel Core (6)</button>
+          <button type="button" class="btn" onclick="setTrack('track-3', this)">Track 3: Production &amp; Ecosystem (7)</button>
+          <button type="button" class="btn" onclick="setTrack('track-4', this)">Track 4: Production Blueprints (15)</button>
           <button type="button" class="btn" onclick="setTrack('track-quiz', this)">Mastery Quiz (15)</button>
         </div>
       </section>
@@ -2974,7 +2994,387 @@ final class Post extends Model
     }
 }</code></pre></div></div></article>
 
-        <article class="chapter-card" id="quiz-section" data-track="track-quiz">
+        
+<article class="chapter-card" id="ch-20" data-track="track-4"><header class="chapter-head"><div class="chapter-meta"><span class="track-badge track-4">Track 4: Production Blueprints</span><a class="source-link" href="./laravel-html-tutorials/01-create-laravel-project.html" target="_blank">Dedicated HTML Guide ↗</a><a class="source-link" href="./laravel-text-tutorials/01-create-laravel-project.txt">Plaintext .txt &rarr;</a></div><div class="title-row"><h2><span class="ch-prefix">20.</span> Chapter 20 — Laravel Project Creation, Installer &amp; Environment Setup</h2><button type="button" class="done-toggle" data-ch="ch-20" onclick="toggleDone(this)">Mark Complete</button></div></header><div class="chapter-body"><p>A rock-solid foundation for enterprise Laravel applications: Composer installation, SQLite/MySQL environment keys, application security secrets, public storage symlinks, and starter kit provisioning.</p>
+<h2>1. Project Initialization &amp; Dependency Resolution</h2>
+<p>Create a fresh Laravel 12/13 project using the official Composer installer or global CLI tool:</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">BASH</span><button type="button" class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre><code class="language-bash"># Global installer (interactive stack selection)
+laravel new enterprise-app --git
+
+# Or standard Composer create-project
+composer create-project laravel/laravel enterprise-app
+cd enterprise-app
+
+# Generate application key & storage symlink
+php artisan key:generate --ansi
+php artisan storage:link</code></pre></div>
+<h2>2. Environment Configuration &amp; Database Tuning</h2>
+<p>In <code>.env</code>, configure your primary database and set production debugging flags safely:</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">ENV</span><button type="button" class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre><code class="language-env">APP_NAME="EnterpriseApp"
+APP_ENV=local
+APP_KEY=base64:...
+APP_DEBUG=true
+APP_TIMEZONE=UTC
+APP_URL=http://localhost:8000
+
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=enterprise_db
+DB_USERNAME=root
+DB_PASSWORD=secret</code></pre></div></div></article>
+
+<article class="chapter-card" id="ch-21" data-track="track-4"><header class="chapter-head"><div class="chapter-meta"><span class="track-badge track-4">Track 4: Production Blueprints</span><a class="source-link" href="./laravel-html-tutorials/02-workflow-command-playbook.html" target="_blank">Dedicated HTML Guide ↗</a><a class="source-link" href="./laravel-text-tutorials/02-workflow-command-playbook.txt">Plaintext .txt &rarr;</a></div><div class="title-row"><h2><span class="ch-prefix">21.</span> Chapter 21 — Full-Cycle Workflow &amp; Command Playbook</h2><button type="button" class="done-toggle" data-ch="ch-21" onclick="toggleDone(this)">Mark Complete</button></div></header><div class="chapter-body"><p>The complete chronological developer command stream: rapid scaffolding with <code>make:model -a</code>, database seeding, interactive Tinker testing, Vite frontend bundling, and deployment routines.</p>
+<h2>1. Comprehensive Artisan Scaffolding</h2>
+<p>Generate full-stack domain layers with unified model flags:</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">BASH</span><button type="button" class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre><code class="language-bash"># -a scaffolds: migration, seeder, factory, policy, controller, form requests
+php artisan make:model Article -a
+
+# Scaffolding specific resource layers
+php artisan make:resource ArticleResource
+php artisan make:event ArticlePublished
+php artisan make:listener SendPublicationNotification --event=ArticlePublished
+php artisan make:job ProcessArticleMedia</code></pre></div>
+<h2>2. Database Lifecycle &amp; Tinker Verification</h2>
+<div class="code-block"><div class="code-head"><span class="code-lang">BASH</span><button type="button" class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre><code class="language-bash"># Fresh migrations with seeders
+php artisan migrate:fresh --seed
+
+# Interactive Tinker REPL test
+php artisan tinker
+> App\Models\Article::factory()->count(10)->create();
+> App\Models\Article::with('author')->first();</code></pre></div></div></article>
+
+<article class="chapter-card" id="ch-22" data-track="track-4"><header class="chapter-head"><div class="chapter-meta"><span class="track-badge track-4">Track 4: Production Blueprints</span><a class="source-link" href="./laravel-html-tutorials/03-laravel-100-tips.html" target="_blank">Dedicated HTML Guide ↗</a><a class="source-link" href="./laravel-text-tutorials/03-laravel-100-tips.txt">Plaintext .txt &rarr;</a></div><div class="title-row"><h2><span class="ch-prefix">22.</span> Chapter 22 — Laravel 100 Pro Tips &amp; Architecture Best Practices</h2><button type="button" class="done-toggle" data-ch="ch-22" onclick="toggleDone(this)">Mark Complete</button></div></header><div class="chapter-body"><p>An elite masterclass of 100 battle-tested principles spanning query optimization, clean controllers, model events, custom Blade directives, pagination helpers, and configuration caching safety.</p>
+<h2>1. Clean Controller &amp; FormRequest Separation</h2>
+<p>Keep controllers strictly under 25 lines by offloading validation and authorization into FormRequests:</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">PHP</span><button type="button" class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre><code class="language-php">// app/Http/Requests/StoreProductRequest.php
+public function rules(): array
+{
+    return [
+        'sku' => ['required', 'string', 'uppercase', 'unique:products,sku'],
+        'price' => ['required', 'integer', 'min:0'],
+        'category_id' => ['required', 'exists:categories,id'],
+    ];
+}</code></pre></div>
+<h2>2. Query Optimization &amp; Subquery Selection</h2>
+<p>Avoid expensive joins and memory bloat using Eloquent subselect queries:</p>
+<div class="code-block"><div class="code-head"><span class="code-lang">PHP</span><button type="button" class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre><code class="language-php">$users = User::addSelect(['last_login_at' => LoginLog::select('created_at')
+    ->whereColumn('user_id', 'users.id')
+    ->latest()
+    ->limit(1)
+])->withCasts(['last_login_at' => 'datetime'])->paginate(25);</code></pre></div></div></article>
+
+<article class="chapter-card" id="ch-23" data-track="track-4"><header class="chapter-head"><div class="chapter-meta"><span class="track-badge track-4">Track 4: Production Blueprints</span><a class="source-link" href="./laravel-html-tutorials/04-admin-multi-auth-fortify.html" target="_blank">Dedicated HTML Guide ↗</a><a class="source-link" href="./laravel-text-tutorials/04-admin-multi-auth-fortify.txt">Plaintext .txt &rarr;</a></div><div class="title-row"><h2><span class="ch-prefix">23.</span> Chapter 23 — Admin Multi-Auth Architecture (Fortify &amp; Jetstream)</h2><button type="button" class="done-toggle" data-ch="ch-23" onclick="toggleDone(this)">Mark Complete</button></div></header><div class="chapter-body"><p>Design a zero-leak multi-guard authentication system separating regular customer users from privileged administrators using Laravel Fortify pipelines, separate tables, and custom session guards.</p>
+<h2>1. Dedicated Guard Configuration in <code>config/auth.php</code></h2>
+<div class="code-block"><div class="code-head"><span class="code-lang">PHP</span><button type="button" class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre><code class="language-php">'guards' => [
+    'web' => [
+        'driver' => 'session',
+        'provider' => 'users',
+    ],
+    'admin' => [
+        'driver' => 'session',
+        'provider' => 'admins',
+    ],
+],
+
+'providers' => [
+    'users' => [
+        'driver' => 'eloquent',
+        'model' => App\Models\User::class,
+    ],
+    'admins' => [
+        'driver' => 'eloquent',
+        'model' => App\Models\Admin::class,
+    ],
+],</code></pre></div>
+<h2>2. Route Middleware &amp; Guard Protection</h2>
+<div class="code-block"><div class="code-head"><span class="code-lang">PHP</span><button type="button" class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre><code class="language-php">// routes/web.php
+Route::prefix('admin')->name('admin.')->group(function () {
+    Route::middleware('guest:admin')->group(function () {
+        Route::get('login', [AdminAuthController::class, 'create'])->name('login');
+        Route::post('login', [AdminAuthController::class, 'store']);
+    });
+
+    Route::middleware('auth:admin')->group(function () {
+        Route::get('dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
+        Route::post('logout', [AdminAuthController::class, 'destroy'])->name('logout');
+    });
+});</code></pre></div></div></article>
+
+<article class="chapter-card" id="ch-24" data-track="track-4"><header class="chapter-head"><div class="chapter-meta"><span class="track-badge track-4">Track 4: Production Blueprints</span><a class="source-link" href="./laravel-html-tutorials/05-admin-login-step-by-step.html" target="_blank">Dedicated HTML Guide ↗</a><a class="source-link" href="./laravel-text-tutorials/05-admin-login-step-by-step.txt">Plaintext .txt &rarr;</a></div><div class="title-row"><h2><span class="ch-prefix">24.</span> Chapter 24 — Step-by-Step Admin Authentication &amp; Dashboard (16 Steps)</h2><button type="button" class="done-toggle" data-ch="ch-24" onclick="toggleDone(this)">Mark Complete</button></div></header><div class="chapter-body"><p>Build an independent admin authentication system manually from scratch in 16 clear, testable steps without starter kit bloat: models, migrations, auth attempts, session regeneration, and flash messages.</p>
+<h2>1. The <code>AdminAuthController</code> Authentication Loop</h2>
+<div class="code-block"><div class="code-head"><span class="code-lang">PHP</span><button type="button" class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre><code class="language-php">namespace App\Http\Controllers\Admin;
+
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+
+final class AdminAuthController extends Controller
+{
+    public function store(Request $request)
+    {
+        $credentials = $request->validate([
+            'email' => ['required', 'email'],
+            'password' => ['required', 'string'],
+        ]);
+
+        if (Auth::guard('admin')->attempt($credentials, $request->boolean('remember'))) {
+            $request->session()->regenerate();
+            return redirect()->intended(route('admin.dashboard'));
+        }
+
+        return back()->withErrors(['email' => 'Invalid admin credentials provided.'])->onlyInput('email');
+    }
+
+    public function destroy(Request $request)
+    {
+        Auth::guard('admin')->logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+        return redirect()->route('admin.login');
+    }
+}</code></pre></div></div></article>
+
+<article class="chapter-card" id="ch-25" data-track="track-4"><header class="chapter-head"><div class="chapter-meta"><span class="track-badge track-4">Track 4: Production Blueprints</span><a class="source-link" href="./laravel-html-tutorials/06-multi-auth-master-system.html" target="_blank">Dedicated HTML Guide ↗</a><a class="source-link" href="./laravel-text-tutorials/06-multi-auth-master-system.txt">Plaintext .txt &rarr;</a></div><div class="title-row"><h2><span class="ch-prefix">25.</span> Chapter 25 — Multi-Authentication Master System &amp; OTP Verification</h2><button type="button" class="done-toggle" data-ch="ch-25" onclick="toggleDone(this)">Mark Complete</button></div></header><div class="chapter-body"><p>Enterprise multi-tenancy security: Multi-guard authentication with cryptographic One-Time Password (OTP) verification, session isolation, brute-force defense, and custom guard redirects.</p>
+<h2>1. Secure Two-Factor OTP Generation &amp; Cache Storage</h2>
+<div class="code-block"><div class="code-head"><span class="code-lang">PHP</span><button type="button" class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre><code class="language-php">final class OtpService
+{
+    public function generateFor(int $adminId): string
+    {
+        $code = str_pad((string) random_int(100000, 999999), 6, '0', STR_PAD_LEFT);
+        $cacheKey = "admin_otp_{$adminId}";
+        
+        Cache::put($cacheKey, hash('sha256', $code), now()->addMinutes(5));
+        
+        // Dispatch OTP via SMS or Mail Notification
+        Notification::send(Admin::findOrFail($adminId), new SendAdminOtpNotification($code));
+        
+        return $code;
+    }
+
+    public function verify(int $adminId, string $inputCode): bool
+    {
+        $cachedHash = Cache::get("admin_otp_{$adminId}");
+        if ($cachedHash && hash_equals($cachedHash, hash('sha256', $inputCode))) {
+            Cache::forget("admin_otp_{$adminId}");
+            return true;
+        }
+        return false;
+    }
+}</code></pre></div></div></article>
+
+<article class="chapter-card" id="ch-26" data-track="track-4"><header class="chapter-head"><div class="chapter-meta"><span class="track-badge track-4">Track 4: Production Blueprints</span><a class="source-link" href="./laravel-html-tutorials/07-dynamic-menu-crud.html" target="_blank">Dedicated HTML Guide ↗</a><a class="source-link" href="./laravel-text-tutorials/07-dynamic-menu-crud.txt">Plaintext .txt &rarr;</a></div><div class="title-row"><h2><span class="ch-prefix">26.</span> Chapter 26 — Dynamic Hierarchical Menu Builder &amp; Admin CRUD</h2><button type="button" class="done-toggle" data-ch="ch-26" onclick="toggleDone(this)">Mark Complete</button></div></header><div class="chapter-body"><p>Construct an infinitely nested dynamic menu system: database schema with <code>parent_id</code> self-referencing relationships, recursive Blade components, drag-and-drop order updates, and permission-based visibility.</p>
+<h2>1. Self-Referencing Eloquent Menu Model</h2>
+<div class="code-block"><div class="code-head"><span class="code-lang">PHP</span><button type="button" class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre><code class="language-php">namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+
+final class MenuItem extends Model
+{
+    protected $fillable = ['title', 'url', 'parent_id', 'order', 'permission'];
+
+    public function parent(): BelongsTo
+    {
+        return $this->belongsTo(self::class, 'parent_id');
+    }
+
+    public function children(): HasMany
+    {
+        return $this->hasMany(self::class, 'parent_id')->orderBy('order');
+    }
+}</code></pre></div>
+<h2>2. Recursive Blade Menu Component</h2>
+<div class="code-block"><div class="code-head"><span class="code-lang">BLADE</span><button type="button" class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre><code class="language-html">&lt;!-- resources/views/components/menu-tree.blade.php --&gt;
+&lt;ul class="menu-level space-y-1"&gt;
+    @foreach ($items as $item)
+        &lt;li class="menu-node"&gt;
+            &lt;a href="{{ $item->url }}" class="nav-link"&gt;{{ $item->title }}&lt;/a&gt;
+            @if ($item->children->isNotEmpty())
+                &lt;x-menu-tree :items="$item->children" /&gt;
+            @endif
+        &lt;/li&gt;
+    @endforeach
+&lt;/ul&gt;</code></pre></div></div></article>
+
+<article class="chapter-card" id="ch-27" data-track="track-4"><header class="chapter-head"><div class="chapter-meta"><span class="track-badge track-4">Track 4: Production Blueprints</span><a class="source-link" href="./laravel-html-tutorials/08-scaffolding-breeze-cms.html" target="_blank">Dedicated HTML Guide ↗</a><a class="source-link" href="./laravel-text-tutorials/08-scaffolding-breeze-cms.txt">Plaintext .txt &rarr;</a></div><div class="title-row"><h2><span class="ch-prefix">27.</span> Chapter 27 — App Scaffolding, Breeze &amp; Dynamic CMS Pages</h2><button type="button" class="done-toggle" data-ch="ch-27" onclick="toggleDone(this)">Mark Complete</button></div></header><div class="chapter-body"><p>Full-stack modular layout architecture: Breeze Tailwind scaffolding, dedicated layouts (Admin, Customer, Blog), dynamic database-driven CMS page routing with fallback handlers, and tagged cache invalidation.</p>
+<h2>1. Dynamic CMS Catch-All Route with Tagged Caching</h2>
+<div class="code-block"><div class="code-head"><span class="code-lang">PHP</span><button type="button" class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre><code class="language-php">// routes/web.php (place at bottom of file)
+Route::get('/{slug}', function (string $slug) {
+    $page = Cache::remember("cms_page_{$slug}", 3600, function () use ($slug) {
+        return Page::where('slug', $slug)->where('is_published', true)->firstOrFail();
+    });
+
+    return view('pages.show', ['page' => $page]);
+})->where('slug', '[a-zA-Z0-9\-_]+');</code></pre></div></div></article>
+
+<article class="chapter-card" id="ch-28" data-track="track-4"><header class="chapter-head"><div class="chapter-meta"><span class="track-badge track-4">Track 4: Production Blueprints</span><a class="source-link" href="./laravel-html-tutorials/09-qa-deployment-checklist.html" target="_blank">Dedicated HTML Guide ↗</a><a class="source-link" href="./laravel-text-tutorials/09-qa-deployment-checklist.txt">Plaintext .txt &rarr;</a></div><div class="title-row"><h2><span class="ch-prefix">28.</span> Chapter 28 — Pre-Launch QA, Security Audit &amp; Deployment Checklist</h2><button type="button" class="done-toggle" data-ch="ch-28" onclick="toggleDone(this)">Mark Complete</button></div></header><div class="chapter-body"><p>The ultimate 50-point pre-flight checklist before taking any Laravel application into production: HTTPS redirects, hardened session cookies, database index verification, Nginx gzip/security headers, and queue supervisor configurations.</p>
+<h2>1. Production Nginx VirtualHost Configuration</h2>
+<div class="code-block"><div class="code-head"><span class="code-lang">NGINX</span><button type="button" class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre><code class="language-nginx">server {
+    listen 443 ssl http2;
+    server_name example.com;
+    root /var/www/example.com/public;
+
+    add_header X-Frame-Options "SAMEORIGIN";
+    add_header X-Content-Type-Options "nosniff";
+    add_header Referrer-Policy "strict-origin-when-cross-origin";
+
+    index index.php;
+    charset utf-8;
+
+    location / {
+        try_files $uri $uri/ /index.php?$query_string;
+    }
+
+    location ~ \.php$ {
+        fastcgi_pass unix:/var/run/php/php8.3-fpm.sock;
+        fastcgi_param SCRIPT_FILENAME $realpath_root$fastcgi_script_name;
+        include fastcgi_params;
+    }
+
+    location ~ /\.(?!well-known).* {
+        deny all;
+    }
+}</code></pre></div></div></article>
+
+<article class="chapter-card" id="ch-29" data-track="track-4"><header class="chapter-head"><div class="chapter-meta"><span class="track-badge track-4">Track 4: Production Blueprints</span><a class="source-link" href="./laravel-html-tutorials/10-math-captcha-security.html" target="_blank">Dedicated HTML Guide ↗</a><a class="source-link" href="./laravel-text-tutorials/10-math-captcha-security.txt">Plaintext .txt &rarr;</a></div><div class="title-row"><h2><span class="ch-prefix">29.</span> Chapter 29 — Pure PHP Vector SVG Math CAPTCHA &amp; Anti-Spam Defense</h2><button type="button" class="done-toggle" data-ch="ch-29" onclick="toggleDone(this)">Mark Complete</button></div></header><div class="chapter-body"><p>Eliminate external tracking libraries (Google reCAPTCHA, Cloudflare Turnstile) with an offline, zero-dependency SVG mathematical CAPTCHA generator: dynamic geometric distortion, session validation, and hidden honeypot traps.</p>
+<h2>1. Vector SVG Math CAPTCHA Generator Service</h2>
+<div class="code-block"><div class="code-head"><span class="code-lang">PHP</span><button type="button" class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre><code class="language-php">final class MathCaptchaService
+{
+    public function generate(): array
+    {
+        $a = random_int(1, 9);
+        $b = random_int(1, 9);
+        $result = $a + $b;
+
+        session(['math_captcha_result' => $result]);
+
+        $svg = '&lt;svg xmlns="http://www.w3.org/2000/svg" width="120" height="40"&gt;'
+             . '&lt;rect width="100%" height="100%" fill="#1e293b"/&gt;'
+             . '&lt;text x="20" y="26" font-family="monospace" font-size="20" fill="#38bdf8"&gt;'
+             . "{$a} + {$b} = ?&lt;/text&gt;&lt;/svg&gt;";
+
+        return ['svg' => $svg, 'expected' => $result];
+    }
+}</code></pre></div></div></article>
+
+<article class="chapter-card" id="ch-30" data-track="track-4"><header class="chapter-head"><div class="chapter-meta"><span class="track-badge track-4">Track 4: Production Blueprints</span><a class="source-link" href="./laravel-html-tutorials/11-seo-metadata-schema.html" target="_blank">Dedicated HTML Guide ↗</a><a class="source-link" href="./laravel-text-tutorials/11-seo-metadata-schema.txt">Plaintext .txt &rarr;</a></div><div class="title-row"><h2><span class="ch-prefix">30.</span> Chapter 30 — Production Technical SEO, OpenGraph &amp; Schema Markup</h2><button type="button" class="done-toggle" data-ch="ch-30" onclick="toggleDone(this)">Mark Complete</button></div></header><div class="chapter-body"><p>Master search engine visibility: Dynamic OpenGraph and Twitter Card meta generation, automated JSON-LD structured data (Article, Breadcrumbs, Organization), canonical URLs, and automated XML sitemaps.</p>
+<h2>1. Automated JSON-LD Schema.org Generator in Blade</h2>
+<div class="code-block"><div class="code-head"><span class="code-lang">HTML</span><button type="button" class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre><code class="language-html">&lt;!-- resources/views/partials/seo-schema.blade.php --&gt;
+&lt;script type="application/ld+json"&gt;
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "{{ e($post->title) }}",
+  "image": ["{{ url($post->featured_image) }}"],
+  "datePublished": "{{ $post->published_at->toIso8601String() }}",
+  "dateModified": "{{ $post->updated_at->toIso8601String() }}",
+  "author": {
+    "@type": "Person",
+    "name": "{{ e($post->author->name) }}"
+  }
+}
+&lt;/script&gt;</code></pre></div></div></article>
+
+<article class="chapter-card" id="ch-31" data-track="track-4"><header class="chapter-head"><div class="chapter-meta"><span class="track-badge track-4">Track 4: Production Blueprints</span><a class="source-link" href="./laravel-html-tutorials/12-restful-api-sanctum-resources.html" target="_blank">Dedicated HTML Guide ↗</a><a class="source-link" href="./laravel-text-tutorials/12-restful-api-sanctum-resources.txt">Plaintext .txt &rarr;</a></div><div class="title-row"><h2><span class="ch-prefix">31.</span> Chapter 31 — RESTful APIs, Sanctum Token Lifecycle &amp; JsonResources</h2><button type="button" class="done-toggle" data-ch="ch-31" onclick="toggleDone(this)">Mark Complete</button></div></header><div class="chapter-body"><p>Architect secure, versioned API services using Laravel Sanctum: token ability scoping, granular JsonResource representations, conditional attribute loading with <code>whenLoaded()</code>, rate limiters, and uniform error schemas.</p>
+<h2>1. Conditional Attribute Loading in JsonResource</h2>
+<div class="code-block"><div class="code-head"><span class="code-lang">PHP</span><button type="button" class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre><code class="language-php">namespace App\Http\Resources;
+
+use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\JsonResource;
+
+final class ArticleResource extends JsonResource
+{
+    public function toArray(Request $request): array
+    {
+        return [
+            'id' => $this->id,
+            'title' => $this->title,
+            'slug' => $this->slug,
+            'author' => new UserResource($this->whenLoaded('author')),
+            'comments' => CommentResource::collection($this->whenLoaded('comments')),
+            'created_at' => $this->created_at->toIso8601String(),
+        ];
+    }
+}</code></pre></div></div></article>
+
+<article class="chapter-card" id="ch-32" data-track="track-4"><header class="chapter-head"><div class="chapter-meta"><span class="track-badge track-4">Track 4: Production Blueprints</span><a class="source-link" href="./laravel-html-tutorials/13-eloquent-relationships-transactions.html" target="_blank">Dedicated HTML Guide ↗</a><a class="source-link" href="./laravel-text-tutorials/13-eloquent-relationships-transactions.txt">Plaintext .txt &rarr;</a></div><div class="title-row"><h2><span class="ch-prefix">32.</span> Chapter 32 — Advanced Eloquent Relationships, Locks &amp; Transactions</h2><button type="button" class="done-toggle" data-ch="ch-32" onclick="toggleDone(this)">Mark Complete</button></div></header><div class="chapter-body"><p>Eliminate data corruption under high concurrency: Polymorphic relationships (<code>morphTo</code>, <code>morphMany</code>), atomic multi-table operations with <code>DB::transaction()</code>, pessimistic row locking with <code>lockForUpdate()</code>, and N+1 query diagnostics.</p>
+<h2>1. Atomic Inventory Decrement with <code>lockForUpdate()</code></h2>
+<div class="code-block"><div class="code-head"><span class="code-lang">PHP</span><button type="button" class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre><code class="language-php">use Illuminate\Support\Facades\DB;
+
+DB::transaction(function () use ($productId, $quantity, $userId) {
+    // Acquire exclusive row lock preventing race conditions
+    $product = Product::where('id', $productId)->lockForUpdate()->firstOrFail();
+
+    if ($product->stock < $quantity) {
+        throw new InsufficientStockException("Insufficient stock for product {$product->name}");
+    }
+
+    $product->decrement('stock', $quantity);
+
+    Order::create([
+        'user_id' => $userId,
+        'product_id' => $productId,
+        'quantity' => $quantity,
+        'total_price' => $product->price * $quantity,
+    ]);
+});</code></pre></div></div></article>
+
+<article class="chapter-card" id="ch-33" data-track="track-4"><header class="chapter-head"><div class="chapter-meta"><span class="track-badge track-4">Track 4: Production Blueprints</span><a class="source-link" href="./laravel-html-tutorials/14-queues-jobs-events-scheduling.html" target="_blank">Dedicated HTML Guide ↗</a><a class="source-link" href="./laravel-text-tutorials/14-queues-jobs-events-scheduling.txt">Plaintext .txt &rarr;</a></div><div class="title-row"><h2><span class="ch-prefix">33.</span> Chapter 33 — Queues, Asynchronous Jobs &amp; Task Scheduling</h2><button type="button" class="done-toggle" data-ch="ch-33" onclick="toggleDone(this)">Mark Complete</button></div></header><div class="chapter-body"><p>Decouple slow I/O operations from HTTP response cycles: Redis/database queue workers, automatic retry policies with exponential backoff, Laravel 11/12/13 non-blocking <code>defer()</code> execution, and fluent cron task scheduling.</p>
+<h2>1. Robust Queued Job with Exponential Backoff</h2>
+<div class="code-block"><div class="code-head"><span class="code-lang">PHP</span><button type="button" class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre><code class="language-php">namespace App\Jobs;
+
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Foundation\Queue\Queueable;
+
+final class ProcessWebhook implements ShouldQueue
+{
+    use Queueable;
+
+    public int $tries = 5;
+    public int $maxExceptions = 3;
+
+    public function backoff(): array
+    {
+        return [10, 60, 300]; // Retry after 10s, 1m, 5m
+    }
+
+    public function handle(PaymentGatewayService $gateway): void
+    {
+        $gateway->deliverWebhook($this->payload);
+    }
+}</code></pre></div></div></article>
+
+<article class="chapter-card" id="ch-34" data-track="track-4"><header class="chapter-head"><div class="chapter-meta"><span class="track-badge track-4">Track 4: Production Blueprints</span><a class="source-link" href="./laravel-html-tutorials/15-file-storage-uploads-media.html" target="_blank">Dedicated HTML Guide ↗</a><a class="source-link" href="./laravel-text-tutorials/15-file-storage-uploads-media.txt">Plaintext .txt &rarr;</a></div><div class="title-row"><h2><span class="ch-prefix">34.</span> Chapter 34 — Secure File Uploads, Disks &amp; AWS S3 Cloud Storage</h2><button type="button" class="done-toggle" data-ch="ch-34" onclick="toggleDone(this)">Mark Complete</button></div></header><div class="chapter-body"><p>Multi-disk media management: Secure MIME-type validation, streaming uploads to AWS S3, private buckets, time-limited temporary signed URLs for authorized document downloads, and automatic image thumbnails.</p>
+<h2>1. Secure S3 Upload &amp; Temporary Signed Download URLs</h2>
+<div class="code-block"><div class="code-head"><span class="code-lang">PHP</span><button type="button" class="copy-btn" onclick="copyCode(this)">Copy</button></div><pre><code class="language-php">namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+
+final class DocumentController extends Controller
+{
+    public function upload(Request $request)
+    {
+        $request->validate([
+            'document' => ['required', 'file', 'mimes:pdf,docx,xlsx', 'max:10240'], // 10MB
+        ]);
+
+        $path = $request->file('document')->store('private/contracts', 's3');
+
+        return response()->json(['path' => $path], 201);
+    }
+
+    public function download(string $path)
+    {
+        // Issue 15-minute temporary signed S3 URL
+        $url = Storage::disk('s3')->temporaryUrl($path, now()->addMinutes(15));
+        return redirect()->away($url);
+    }
+}</code></pre></div></div></article>
+
+<article class="chapter-card" id="quiz-section" data-track="track-quiz">
           <header class="chapter-head">
             <div class="chapter-meta">
               <span class="track-badge track-quiz">Knowledge Check</span>
@@ -2999,7 +3399,7 @@ final class Post extends Model
   </div>
 
   <script>
-    const totalChapters = 19;
+    const totalChapters = 34;
     const storageKey = 'laravel_handbook_done_v2';
     const themeKey = 'laravel_handbook_theme_v1';
     let activeTrack = 'all';

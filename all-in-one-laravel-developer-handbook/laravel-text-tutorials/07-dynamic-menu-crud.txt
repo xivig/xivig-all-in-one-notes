@@ -1,0 +1,945 @@
+================================================================================
+     LARAVEL DYNAMIC MENU BUILDER & ADMIN CRUD (COMPLETE & UNIFIED GUIDE)
+================================================================================
+
+This comprehensive tutorial guides you through building a database-driven,
+hierarchical Dynamic Menu Management System (Admin CRUD) in Laravel.
+
+Features included in this guide:
+- Multi-level parent/child navigation hierarchy (nested dropdowns)
+- Admin CRUD interface to add, edit, sort, toggle status, and delete menus
+- URL vs. Named Route support
+- Target window selection (_self vs. _blank)
+- Global View Composer to automatically inject active menus into layouts/navbars
+- Mobile-responsive frontend Blade navigation component with Alpine.js
+- AJAX drag-and-drop reordering endpoint
+
+--------------------------------------------------------------------------------
+TABLE OF CONTENTS
+--------------------------------------------------------------------------------
+1. Database Schema & Migration
+2. Menu Eloquent Model (Relationships, Scopes & Helpers)
+3. Default Menu Seeder
+4. Admin Menu Controller with Validation & Hierarchy Protection
+5. Route Definitions in routes/web.php
+6. Complete Admin CRUD Blade Views:
+   - Index View (resources/views/admin/menus/index.blade.php)
+   - Create View (resources/views/admin/menus/create.blade.php)
+   - Edit View (resources/views/admin/menus/edit.blade.php)
+7. View Composer Setup (Sharing Menus with Navbar)
+8. Frontend Navbar Implementation (Tailwind CSS + Alpine.js Dropdowns)
+9. Drag-and-Drop Reordering (AJAX Endpoint)
+10. Testing and Verification
+
+
+================================================================================
+1. DATABASE SCHEMA & MIGRATION
+================================================================================
+Run the Artisan command to create the model and migration:
+php artisan make:model Menu -m
+
+Open `database/migrations/xxxx_xx_xx_xxxxxx_create_menus_table.php` and configure:
+
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    public function up(): void
+    {
+        Schema::create('menus', function (Blueprint $table) {
+            $table->id();
+            $table->string('title');                          // Menu Label (e.g., 'Home', 'Services')
+            $table->string('url')->nullable();                // Custom URL (e.g., '/contact' or 'https://...')
+            $table->string('route_name')->nullable();         // Named Route (e.g., 'dashboard', 'posts.index')
+            $table->string('icon')->nullable();               // Icon class or SVG name (e.g., 'fa fa-home')
+            $table->string('target')->default('_self');       // '_self' or '_blank'
+            $table->foreignId('parent_id')                    // Parent menu for multi-level dropdowns
+                  ->nullable()
+                  ->constrained('menus')
+                  ->cascadeOnDelete();
+            $table->integer('order')->default(0);             // Display sequence
+            $table->boolean('is_active')->default(true);      // Visibility toggle
+            $table->string('permission')->nullable();         // Optional role/gate required
+            $table->timestamps();
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::dropIfExists('menus');
+    }
+};
+
+Run migration:
+php artisan migrate
+
+
+================================================================================
+2. MENU ELOQUENT MODEL (RELATIONSHIPS, SCOPES & HELPERS)
+================================================================================
+Open `app/Models/Menu.php` and define the model:
+
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Facades\Route;
+
+class Menu extends Model
+{
+    use HasFactory;
+
+    protected $fillable = [
+        'title',
+        'url',
+        'route_name',
+        'icon',
+        'target',
+        'parent_id',
+        'order',
+        'is_active',
+        'permission',
+    ];
+
+    /**
+     * Modern attribute casting.
+     */
+    protected function casts(): array
+    {
+        return [
+            'is_active' => 'boolean',
+            'order'     => 'integer',
+        ];
+    }
+
+    /**
+     * Parent menu relationship.
+     */
+    public function parent(): BelongsTo
+    {
+        return $this->belongsTo(Menu::class, 'parent_id');
+    }
+
+    /**
+     * Active direct children (ordered for navigation rendering).
+     */
+    public function children(): HasMany
+    {
+        return $this->hasMany(Menu::class, 'parent_id')
+                    ->where('is_active', true)
+                    ->orderBy('order', 'asc');
+    }
+
+    /**
+     * All children including inactive (for Admin management).
+     */
+    public function allChildren(): HasMany
+    {
+        return $this->hasMany(Menu::class, 'parent_id')
+                    ->orderBy('order', 'asc');
+    }
+
+    /**
+     * Scope for root menu items (top-level navbar items).
+     */
+    public function scopeRoot($query)
+    {
+        return $query->whereNull('parent_id');
+    }
+
+    /**
+     * Scope for active menu items.
+     */
+    public function scopeActive($query)
+    {
+        return $query->where('is_active', true);
+    }
+
+    /**
+     * Check if this menu has active child items.
+     */
+    public function hasChildren(): bool
+    {
+        return $this->children->isNotEmpty();
+    }
+
+    /**
+     * Resolve the target URL (evaluates named route first, then custom url).
+     */
+    public function getResolvedUrl(): string
+    {
+        if ($this->route_name && Route::has($this->route_name)) {
+            return route($this->route_name);
+        }
+
+        if ($this->url) {
+            return str_starts_with($this->url, 'http') ? $this->url : url($this->url);
+        }
+
+        return '#';
+    }
+
+    /**
+     * Check if the current menu corresponds to the active page.
+     */
+    public function isCurrent(): bool
+    {
+        if ($this->route_name && request()->routeIs($this->route_name)) {
+            return true;
+        }
+
+        if ($this->url) {
+            $trimmed = trim($this->url, '/');
+            if ($trimmed !== '' && request()->is($trimmed . '*')) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+}
+
+
+================================================================================
+3. DEFAULT MENU SEEDER
+================================================================================
+Create a seeder to populate sample navigation menus:
+php artisan make:seeder MenuSeeder
+
+Open `database/seeders/MenuSeeder.php`:
+
+<?php
+
+namespace Database\Seeders;
+
+use App\Models\Menu;
+use Illuminate\Database\Seeder;
+
+class MenuSeeder extends Seeder
+{
+    public function run(): void
+    {
+        // Top Level Menus
+        $home = Menu::create([
+            'title'      => 'Home',
+            'url'        => '/',
+            'order'      => 1,
+            'is_active'  => true,
+            'target'     => '_self',
+        ]);
+
+        $services = Menu::create([
+            'title'      => 'Services',
+            'url'        => null,
+            'order'      => 2,
+            'is_active'  => true,
+            'target'     => '_self',
+        ]);
+
+        // Child Menus under Services
+        Menu::create([
+            'title'      => 'Web Development',
+            'url'        => '/services/web-development',
+            'parent_id'  => $services->id,
+            'order'      => 1,
+            'is_active'  => true,
+        ]);
+
+        Menu::create([
+            'title'      => 'Mobile Applications',
+            'url'        => '/services/mobile-apps',
+            'parent_id'  => $services->id,
+            'order'      => 2,
+            'is_active'  => true,
+        ]);
+
+        Menu::create([
+            'title'      => 'UI/UX Design',
+            'url'        => '/services/ui-ux',
+            'parent_id'  => $services->id,
+            'order'      => 3,
+            'is_active'  => true,
+        ]);
+
+        // About Us
+        Menu::create([
+            'title'      => 'About Us',
+            'url'        => '/about',
+            'order'      => 3,
+            'is_active'  => true,
+        ]);
+
+        // Contact
+        Menu::create([
+            'title'      => 'Contact',
+            'url'        => '/contact',
+            'order'      => 4,
+            'is_active'  => true,
+        ]);
+    }
+}
+
+Run seeder:
+php artisan db:seed --class=MenuSeeder
+
+
+================================================================================
+4. ADMIN MENU CONTROLLER
+================================================================================
+Generate the controller:
+php artisan make:controller Admin/MenuController --resource
+
+Open `app/Http/Controllers/Admin/MenuController.php`:
+
+<?php
+
+namespace App\Http\Controllers\Admin;
+
+use App\Http\Controllers\Controller;
+use App\Models\Menu;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\View\View;
+
+class MenuController extends Controller
+{
+    /**
+     * Display a listing of all menu items with hierarchy.
+     */
+    public function index(): View
+    {
+        // Load root menus with their nested children
+        $menus = Menu::with(['allChildren.allChildren'])
+                     ->root()
+                     ->orderBy('order', 'asc')
+                     ->get();
+
+        return view('admin.menus.index', compact('menus'));
+    }
+
+    /**
+     * Show the form for creating a new menu item.
+     */
+    public function create(): View
+    {
+        // Selectable parent menus (top-level only to prevent infinite nesting)
+        $parentMenus = Menu::root()->orderBy('title', 'asc')->get();
+
+        return view('admin.menus.create', compact('parentMenus'));
+    }
+
+    /**
+     * Store a newly created menu item in storage.
+     */
+    public function store(Request $request): RedirectResponse
+    {
+        $validated = $request->validate([
+            'title'      => ['required', 'string', 'max:255'],
+            'url'        => ['nullable', 'string', 'max:255'],
+            'route_name' => ['nullable', 'string', 'max:255'],
+            'icon'       => ['nullable', 'string', 'max:100'],
+            'target'     => ['required', 'in:_self,_blank'],
+            'parent_id'  => ['nullable', 'exists:menus,id'],
+            'order'      => ['nullable', 'integer', 'min:0'],
+            'is_active'  => ['sometimes', 'boolean'],
+        ]);
+
+        $validated['is_active'] = $request->has('is_active');
+        $validated['order'] = $validated['order'] ?? 0;
+
+        Menu::create($validated);
+
+        return redirect()->route('admin.menus.index')
+                         ->with('success', 'Menu item created successfully.');
+    }
+
+    /**
+     * Show the form for editing the specified menu item.
+     */
+    public function edit(Menu $menu): View
+    {
+        // Cannot select itself as parent
+        $parentMenus = Menu::root()
+                           ->where('id', '!=', $menu->id)
+                           ->orderBy('title', 'asc')
+                           ->get();
+
+        return view('admin.menus.edit', compact('menu', 'parentMenus'));
+    }
+
+    /**
+     * Update the specified menu item in storage.
+     */
+    public function update(Request $request, Menu $menu): RedirectResponse
+    {
+        $validated = $request->validate([
+            'title'      => ['required', 'string', 'max:255'],
+            'url'        => ['nullable', 'string', 'max:255'],
+            'route_name' => ['nullable', 'string', 'max:255'],
+            'icon'       => ['nullable', 'string', 'max:100'],
+            'target'     => ['required', 'in:_self,_blank'],
+            'parent_id'  => ['nullable', 'exists:menus,id', 'different:id'],
+            'order'      => ['nullable', 'integer', 'min:0'],
+            'is_active'  => ['sometimes', 'boolean'],
+        ]);
+
+        // Prevent setting a child as parent to avoid cyclic recursion
+        if (!empty($validated['parent_id']) && $validated['parent_id'] == $menu->id) {
+            return back()->withErrors(['parent_id' => 'A menu item cannot be its own parent.']);
+        }
+
+        $validated['is_active'] = $request->has('is_active');
+        $validated['order'] = $validated['order'] ?? 0;
+
+        $menu->update($validated);
+
+        return redirect()->route('admin.menus.index')
+                         ->with('success', 'Menu item updated successfully.');
+    }
+
+    /**
+     * Remove the specified menu item from storage.
+     */
+    public function destroy(Menu $menu): RedirectResponse
+    {
+        $menu->delete(); // Cascade deletes child items due to DB foreign key constraint
+
+        return redirect()->route('admin.menus.index')
+                         ->with('success', 'Menu item deleted successfully.');
+    }
+
+    /**
+     * Update order of menus via AJAX drag and drop.
+     */
+    public function reorder(Request $request)
+    {
+        $request->validate([
+            'order' => ['required', 'array'],
+            'order.*.id' => ['required', 'exists:menus,id'],
+            'order.*.order' => ['required', 'integer'],
+        ]);
+
+        foreach ($request->order as $item) {
+            Menu::where('id', $item['id'])->update(['order' => $item['order']]);
+        }
+
+        return response()->json(['status' => 'success', 'message' => 'Menu order updated.']);
+    }
+}
+
+
+================================================================================
+5. ROUTE DEFINITIONS IN routes/web.php
+================================================================================
+Open `routes/web.php` and register the Admin Menu resource routes:
+
+use App\Http\Controllers\Admin\MenuController;
+use Illuminate\Support\Facades\Route;
+
+// Protect menu management with your admin middleware:
+Route::prefix('admin')->name('admin.')->middleware(['web', 'auth'])->group(function () {
+    Route::post('menus/reorder', [MenuController::class, 'reorder'])->name('menus.reorder');
+    Route::resource('menus', MenuController::class);
+});
+
+
+================================================================================
+6. COMPLETE ADMIN CRUD BLADE VIEWS
+================================================================================
+
+--------------------------------------------------------------------------------
+View 1: `resources/views/admin/menus/index.blade.php`
+--------------------------------------------------------------------------------
+Create directory `resources/views/admin/menus/` and create `index.blade.php`:
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Menus - Admin</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 p-8">
+    <div class="max-w-6xl mx-auto bg-white rounded-lg shadow-md p-6">
+        <div class="flex items-center justify-between mb-6">
+            <div>
+                <h1 class="text-2xl font-bold text-gray-800">Navigation Menu Builder</h1>
+                <p class="text-sm text-gray-500">Manage your website navigation hierarchy and order</p>
+            </div>
+            <a href="{{ route('admin.menus.create') }}"
+               class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-md shadow text-sm">
+                + Add New Menu Item
+            </a>
+        </div>
+
+        {{-- Flash Alerts --}}
+        @if (session('success'))
+            <div class="mb-4 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded text-sm">
+                {{ session('success') }}
+            </div>
+        @endif
+
+        <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="bg-gray-100 border-b border-gray-200 text-xs font-semibold text-gray-600 uppercase">
+                        <th class="py-3 px-4">Order</th>
+                        <th class="py-3 px-4">Menu Title</th>
+                        <th class="py-3 px-4">Link / Route</th>
+                        <th class="py-3 px-4">Target</th>
+                        <th class="py-3 px-4">Status</th>
+                        <th class="py-3 px-4 text-right">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-200 text-sm">
+                    @forelse ($menus as $menu)
+                        {{-- Top-Level Parent Menu --}}
+                        <tr class="hover:bg-gray-50 font-semibold bg-gray-50">
+                            <td class="py-3 px-4 text-gray-500">{{ $menu->order }}</td>
+                            <td class="py-3 px-4 text-gray-900">
+                                📂 {{ $menu->title }}
+                            </td>
+                            <td class="py-3 px-4 text-gray-600 font-mono text-xs">
+                                {{ $menu->route_name ? 'route(' . $menu->route_name . ')' : $menu->url }}
+                            </td>
+                            <td class="py-3 px-4 text-gray-500">{{ $menu->target }}</td>
+                            <td class="py-3 px-4">
+                                @if ($menu->is_active)
+                                    <span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">Active</span>
+                                @else
+                                    <span class="bg-red-100 text-red-800 text-xs px-2 py-1 rounded-full">Inactive</span>
+                                @endif
+                            </td>
+                            <td class="py-3 px-4 text-right space-x-2">
+                                <a href="{{ route('admin.menus.edit', $menu) }}" class="text-blue-600 hover:text-blue-900">Edit</a>
+                                <form action="{{ route('admin.menus.destroy', $menu) }}" method="POST" class="inline-block" onsubmit="return confirm('Delete this menu item and its children?');">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="text-red-600 hover:text-red-900">Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+
+                        {{-- Children Sub-Menus --}}
+                        @foreach ($menu->allChildren as $child)
+                            <tr class="hover:bg-gray-50">
+                                <td class="py-2.5 px-4 text-gray-400 text-xs pl-8">↳ {{ $child->order }}</td>
+                                <td class="py-2.5 px-4 text-gray-700 pl-8">
+                                    <span class="text-gray-300 mr-1">└──</span> {{ $child->title }}
+                                </td>
+                                <td class="py-2.5 px-4 text-gray-500 font-mono text-xs">
+                                    {{ $child->route_name ? 'route(' . $child->route_name . ')' : $child->url }}
+                                </td>
+                                <td class="py-2.5 px-4 text-gray-400 text-xs">{{ $child->target }}</td>
+                                <td class="py-2.5 px-4">
+                                    @if ($child->is_active)
+                                        <span class="bg-green-50 text-green-700 text-xs px-2 py-0.5 rounded-full">Active</span>
+                                    @else
+                                        <span class="bg-red-50 text-red-700 text-xs px-2 py-0.5 rounded-full">Inactive</span>
+                                    @endif
+                                </td>
+                                <td class="py-2.5 px-4 text-right space-x-2 text-xs">
+                                    <a href="{{ route('admin.menus.edit', $child) }}" class="text-blue-600 hover:text-blue-900">Edit</a>
+                                    <form action="{{ route('admin.menus.destroy', $child) }}" method="POST" class="inline-block" onsubmit="return confirm('Delete this item?');">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="text-red-600 hover:text-red-900">Delete</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        @endforeach
+                    @empty
+                        <tr>
+                            <td colspan="6" class="text-center py-6 text-gray-500">No menu items found. Click above to create one.</td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>
+
+
+--------------------------------------------------------------------------------
+View 2: `resources/views/admin/menus/create.blade.php`
+--------------------------------------------------------------------------------
+Create `resources/views/admin/menus/create.blade.php`:
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Menu Item - Admin</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 p-8">
+    <div class="max-w-2xl mx-auto bg-white rounded-lg shadow-md p-6">
+        <div class="flex items-center justify-between mb-6 pb-4 border-b">
+            <h1 class="text-xl font-bold text-gray-800">Add New Menu Item</h1>
+            <a href="{{ route('admin.menus.index') }}" class="text-sm text-gray-600 hover:text-gray-900">← Back to List</a>
+        </div>
+
+        <form method="POST" action="{{ route('admin.menus.store') }}">
+            @csrf
+
+            {{-- Title --}}
+            <div class="mb-4">
+                <label for="title" class="block text-sm font-semibold text-gray-700 mb-1">Title *</label>
+                <input type="text" name="title" id="title" value="{{ old('title') }}" required
+                       placeholder="e.g. Products, About Us"
+                       class="w-full border-gray-300 rounded-md shadow-sm border p-2 focus:ring-blue-500 focus:border-blue-500">
+                @error('title') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+            </div>
+
+            {{-- Parent Menu --}}
+            <div class="mb-4">
+                <label for="parent_id" class="block text-sm font-semibold text-gray-700 mb-1">Parent Menu (Optional)</label>
+                <select name="parent_id" id="parent_id"
+                        class="w-full border-gray-300 rounded-md shadow-sm border p-2 bg-white">
+                    <option value="">-- None (Top Level Menu) --</option>
+                    @foreach ($parentMenus as $parent)
+                        <option value="{{ $parent->id }}" {{ old('parent_id') == $parent->id ? 'selected' : '' }}>
+                            {{ $parent->title }}
+                        </option>
+                    @endforeach
+                </select>
+                <span class="text-xs text-gray-500">Choose a parent to make this item a dropdown child.</span>
+            </div>
+
+            {{-- URL & Named Route --}}
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                <div>
+                    <label for="url" class="block text-sm font-semibold text-gray-700 mb-1">Custom URL</label>
+                    <input type="text" name="url" id="url" value="{{ old('url') }}"
+                           placeholder="e.g. /about or https://example.com"
+                           class="w-full border-gray-300 rounded-md shadow-sm border p-2">
+                </div>
+                <div>
+                    <label for="route_name" class="block text-sm font-semibold text-gray-700 mb-1">Or Laravel Route Name</label>
+                    <input type="text" name="route_name" id="route_name" value="{{ old('route_name') }}"
+                           placeholder="e.g. dashboard, contact"
+                           class="w-full border-gray-300 rounded-md shadow-sm border p-2">
+                </div>
+            </div>
+
+            {{-- Target & Order --}}
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                <div>
+                    <label for="target" class="block text-sm font-semibold text-gray-700 mb-1">Open Link In</label>
+                    <select name="target" id="target" class="w-full border-gray-300 rounded-md shadow-sm border p-2 bg-white">
+                        <option value="_self" {{ old('target') == '_self' ? 'selected' : '' }}>Same Tab (_self)</option>
+                        <option value="_blank" {{ old('target') == '_blank' ? 'selected' : '' }}>New Tab (_blank)</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="order" class="block text-sm font-semibold text-gray-700 mb-1">Display Order</label>
+                    <input type="number" name="order" id="order" value="{{ old('order', 0) }}" min="0"
+                           class="w-full border-gray-300 rounded-md shadow-sm border p-2">
+                </div>
+            </div>
+
+            {{-- Is Active --}}
+            <div class="mb-6">
+                <label class="flex items-center text-sm font-semibold text-gray-700">
+                    <input type="checkbox" name="is_active" value="1" {{ old('is_active', true) ? 'checked' : '' }}
+                           class="rounded border-gray-300 text-blue-600 shadow-sm focus:ring-blue-500 h-4 w-4">
+                    <span class="ml-2">Active (Visible in public navigation)</span>
+                </label>
+            </div>
+
+            <div class="flex justify-end space-x-3">
+                <a href="{{ route('admin.menus.index') }}" class="px-4 py-2 border rounded-md text-sm text-gray-600 hover:bg-gray-50">Cancel</a>
+                <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-md text-sm font-semibold hover:bg-blue-700">Create Menu</button>
+            </div>
+        </form>
+    </div>
+</body>
+</html>
+
+
+--------------------------------------------------------------------------------
+View 3: `resources/views/admin/menus/edit.blade.php`
+--------------------------------------------------------------------------------
+Create `resources/views/admin/menus/edit.blade.php`:
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Menu Item - Admin</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 p-8">
+    <div class="max-w-2xl mx-auto bg-white rounded-lg shadow-md p-6">
+        <div class="flex items-center justify-between mb-6 pb-4 border-b">
+            <h1 class="text-xl font-bold text-gray-800">Edit Menu: {{ $menu->title }}</h1>
+            <a href="{{ route('admin.menus.index') }}" class="text-sm text-gray-600 hover:text-gray-900">← Back to List</a>
+        </div>
+
+        <form method="POST" action="{{ route('admin.menus.update', $menu) }}">
+            @csrf
+            @method('PUT')
+
+            {{-- Title --}}
+            <div class="mb-4">
+                <label for="title" class="block text-sm font-semibold text-gray-700 mb-1">Title *</label>
+                <input type="text" name="title" id="title" value="{{ old('title', $menu->title) }}" required
+                       class="w-full border-gray-300 rounded-md shadow-sm border p-2 focus:ring-blue-500 focus:border-blue-500">
+                @error('title') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+            </div>
+
+            {{-- Parent Menu --}}
+            <div class="mb-4">
+                <label for="parent_id" class="block text-sm font-semibold text-gray-700 mb-1">Parent Menu (Optional)</label>
+                <select name="parent_id" id="parent_id"
+                        class="w-full border-gray-300 rounded-md shadow-sm border p-2 bg-white">
+                    <option value="">-- None (Top Level Menu) --</option>
+                    @foreach ($parentMenus as $parent)
+                        <option value="{{ $parent->id }}" {{ old('parent_id', $menu->parent_id) == $parent->id ? 'selected' : '' }}>
+                            {{ $parent->title }}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
+
+            {{-- URL & Named Route --}}
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                <div>
+                    <label for="url" class="block text-sm font-semibold text-gray-700 mb-1">Custom URL</label>
+                    <input type="text" name="url" id="url" value="{{ old('url', $menu->url) }}"
+                           class="w-full border-gray-300 rounded-md shadow-sm border p-2">
+                </div>
+                <div>
+                    <label for="route_name" class="block text-sm font-semibold text-gray-700 mb-1">Route Name</label>
+                    <input type="text" name="route_name" id="route_name" value="{{ old('route_name', $menu->route_name) }}"
+                           class="w-full border-gray-300 rounded-md shadow-sm border p-2">
+                </div>
+            </div>
+
+            {{-- Target & Order --}}
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                <div>
+                    <label for="target" class="block text-sm font-semibold text-gray-700 mb-1">Open Link In</label>
+                    <select name="target" id="target" class="w-full border-gray-300 rounded-md shadow-sm border p-2 bg-white">
+                        <option value="_self" {{ old('target', $menu->target) == '_self' ? 'selected' : '' }}>Same Tab (_self)</option>
+                        <option value="_blank" {{ old('target', $menu->target) == '_blank' ? 'selected' : '' }}>New Tab (_blank)</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="order" class="block text-sm font-semibold text-gray-700 mb-1">Display Order</label>
+                    <input type="number" name="order" id="order" value="{{ old('order', $menu->order) }}" min="0"
+                           class="w-full border-gray-300 rounded-md shadow-sm border p-2">
+                </div>
+            </div>
+
+            {{-- Is Active --}}
+            <div class="mb-6">
+                <label class="flex items-center text-sm font-semibold text-gray-700">
+                    <input type="checkbox" name="is_active" value="1" {{ old('is_active', $menu->is_active) ? 'checked' : '' }}
+                           class="rounded border-gray-300 text-blue-600 shadow-sm focus:ring-blue-500 h-4 w-4">
+                    <span class="ml-2">Active (Visible in public navigation)</span>
+                </label>
+            </div>
+
+            <div class="flex justify-end space-x-3">
+                <a href="{{ route('admin.menus.index') }}" class="px-4 py-2 border rounded-md text-sm text-gray-600 hover:bg-gray-50">Cancel</a>
+                <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-md text-sm font-semibold hover:bg-blue-700">Update Menu</button>
+            </div>
+        </form>
+    </div>
+</body>
+</html>
+
+
+================================================================================
+7. VIEW COMPOSER SETUP (SHARING MENUS GLOBALLY)
+================================================================================
+Rather than passing `$menus` in every controller, register a View Composer in
+`app/Providers/AppServiceProvider.php` inside the `boot()` method:
+
+use App\Models\Menu;
+use Illuminate\Support\Facades\View;
+
+public function boot(): void
+{
+    // Share $navigationMenus with layout and navbar views:
+    View::composer(['layouts.navigation', 'layouts.app', 'partials.navbar'], function ($view) {
+        $menus = Menu::with(['children.children'])
+                     ->root()
+                     ->active()
+                     ->orderBy('order', 'asc')
+                     ->get();
+
+        $view->with('navigationMenus', $menus);
+    });
+}
+
+
+================================================================================
+8. FRONTEND NAVBAR IMPLEMENTATION (TAILWIND CSS + ALPINE.JS DROPDOWNS)
+================================================================================
+Now update your navbar template (e.g. `resources/views/layouts/navigation.blade.php`
+or `resources/views/partials/navbar.blade.php`):
+
+<nav class="bg-white border-b border-gray-100 shadow-sm" x-data="{ mobileOpen: false }">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between h-16">
+            {{-- Logo --}}
+            <div class="flex items-center">
+                <a href="/" class="text-xl font-bold text-gray-800">
+                    MyApplication
+                </a>
+            </div>
+
+            {{-- Desktop Dynamic Navigation Items --}}
+            <div class="hidden sm:flex sm:items-center sm:space-x-6">
+                @foreach ($navigationMenus as $menu)
+                    @if ($menu->hasChildren())
+                        {{-- Dropdown Menu --}}
+                        <div class="relative" x-data="{ open: false }" @click.away="open = false">
+                            <button @click="open = !open"
+                                    class="flex items-center text-sm font-medium text-gray-700 hover:text-blue-600 focus:outline-none transition py-2">
+                                <span>{{ $menu->title }}</span>
+                                <svg class="ml-1 h-4 w-4 fill-current" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                </svg>
+                            </button>
+
+                            {{-- Dropdown Sub-Items --}}
+                            <div x-show="open"
+                                 x-transition:enter="transition ease-out duration-100"
+                                 x-transition:enter-start="transform opacity-0 scale-95"
+                                 x-transition:enter-end="transform opacity-100 scale-100"
+                                 x-transition:leave="transition ease-in duration-75"
+                                 x-transition:leave-start="transform opacity-100 scale-100"
+                                 x-transition:leave-end="transform opacity-0 scale-95"
+                                 class="absolute left-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 py-1 z-50"
+                                 style="display: none;">
+                                @foreach ($menu->children as $child)
+                                    <a href="{{ $child->getResolvedUrl() }}"
+                                       target="{{ $child->target }}"
+                                       class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-blue-600 {{ $child->isCurrent() ? 'font-bold text-blue-600' : '' }}">
+                                        {{ $child->title }}
+                                    </a>
+                                @endforeach
+                            </div>
+                        </div>
+                    @else
+                        {{-- Single Link Item --}}
+                        <a href="{{ $menu->getResolvedUrl() }}"
+                           target="{{ $menu->target }}"
+                           class="inline-flex items-center text-sm font-medium transition py-2 {{ $menu->isCurrent() ? 'text-blue-600 border-b-2 border-blue-600 font-semibold' : 'text-gray-700 hover:text-blue-600' }}">
+                            {{ $menu->title }}
+                        </a>
+                    @endif
+                @endforeach
+            </div>
+
+            {{-- Mobile Menu Hamburger Button --}}
+            <div class="flex items-center sm:hidden">
+                <button @click="mobileOpen = !mobileOpen" class="text-gray-500 hover:text-gray-700 focus:outline-none">
+                    <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path :class="{'hidden': mobileOpen, 'inline-flex': !mobileOpen }" class="inline-flex" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                        <path :class="{'hidden': !mobileOpen, 'inline-flex': mobileOpen }" class="hidden" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    {{-- Mobile Dropdown List --}}
+    <div :class="{'block': mobileOpen, 'hidden': !mobileOpen}" class="hidden sm:hidden bg-gray-50 border-t border-gray-200 py-2 px-4 space-y-1">
+        @foreach ($navigationMenus as $menu)
+            @if ($menu->hasChildren())
+                <div class="font-semibold text-gray-800 text-sm py-1">{{ $menu->title }}</div>
+                <div class="pl-4 space-y-1">
+                    @foreach ($menu->children as $child)
+                        <a href="{{ $child->getResolvedUrl() }}" target="{{ $child->target }}"
+                           class="block text-sm text-gray-600 hover:text-blue-600 py-1">
+                            {{ $child->title }}
+                        </a>
+                    @endforeach
+                </div>
+            @else
+                <a href="{{ $menu->getResolvedUrl() }}" target="{{ $menu->target }}"
+                   class="block text-sm font-medium text-gray-700 hover:text-blue-600 py-1">
+                    {{ $menu->title }}
+                </a>
+            @endif
+        @endforeach
+    </div>
+</nav>
+
+
+================================================================================
+9. DRAG-AND-DROP REORDERING (AJAX FRONTEND ENHANCEMENT)
+================================================================================
+To enable seamless drag-and-drop ordering in the admin index table:
+Include SortableJS (via CDN in `resources/views/admin/menus/index.blade.php`):
+
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+<script>
+    const el = document.querySelector('tbody');
+    Sortable.create(el, {
+        animation: 150,
+        onEnd: function () {
+            let orderData = [];
+            document.querySelectorAll('tbody tr').forEach((row, index) => {
+                const id = row.getAttribute('data-id');
+                if (id) {
+                    orderData.push({ id: id, order: index + 1 });
+                }
+            });
+
+            // Send AJAX update
+            fetch("{{ route('admin.menus.reorder') }}", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRF-TOKEN": "{{ csrf_token() }}"
+                },
+                body: JSON.stringify({ order: orderData })
+            })
+            .then(res => res.json())
+            .then(data => console.log('Order saved:', data));
+        }
+    });
+</script>
+
+
+================================================================================
+10. TESTING AND VERIFICATION
+================================================================================
+1. Run migrations and seed default menu:
+   php artisan migrate
+   php artisan db:seed --class=MenuSeeder
+
+2. Clear application caches:
+   php artisan optimize:clear
+
+3. Start server:
+   php artisan serve
+
+4. Visit Admin Menu Builder:
+   http://127.0.0.1:8000/admin/menus
+   - Try creating a new menu item
+   - Try making a menu item a child of an existing menu
+   - Try toggling visibility and editing order
+
+5. Visit your public website:
+   http://127.0.0.1:8000
+   - Check the navbar: menus are dynamically pulled from the database!
+   - Hover/click on parent items: dropdown displays all active sub-items cleanly!
+================================================================================

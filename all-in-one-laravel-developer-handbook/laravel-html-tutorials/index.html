@@ -1,0 +1,529 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laravel Master Documentation & Step-by-Step Tutorials</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: '#f9322c',
+                        darkbg: '#0b0f19',
+                        darkpanel: '#111827',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-50 text-gray-900 dark:bg-[#0b0f19] dark:text-gray-100 min-h-screen flex flex-col font-sans transition-colors duration-200 antialiased">
+    <!-- Header -->
+    <header class="border-b border-gray-200 dark:border-gray-800 bg-white/90 dark:bg-[#0b0f19]/90 backdrop-blur-md sticky top-0 z-30">
+        <div class="max-w-[1780px] w-full mx-auto px-4 sm:px-6 lg:px-8 xl:px-10 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <span class="text-2xl drop-shadow-sm">🔴</span>
+                <span class="font-extrabold text-xl tracking-tight bg-gradient-to-r from-red-600 via-pink-600 to-indigo-600 bg-clip-text text-transparent">Laravel Master Docs</span>
+                <span class="text-xs px-2.5 py-0.5 rounded-full bg-red-100 text-red-700 dark:bg-red-950/80 dark:text-red-300 font-bold border border-red-200 dark:border-red-900/40">13.x</span>
+            </div>
+            <div class="flex items-center space-x-2 sm:space-x-4">
+                <a href="../README.md" class="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-200 transition" title="Repository Overview & Map">
+                    <span>📄</span> <span class="hidden sm:inline">Repo Map</span>
+                </a>
+                <a href="../index.html" class="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-indigo-50 hover:bg-indigo-100 dark:bg-indigo-950/80 dark:hover:bg-indigo-900 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800/50 transition" title="Open 19-Chapter Handbook & Interactive Labs">
+                    <span>📖</span> <span class="hidden md:inline">19-Chapter</span> <span>Handbook &amp; Labs</span>
+                </a>
+                <span class="hidden lg:inline-block text-xs text-gray-400 dark:text-gray-500 font-medium">| 15 Modules</span>
+                <button onclick="toggleDarkMode()" class="p-2 rounded-xl bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 transition" title="Toggle Dark/Light Mode">
+                    <span id="theme-icon">🌙</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Elite Wide Hero Section -->
+    <section class="py-14 md:py-20 bg-gradient-to-b from-indigo-50/60 dark:from-indigo-950/20 via-transparent to-transparent border-b border-gray-200/60 dark:border-gray-800/60">
+        <div class="max-w-[1780px] w-full mx-auto px-4 sm:px-6 lg:px-8 xl:px-10 text-center">
+            <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-red-100 dark:bg-red-950/80 text-red-700 dark:text-red-300 text-xs font-bold uppercase tracking-wider mb-5 border border-red-200 dark:border-red-900/40">
+                <span>⚡ Production Architecture Reference</span>
+            </div>
+            <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-gray-900 dark:text-white mb-6 leading-tight">
+                Complete Laravel Developer Playbook
+            </h1>
+            <p class="text-base sm:text-lg lg:text-xl text-gray-600 dark:text-gray-300 max-w-4xl mx-auto leading-relaxed mb-8">
+                Production-grade walkthroughs across Multi-Guard Fortify Auth, Dynamic Hierarchical Menus, 100 Pro Tips, Vector SVG Math CAPTCHAs, Technical SEO Schemas, RESTful APIs, Eloquent Relations, and AWS S3 File Storage.
+            </p>
+
+            <!-- Metrics Pills -->
+            <div class="flex flex-wrap items-center justify-center gap-4 text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-300 max-w-4xl mx-auto">
+                <div class="flex items-center space-x-2 px-4 py-2 rounded-xl bg-white dark:bg-gray-800/80 border border-gray-200 dark:border-gray-700 shadow-sm">
+                    <span class="text-indigo-600 dark:text-indigo-400">🚀</span> <span>15 Complete Chapters</span>
+                </div>
+                <div class="flex items-center space-x-2 px-4 py-2 rounded-xl bg-white dark:bg-gray-800/80 border border-gray-200 dark:border-gray-700 shadow-sm">
+                    <span class="text-amber-500">💡</span> <span>100 Architecture Tips</span>
+                </div>
+                <div class="flex items-center space-x-2 px-4 py-2 rounded-xl bg-white dark:bg-gray-800/80 border border-gray-200 dark:border-gray-700 shadow-sm">
+                    <span class="text-emerald-500">⚡</span> <span>35+ Artisan CLI Commands</span>
+                </div>
+                <div class="flex items-center space-x-2 px-4 py-2 rounded-xl bg-white dark:bg-gray-800/80 border border-gray-200 dark:border-gray-700 shadow-sm">
+                    <span class="text-cyan-500">🔒</span> <span>100% Offline Standalone</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Master Content Area: WIDE & SEARCHABLE -->
+    <main class="max-w-[1780px] w-full mx-auto px-4 sm:px-6 lg:px-8 xl:px-10 py-10 flex-1">
+        <!-- Search and Filter Controls -->
+        <div class="mb-10 space-y-4">
+            <div class="relative max-w-3xl">
+                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                </div>
+                <input type="text" id="tutorial-search" oninput="handleSearch()" placeholder="Instant filter: search by keyword, title, tag (e.g. auth, api, s3, captcha, otp, breeze)..." class="w-full pl-11 pr-4 py-3.5 rounded-2xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 shadow-sm text-sm transition">
+            </div>
+
+            <!-- Category Filter Pills -->
+            <div class="flex flex-wrap gap-2 pt-2">
+                <button onclick="filterCategory('All')" class="cat-pill active-pill px-4 py-2 rounded-xl text-xs font-semibold bg-indigo-600 text-white shadow-sm transition">All (15)</button><button onclick="filterCategory('APIs & Web Services')" class="cat-pill px-4 py-2 rounded-xl text-xs font-semibold bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:border-indigo-500 transition">APIs & Web Services</button><button onclick="filterCategory('Architecture')" class="cat-pill px-4 py-2 rounded-xl text-xs font-semibold bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:border-indigo-500 transition">Architecture</button><button onclick="filterCategory('Async Processing')" class="cat-pill px-4 py-2 rounded-xl text-xs font-semibold bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:border-indigo-500 transition">Async Processing</button><button onclick="filterCategory('Authentication')" class="cat-pill px-4 py-2 rounded-xl text-xs font-semibold bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:border-indigo-500 transition">Authentication</button><button onclick="filterCategory('Best Practices')" class="cat-pill px-4 py-2 rounded-xl text-xs font-semibold bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:border-indigo-500 transition">Best Practices</button><button onclick="filterCategory('CLI & Workflow')" class="cat-pill px-4 py-2 rounded-xl text-xs font-semibold bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:border-indigo-500 transition">CLI & Workflow</button><button onclick="filterCategory('Database & ORM')" class="cat-pill px-4 py-2 rounded-xl text-xs font-semibold bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:border-indigo-500 transition">Database & ORM</button><button onclick="filterCategory('Deployment & QA')" class="cat-pill px-4 py-2 rounded-xl text-xs font-semibold bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:border-indigo-500 transition">Deployment & QA</button><button onclick="filterCategory('Getting Started')" class="cat-pill px-4 py-2 rounded-xl text-xs font-semibold bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:border-indigo-500 transition">Getting Started</button><button onclick="filterCategory('SEO & Marketing')" class="cat-pill px-4 py-2 rounded-xl text-xs font-semibold bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:border-indigo-500 transition">SEO & Marketing</button><button onclick="filterCategory('Security')" class="cat-pill px-4 py-2 rounded-xl text-xs font-semibold bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:border-indigo-500 transition">Security</button><button onclick="filterCategory('Storage & Media')" class="cat-pill px-4 py-2 rounded-xl text-xs font-semibold bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:border-indigo-500 transition">Storage & Media</button><button onclick="filterCategory('UI & Components')" class="cat-pill px-4 py-2 rounded-xl text-xs font-semibold bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:border-indigo-500 transition">UI & Components</button>
+            </div>
+
+            <div class="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400 pt-2">
+                <span id="result-count">Showing 15 of 15 tutorials</span>
+                <span>Click any card to read</span>
+            </div>
+        </div>
+
+        <!-- 4-Column Wide Grid -->
+        <div id="card-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            
+    <a href="01-create-laravel-project.html" data-category="Getting Started" data-search="laravel project creation &amp; setup guide step-by-step setup, composer, laravel installer, environment keys, database configuration, starter kits, and troubleshooting. composer installer sqlite mysql env artisan" class="tutorial-card group relative bg-white dark:bg-[#111827] border border-gray-200 dark:border-gray-800 rounded-2xl p-6 shadow-sm hover:shadow-2xl hover:border-indigo-500 dark:hover:border-indigo-400 hover:-translate-y-1 transition-all duration-200 flex flex-col justify-between">
+        <div>
+            <div class="flex items-center justify-between mb-4">
+                <span class="text-3xl p-3 rounded-2xl bg-indigo-50 dark:bg-indigo-950/70 border border-indigo-100 dark:border-indigo-900/40 group-hover:scale-110 transition-transform">🚀</span>
+                <span class="text-xs font-semibold px-2.5 py-1 rounded-full bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300">Laravel 13</span>
+            </div>
+            <p class="text-[11px] font-bold uppercase tracking-wider text-indigo-600 dark:text-indigo-400 mb-1">Getting Started</p>
+            <h3 class="text-xl font-bold text-gray-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors mb-2.5 leading-snug">Laravel Project Creation & Setup Guide</h3>
+            <p class="text-sm text-gray-600 dark:text-gray-300 leading-relaxed mb-4">Step-by-step setup, Composer, Laravel Installer, environment keys, database configuration, starter kits, and troubleshooting.</p>
+        </div>
+        <div>
+            <div class="flex flex-wrap gap-1.5 mb-4">
+                <span class="text-[10px] px-2 py-0.5 rounded-md bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 font-mono">#composer</span><span class="text-[10px] px-2 py-0.5 rounded-md bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 font-mono">#installer</span><span class="text-[10px] px-2 py-0.5 rounded-md bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 font-mono">#sqlite</span>
+            </div>
+            <div class="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400 pt-3 border-t border-gray-100 dark:border-gray-800">
+                <span class="flex items-center space-x-1"><span>⏱️</span> <span>15 min</span></span>
+                <span class="text-indigo-600 dark:text-indigo-400 font-semibold group-hover:translate-x-1 transition-transform inline-flex items-center space-x-1">
+                    <span>Explore Guide</span>
+                    <span>→</span>
+                </span>
+            </div>
+        </div>
+    </a>
+    <a href="02-workflow-command-playbook.html" data-category="CLI & Workflow" data-search="full-cycle command playbook sequential developer cli playbook from project scaffolding to models, migrations, blade layouts, asset bundling, and git. artisan migration controller blade git vite" class="tutorial-card group relative bg-white dark:bg-[#111827] border border-gray-200 dark:border-gray-800 rounded-2xl p-6 shadow-sm hover:shadow-2xl hover:border-indigo-500 dark:hover:border-indigo-400 hover:-translate-y-1 transition-all duration-200 flex flex-col justify-between">
+        <div>
+            <div class="flex items-center justify-between mb-4">
+                <span class="text-3xl p-3 rounded-2xl bg-indigo-50 dark:bg-indigo-950/70 border border-indigo-100 dark:border-indigo-900/40 group-hover:scale-110 transition-transform">⚡</span>
+                <span class="text-xs font-semibold px-2.5 py-1 rounded-full bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300">Artisan CLI</span>
+            </div>
+            <p class="text-[11px] font-bold uppercase tracking-wider text-indigo-600 dark:text-indigo-400 mb-1">CLI & Workflow</p>
+            <h3 class="text-xl font-bold text-gray-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors mb-2.5 leading-snug">Full-Cycle Command Playbook</h3>
+            <p class="text-sm text-gray-600 dark:text-gray-300 leading-relaxed mb-4">Sequential developer CLI playbook from project scaffolding to models, migrations, Blade layouts, asset bundling, and Git.</p>
+        </div>
+        <div>
+            <div class="flex flex-wrap gap-1.5 mb-4">
+                <span class="text-[10px] px-2 py-0.5 rounded-md bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 font-mono">#artisan</span><span class="text-[10px] px-2 py-0.5 rounded-md bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 font-mono">#migration</span><span class="text-[10px] px-2 py-0.5 rounded-md bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 font-mono">#controller</span>
+            </div>
+            <div class="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400 pt-3 border-t border-gray-100 dark:border-gray-800">
+                <span class="flex items-center space-x-1"><span>⏱️</span> <span>20 min</span></span>
+                <span class="text-indigo-600 dark:text-indigo-400 font-semibold group-hover:translate-x-1 transition-transform inline-flex items-center space-x-1">
+                    <span>Explore Guide</span>
+                    <span>→</span>
+                </span>
+            </div>
+        </div>
+    </a>
+    <a href="03-laravel-100-tips.html" data-category="Best Practices" data-search="laravel 100 pro tips masterclass the complete 100 tips, architectural tricks, and best practices across eloquent, blade, security, queues, and testing. eloquent blade optimization security queues testing tips" class="tutorial-card group relative bg-white dark:bg-[#111827] border border-gray-200 dark:border-gray-800 rounded-2xl p-6 shadow-sm hover:shadow-2xl hover:border-indigo-500 dark:hover:border-indigo-400 hover:-translate-y-1 transition-all duration-200 flex flex-col justify-between">
+        <div>
+            <div class="flex items-center justify-between mb-4">
+                <span class="text-3xl p-3 rounded-2xl bg-indigo-50 dark:bg-indigo-950/70 border border-indigo-100 dark:border-indigo-900/40 group-hover:scale-110 transition-transform">💡</span>
+                <span class="text-xs font-semibold px-2.5 py-1 rounded-full bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300">100 Tips</span>
+            </div>
+            <p class="text-[11px] font-bold uppercase tracking-wider text-indigo-600 dark:text-indigo-400 mb-1">Best Practices</p>
+            <h3 class="text-xl font-bold text-gray-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors mb-2.5 leading-snug">Laravel 100 Pro Tips Masterclass</h3>
+            <p class="text-sm text-gray-600 dark:text-gray-300 leading-relaxed mb-4">The complete 100 tips, architectural tricks, and best practices across Eloquent, Blade, Security, Queues, and Testing.</p>
+        </div>
+        <div>
+            <div class="flex flex-wrap gap-1.5 mb-4">
+                <span class="text-[10px] px-2 py-0.5 rounded-md bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 font-mono">#eloquent</span><span class="text-[10px] px-2 py-0.5 rounded-md bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 font-mono">#blade</span><span class="text-[10px] px-2 py-0.5 rounded-md bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 font-mono">#optimization</span>
+            </div>
+            <div class="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400 pt-3 border-t border-gray-100 dark:border-gray-800">
+                <span class="flex items-center space-x-1"><span>⏱️</span> <span>60 min</span></span>
+                <span class="text-indigo-600 dark:text-indigo-400 font-semibold group-hover:translate-x-1 transition-transform inline-flex items-center space-x-1">
+                    <span>Explore Guide</span>
+                    <span>→</span>
+                </span>
+            </div>
+        </div>
+    </a>
+    <a href="04-admin-multi-auth-fortify.html" data-category="Authentication" data-search="admin multi-auth (fortify &amp; jetstream) advanced multi-guard setup using laravel fortify pipelines, custom actions, statefulguard injection, and isolated admin dashboards. fortify guards multi-auth pipeline jetstream auth" class="tutorial-card group relative bg-white dark:bg-[#111827] border border-gray-200 dark:border-gray-800 rounded-2xl p-6 shadow-sm hover:shadow-2xl hover:border-indigo-500 dark:hover:border-indigo-400 hover:-translate-y-1 transition-all duration-200 flex flex-col justify-between">
+        <div>
+            <div class="flex items-center justify-between mb-4">
+                <span class="text-3xl p-3 rounded-2xl bg-indigo-50 dark:bg-indigo-950/70 border border-indigo-100 dark:border-indigo-900/40 group-hover:scale-110 transition-transform">🛡️</span>
+                <span class="text-xs font-semibold px-2.5 py-1 rounded-full bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300">Fortify Multi-Guard</span>
+            </div>
+            <p class="text-[11px] font-bold uppercase tracking-wider text-indigo-600 dark:text-indigo-400 mb-1">Authentication</p>
+            <h3 class="text-xl font-bold text-gray-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors mb-2.5 leading-snug">Admin Multi-Auth (Fortify & Jetstream)</h3>
+            <p class="text-sm text-gray-600 dark:text-gray-300 leading-relaxed mb-4">Advanced multi-guard setup using Laravel Fortify pipelines, custom actions, StatefulGuard injection, and isolated admin dashboards.</p>
+        </div>
+        <div>
+            <div class="flex flex-wrap gap-1.5 mb-4">
+                <span class="text-[10px] px-2 py-0.5 rounded-md bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 font-mono">#fortify</span><span class="text-[10px] px-2 py-0.5 rounded-md bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 font-mono">#guards</span><span class="text-[10px] px-2 py-0.5 rounded-md bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 font-mono">#multi-auth</span>
+            </div>
+            <div class="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400 pt-3 border-t border-gray-100 dark:border-gray-800">
+                <span class="flex items-center space-x-1"><span>⏱️</span> <span>35 min</span></span>
+                <span class="text-indigo-600 dark:text-indigo-400 font-semibold group-hover:translate-x-1 transition-transform inline-flex items-center space-x-1">
+                    <span>Explore Guide</span>
+                    <span>→</span>
+                </span>
+            </div>
+        </div>
+    </a>
+    <a href="05-admin-login-step-by-step.html" data-category="Authentication" data-search="admin login &amp; dashboard (16 steps) linear 16-step implementation for custom admin guards, model casting, seeders, authentication actions, and middleware in laravel 13. admin guards dashboard middleware auth step-by-step" class="tutorial-card group relative bg-white dark:bg-[#111827] border border-gray-200 dark:border-gray-800 rounded-2xl p-6 shadow-sm hover:shadow-2xl hover:border-indigo-500 dark:hover:border-indigo-400 hover:-translate-y-1 transition-all duration-200 flex flex-col justify-between">
+        <div>
+            <div class="flex items-center justify-between mb-4">
+                <span class="text-3xl p-3 rounded-2xl bg-indigo-50 dark:bg-indigo-950/70 border border-indigo-100 dark:border-indigo-900/40 group-hover:scale-110 transition-transform">🔐</span>
+                <span class="text-xs font-semibold px-2.5 py-1 rounded-full bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300">16 Steps</span>
+            </div>
+            <p class="text-[11px] font-bold uppercase tracking-wider text-indigo-600 dark:text-indigo-400 mb-1">Authentication</p>
+            <h3 class="text-xl font-bold text-gray-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors mb-2.5 leading-snug">Admin Login & Dashboard (16 Steps)</h3>
+            <p class="text-sm text-gray-600 dark:text-gray-300 leading-relaxed mb-4">Linear 16-step implementation for custom admin guards, model casting, seeders, authentication actions, and middleware in Laravel 13.</p>
+        </div>
+        <div>
+            <div class="flex flex-wrap gap-1.5 mb-4">
+                <span class="text-[10px] px-2 py-0.5 rounded-md bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 font-mono">#admin</span><span class="text-[10px] px-2 py-0.5 rounded-md bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 font-mono">#guards</span><span class="text-[10px] px-2 py-0.5 rounded-md bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 font-mono">#dashboard</span>
+            </div>
+            <div class="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400 pt-3 border-t border-gray-100 dark:border-gray-800">
+                <span class="flex items-center space-x-1"><span>⏱️</span> <span>25 min</span></span>
+                <span class="text-indigo-600 dark:text-indigo-400 font-semibold group-hover:translate-x-1 transition-transform inline-flex items-center space-x-1">
+                    <span>Explore Guide</span>
+                    <span>→</span>
+                </span>
+            </div>
+        </div>
+    </a>
+    <a href="06-multi-auth-master-system.html" data-category="Authentication" data-search="multi-authentication master system &amp; otp complete standalone multi-auth system (user + admin), custom guards, guest redirections, and optional email otp 2fa verification flow. multi-auth otp 2fa guards passwords security" class="tutorial-card group relative bg-white dark:bg-[#111827] border border-gray-200 dark:border-gray-800 rounded-2xl p-6 shadow-sm hover:shadow-2xl hover:border-indigo-500 dark:hover:border-indigo-400 hover:-translate-y-1 transition-all duration-200 flex flex-col justify-between">
+        <div>
+            <div class="flex items-center justify-between mb-4">
+                <span class="text-3xl p-3 rounded-2xl bg-indigo-50 dark:bg-indigo-950/70 border border-indigo-100 dark:border-indigo-900/40 group-hover:scale-110 transition-transform">👥</span>
+                <span class="text-xs font-semibold px-2.5 py-1 rounded-full bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300">Master Auth & 2FA</span>
+            </div>
+            <p class="text-[11px] font-bold uppercase tracking-wider text-indigo-600 dark:text-indigo-400 mb-1">Authentication</p>
+            <h3 class="text-xl font-bold text-gray-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors mb-2.5 leading-snug">Multi-Authentication Master System & OTP</h3>
+            <p class="text-sm text-gray-600 dark:text-gray-300 leading-relaxed mb-4">Complete standalone multi-auth system (User + Admin), custom guards, guest redirections, and optional email OTP 2FA verification flow.</p>
+        </div>
+        <div>
+            <div class="flex flex-wrap gap-1.5 mb-4">
+                <span class="text-[10px] px-2 py-0.5 rounded-md bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 font-mono">#multi-auth</span><span class="text-[10px] px-2 py-0.5 rounded-md bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 font-mono">#otp</span><span class="text-[10px] px-2 py-0.5 rounded-md bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 font-mono">#2fa</span>
+            </div>
+            <div class="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400 pt-3 border-t border-gray-100 dark:border-gray-800">
+                <span class="flex items-center space-x-1"><span>⏱️</span> <span>35 min</span></span>
+                <span class="text-indigo-600 dark:text-indigo-400 font-semibold group-hover:translate-x-1 transition-transform inline-flex items-center space-x-1">
+                    <span>Explore Guide</span>
+                    <span>→</span>
+                </span>
+            </div>
+        </div>
+    </a>
+    <a href="07-dynamic-menu-crud.html" data-category="UI & Components" data-search="dynamic menu builder &amp; admin crud full production hierarchy menu builder, self-referencing migrations, recursive blade partials, view composers, and ajax drag-and-drop. menu crud hierarchy view-composer ajax blade" class="tutorial-card group relative bg-white dark:bg-[#111827] border border-gray-200 dark:border-gray-800 rounded-2xl p-6 shadow-sm hover:shadow-2xl hover:border-indigo-500 dark:hover:border-indigo-400 hover:-translate-y-1 transition-all duration-200 flex flex-col justify-between">
+        <div>
+            <div class="flex items-center justify-between mb-4">
+                <span class="text-3xl p-3 rounded-2xl bg-indigo-50 dark:bg-indigo-950/70 border border-indigo-100 dark:border-indigo-900/40 group-hover:scale-110 transition-transform">📋</span>
+                <span class="text-xs font-semibold px-2.5 py-1 rounded-full bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300">Dynamic UI</span>
+            </div>
+            <p class="text-[11px] font-bold uppercase tracking-wider text-indigo-600 dark:text-indigo-400 mb-1">UI & Components</p>
+            <h3 class="text-xl font-bold text-gray-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors mb-2.5 leading-snug">Dynamic Menu Builder & Admin CRUD</h3>
+            <p class="text-sm text-gray-600 dark:text-gray-300 leading-relaxed mb-4">Full production hierarchy menu builder, self-referencing migrations, recursive blade partials, view composers, and AJAX drag-and-drop.</p>
+        </div>
+        <div>
+            <div class="flex flex-wrap gap-1.5 mb-4">
+                <span class="text-[10px] px-2 py-0.5 rounded-md bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 font-mono">#menu</span><span class="text-[10px] px-2 py-0.5 rounded-md bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 font-mono">#crud</span><span class="text-[10px] px-2 py-0.5 rounded-md bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 font-mono">#hierarchy</span>
+            </div>
+            <div class="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400 pt-3 border-t border-gray-100 dark:border-gray-800">
+                <span class="flex items-center space-x-1"><span>⏱️</span> <span>30 min</span></span>
+                <span class="text-indigo-600 dark:text-indigo-400 font-semibold group-hover:translate-x-1 transition-transform inline-flex items-center space-x-1">
+                    <span>Explore Guide</span>
+                    <span>→</span>
+                </span>
+            </div>
+        </div>
+    </a>
+    <a href="08-scaffolding-breeze-cms.html" data-category="Architecture" data-search="app scaffolding, breeze &amp; dynamic cms enterprise application scaffolding blueprint, laravel breeze auth setup, multi-layout partials, and 24-hr cached dynamic cms pages. breeze cms cache scaffolding layouts seo" class="tutorial-card group relative bg-white dark:bg-[#111827] border border-gray-200 dark:border-gray-800 rounded-2xl p-6 shadow-sm hover:shadow-2xl hover:border-indigo-500 dark:hover:border-indigo-400 hover:-translate-y-1 transition-all duration-200 flex flex-col justify-between">
+        <div>
+            <div class="flex items-center justify-between mb-4">
+                <span class="text-3xl p-3 rounded-2xl bg-indigo-50 dark:bg-indigo-950/70 border border-indigo-100 dark:border-indigo-900/40 group-hover:scale-110 transition-transform">🏗️</span>
+                <span class="text-xs font-semibold px-2.5 py-1 rounded-full bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300">CMS & Breeze</span>
+            </div>
+            <p class="text-[11px] font-bold uppercase tracking-wider text-indigo-600 dark:text-indigo-400 mb-1">Architecture</p>
+            <h3 class="text-xl font-bold text-gray-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors mb-2.5 leading-snug">App Scaffolding, Breeze & Dynamic CMS</h3>
+            <p class="text-sm text-gray-600 dark:text-gray-300 leading-relaxed mb-4">Enterprise application scaffolding blueprint, Laravel Breeze auth setup, multi-layout partials, and 24-hr cached dynamic CMS pages.</p>
+        </div>
+        <div>
+            <div class="flex flex-wrap gap-1.5 mb-4">
+                <span class="text-[10px] px-2 py-0.5 rounded-md bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 font-mono">#breeze</span><span class="text-[10px] px-2 py-0.5 rounded-md bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 font-mono">#cms</span><span class="text-[10px] px-2 py-0.5 rounded-md bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 font-mono">#cache</span>
+            </div>
+            <div class="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400 pt-3 border-t border-gray-100 dark:border-gray-800">
+                <span class="flex items-center space-x-1"><span>⏱️</span> <span>25 min</span></span>
+                <span class="text-indigo-600 dark:text-indigo-400 font-semibold group-hover:translate-x-1 transition-transform inline-flex items-center space-x-1">
+                    <span>Explore Guide</span>
+                    <span>→</span>
+                </span>
+            </div>
+        </div>
+    </a>
+    <a href="09-qa-deployment-checklist.html" data-category="Deployment & QA" data-search="project qa &amp; production checklist complete pre-launch qa checklist covering security hardening, database integrity, 35+ make: commands, ide helpers, and seo. qa checklist commands deployment production security" class="tutorial-card group relative bg-white dark:bg-[#111827] border border-gray-200 dark:border-gray-800 rounded-2xl p-6 shadow-sm hover:shadow-2xl hover:border-indigo-500 dark:hover:border-indigo-400 hover:-translate-y-1 transition-all duration-200 flex flex-col justify-between">
+        <div>
+            <div class="flex items-center justify-between mb-4">
+                <span class="text-3xl p-3 rounded-2xl bg-indigo-50 dark:bg-indigo-950/70 border border-indigo-100 dark:border-indigo-900/40 group-hover:scale-110 transition-transform">✅</span>
+                <span class="text-xs font-semibold px-2.5 py-1 rounded-full bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300">Production QA</span>
+            </div>
+            <p class="text-[11px] font-bold uppercase tracking-wider text-indigo-600 dark:text-indigo-400 mb-1">Deployment & QA</p>
+            <h3 class="text-xl font-bold text-gray-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors mb-2.5 leading-snug">Project QA & Production Checklist</h3>
+            <p class="text-sm text-gray-600 dark:text-gray-300 leading-relaxed mb-4">Complete pre-launch QA checklist covering security hardening, database integrity, 35+ make: commands, IDE helpers, and SEO.</p>
+        </div>
+        <div>
+            <div class="flex flex-wrap gap-1.5 mb-4">
+                <span class="text-[10px] px-2 py-0.5 rounded-md bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 font-mono">#qa</span><span class="text-[10px] px-2 py-0.5 rounded-md bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 font-mono">#checklist</span><span class="text-[10px] px-2 py-0.5 rounded-md bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 font-mono">#commands</span>
+            </div>
+            <div class="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400 pt-3 border-t border-gray-100 dark:border-gray-800">
+                <span class="flex items-center space-x-1"><span>⏱️</span> <span>25 min</span></span>
+                <span class="text-indigo-600 dark:text-indigo-400 font-semibold group-hover:translate-x-1 transition-transform inline-flex items-center space-x-1">
+                    <span>Explore Guide</span>
+                    <span>→</span>
+                </span>
+            </div>
+        </div>
+    </a>
+    <a href="10-math-captcha-security.html" data-category="Security" data-search="secure math captcha &amp; anti-spam defense bug-free zero-dependency vector svg math captcha, fixing the &#x27;12+&#x27; glitch, encrypted session tokens, ajax 1-click refresh, and honeypot traps. captcha security svg spam honeypot session" class="tutorial-card group relative bg-white dark:bg-[#111827] border border-gray-200 dark:border-gray-800 rounded-2xl p-6 shadow-sm hover:shadow-2xl hover:border-indigo-500 dark:hover:border-indigo-400 hover:-translate-y-1 transition-all duration-200 flex flex-col justify-between">
+        <div>
+            <div class="flex items-center justify-between mb-4">
+                <span class="text-3xl p-3 rounded-2xl bg-indigo-50 dark:bg-indigo-950/70 border border-indigo-100 dark:border-indigo-900/40 group-hover:scale-110 transition-transform">🧮</span>
+                <span class="text-xs font-semibold px-2.5 py-1 rounded-full bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300">Anti-Bot Defense</span>
+            </div>
+            <p class="text-[11px] font-bold uppercase tracking-wider text-indigo-600 dark:text-indigo-400 mb-1">Security</p>
+            <h3 class="text-xl font-bold text-gray-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors mb-2.5 leading-snug">Secure Math CAPTCHA & Anti-Spam Defense</h3>
+            <p class="text-sm text-gray-600 dark:text-gray-300 leading-relaxed mb-4">Bug-free zero-dependency vector SVG math CAPTCHA, fixing the '12+' glitch, encrypted session tokens, AJAX 1-click refresh, and honeypot traps.</p>
+        </div>
+        <div>
+            <div class="flex flex-wrap gap-1.5 mb-4">
+                <span class="text-[10px] px-2 py-0.5 rounded-md bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 font-mono">#captcha</span><span class="text-[10px] px-2 py-0.5 rounded-md bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 font-mono">#security</span><span class="text-[10px] px-2 py-0.5 rounded-md bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 font-mono">#svg</span>
+            </div>
+            <div class="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400 pt-3 border-t border-gray-100 dark:border-gray-800">
+                <span class="flex items-center space-x-1"><span>⏱️</span> <span>25 min</span></span>
+                <span class="text-indigo-600 dark:text-indigo-400 font-semibold group-hover:translate-x-1 transition-transform inline-flex items-center space-x-1">
+                    <span>Explore Guide</span>
+                    <span>→</span>
+                </span>
+            </div>
+        </div>
+    </a>
+    <a href="11-seo-metadata-schema.html" data-category="SEO & Marketing" data-search="production technical seo &amp; schema markup enterprise seo head component, opengraph &amp; twitter cards, json-ld structured data (article, breadcrumbs), dynamic xml sitemap, and robots.txt. seo schema json-ld opengraph sitemap robots" class="tutorial-card group relative bg-white dark:bg-[#111827] border border-gray-200 dark:border-gray-800 rounded-2xl p-6 shadow-sm hover:shadow-2xl hover:border-indigo-500 dark:hover:border-indigo-400 hover:-translate-y-1 transition-all duration-200 flex flex-col justify-between">
+        <div>
+            <div class="flex items-center justify-between mb-4">
+                <span class="text-3xl p-3 rounded-2xl bg-indigo-50 dark:bg-indigo-950/70 border border-indigo-100 dark:border-indigo-900/40 group-hover:scale-110 transition-transform">📈</span>
+                <span class="text-xs font-semibold px-2.5 py-1 rounded-full bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300">Rich Results</span>
+            </div>
+            <p class="text-[11px] font-bold uppercase tracking-wider text-indigo-600 dark:text-indigo-400 mb-1">SEO & Marketing</p>
+            <h3 class="text-xl font-bold text-gray-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors mb-2.5 leading-snug">Production Technical SEO & Schema Markup</h3>
+            <p class="text-sm text-gray-600 dark:text-gray-300 leading-relaxed mb-4">Enterprise SEO head component, OpenGraph & Twitter Cards, JSON-LD structured data (Article, Breadcrumbs), dynamic XML sitemap, and robots.txt.</p>
+        </div>
+        <div>
+            <div class="flex flex-wrap gap-1.5 mb-4">
+                <span class="text-[10px] px-2 py-0.5 rounded-md bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 font-mono">#seo</span><span class="text-[10px] px-2 py-0.5 rounded-md bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 font-mono">#schema</span><span class="text-[10px] px-2 py-0.5 rounded-md bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 font-mono">#json-ld</span>
+            </div>
+            <div class="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400 pt-3 border-t border-gray-100 dark:border-gray-800">
+                <span class="flex items-center space-x-1"><span>⏱️</span> <span>30 min</span></span>
+                <span class="text-indigo-600 dark:text-indigo-400 font-semibold group-hover:translate-x-1 transition-transform inline-flex items-center space-x-1">
+                    <span>Explore Guide</span>
+                    <span>→</span>
+                </span>
+            </div>
+        </div>
+    </a>
+    <a href="12-restful-api-sanctum-resources.html" data-category="APIs & Web Services" data-search="restful api development &amp; sanctum tokens complete api blueprint with laravel sanctum token auth, token abilities, eloquent api resources, standardized json envelopes, and rate limiting. api sanctum restful resources tokens rate-limiting" class="tutorial-card group relative bg-white dark:bg-[#111827] border border-gray-200 dark:border-gray-800 rounded-2xl p-6 shadow-sm hover:shadow-2xl hover:border-indigo-500 dark:hover:border-indigo-400 hover:-translate-y-1 transition-all duration-200 flex flex-col justify-between">
+        <div>
+            <div class="flex items-center justify-between mb-4">
+                <span class="text-3xl p-3 rounded-2xl bg-indigo-50 dark:bg-indigo-950/70 border border-indigo-100 dark:border-indigo-900/40 group-hover:scale-110 transition-transform">🌐</span>
+                <span class="text-xs font-semibold px-2.5 py-1 rounded-full bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300">RESTful API</span>
+            </div>
+            <p class="text-[11px] font-bold uppercase tracking-wider text-indigo-600 dark:text-indigo-400 mb-1">APIs & Web Services</p>
+            <h3 class="text-xl font-bold text-gray-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors mb-2.5 leading-snug">RESTful API Development & Sanctum Tokens</h3>
+            <p class="text-sm text-gray-600 dark:text-gray-300 leading-relaxed mb-4">Complete API blueprint with Laravel Sanctum token auth, token abilities, Eloquent API Resources, standardized JSON envelopes, and rate limiting.</p>
+        </div>
+        <div>
+            <div class="flex flex-wrap gap-1.5 mb-4">
+                <span class="text-[10px] px-2 py-0.5 rounded-md bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 font-mono">#api</span><span class="text-[10px] px-2 py-0.5 rounded-md bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 font-mono">#sanctum</span><span class="text-[10px] px-2 py-0.5 rounded-md bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 font-mono">#restful</span>
+            </div>
+            <div class="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400 pt-3 border-t border-gray-100 dark:border-gray-800">
+                <span class="flex items-center space-x-1"><span>⏱️</span> <span>30 min</span></span>
+                <span class="text-indigo-600 dark:text-indigo-400 font-semibold group-hover:translate-x-1 transition-transform inline-flex items-center space-x-1">
+                    <span>Explore Guide</span>
+                    <span>→</span>
+                </span>
+            </div>
+        </div>
+    </a>
+    <a href="13-eloquent-relationships-transactions.html" data-category="Database & ORM" data-search="advanced eloquent relationships &amp; transactions deep dive into 1-1, 1-many, many-many pivot metadata, hasmanythrough, polymorphic tagging/comments, n+1 eager loading, and db transactions. eloquent relationships transactions polymorphic pivot n-plus-one" class="tutorial-card group relative bg-white dark:bg-[#111827] border border-gray-200 dark:border-gray-800 rounded-2xl p-6 shadow-sm hover:shadow-2xl hover:border-indigo-500 dark:hover:border-indigo-400 hover:-translate-y-1 transition-all duration-200 flex flex-col justify-between">
+        <div>
+            <div class="flex items-center justify-between mb-4">
+                <span class="text-3xl p-3 rounded-2xl bg-indigo-50 dark:bg-indigo-950/70 border border-indigo-100 dark:border-indigo-900/40 group-hover:scale-110 transition-transform">🗄️</span>
+                <span class="text-xs font-semibold px-2.5 py-1 rounded-full bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300">Advanced ORM</span>
+            </div>
+            <p class="text-[11px] font-bold uppercase tracking-wider text-indigo-600 dark:text-indigo-400 mb-1">Database & ORM</p>
+            <h3 class="text-xl font-bold text-gray-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors mb-2.5 leading-snug">Advanced Eloquent Relationships & Transactions</h3>
+            <p class="text-sm text-gray-600 dark:text-gray-300 leading-relaxed mb-4">Deep dive into 1-1, 1-many, many-many pivot metadata, hasManyThrough, polymorphic tagging/comments, N+1 eager loading, and DB transactions.</p>
+        </div>
+        <div>
+            <div class="flex flex-wrap gap-1.5 mb-4">
+                <span class="text-[10px] px-2 py-0.5 rounded-md bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 font-mono">#eloquent</span><span class="text-[10px] px-2 py-0.5 rounded-md bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 font-mono">#relationships</span><span class="text-[10px] px-2 py-0.5 rounded-md bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 font-mono">#transactions</span>
+            </div>
+            <div class="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400 pt-3 border-t border-gray-100 dark:border-gray-800">
+                <span class="flex items-center space-x-1"><span>⏱️</span> <span>35 min</span></span>
+                <span class="text-indigo-600 dark:text-indigo-400 font-semibold group-hover:translate-x-1 transition-transform inline-flex items-center space-x-1">
+                    <span>Explore Guide</span>
+                    <span>→</span>
+                </span>
+            </div>
+        </div>
+    </a>
+    <a href="14-queues-jobs-events-scheduling.html" data-category="Async Processing" data-search="queues, asynchronous jobs &amp; task scheduling background queue workers, resilient jobs with exponential backoff, failed job recovery, chained/batched buses, async events, and cron scheduling. queues jobs events cron scheduler horizon workers" class="tutorial-card group relative bg-white dark:bg-[#111827] border border-gray-200 dark:border-gray-800 rounded-2xl p-6 shadow-sm hover:shadow-2xl hover:border-indigo-500 dark:hover:border-indigo-400 hover:-translate-y-1 transition-all duration-200 flex flex-col justify-between">
+        <div>
+            <div class="flex items-center justify-between mb-4">
+                <span class="text-3xl p-3 rounded-2xl bg-indigo-50 dark:bg-indigo-950/70 border border-indigo-100 dark:border-indigo-900/40 group-hover:scale-110 transition-transform">⏱️</span>
+                <span class="text-xs font-semibold px-2.5 py-1 rounded-full bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300">Queues & Cron</span>
+            </div>
+            <p class="text-[11px] font-bold uppercase tracking-wider text-indigo-600 dark:text-indigo-400 mb-1">Async Processing</p>
+            <h3 class="text-xl font-bold text-gray-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors mb-2.5 leading-snug">Queues, Asynchronous Jobs & Task Scheduling</h3>
+            <p class="text-sm text-gray-600 dark:text-gray-300 leading-relaxed mb-4">Background queue workers, resilient jobs with exponential backoff, failed job recovery, chained/batched buses, async events, and cron scheduling.</p>
+        </div>
+        <div>
+            <div class="flex flex-wrap gap-1.5 mb-4">
+                <span class="text-[10px] px-2 py-0.5 rounded-md bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 font-mono">#queues</span><span class="text-[10px] px-2 py-0.5 rounded-md bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 font-mono">#jobs</span><span class="text-[10px] px-2 py-0.5 rounded-md bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 font-mono">#events</span>
+            </div>
+            <div class="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400 pt-3 border-t border-gray-100 dark:border-gray-800">
+                <span class="flex items-center space-x-1"><span>⏱️</span> <span>30 min</span></span>
+                <span class="text-indigo-600 dark:text-indigo-400 font-semibold group-hover:translate-x-1 transition-transform inline-flex items-center space-x-1">
+                    <span>Explore Guide</span>
+                    <span>→</span>
+                </span>
+            </div>
+        </div>
+    </a>
+    <a href="15-file-storage-uploads-media.html" data-category="Storage & Media" data-search="secure file uploads &amp; cloud storage (s3) handling single/multiple uploads, strict mime validation, public vs private disks, temporary signed download urls, orphan file observers, and aws s3/r2. s3 storage uploads signed-urls security disks" class="tutorial-card group relative bg-white dark:bg-[#111827] border border-gray-200 dark:border-gray-800 rounded-2xl p-6 shadow-sm hover:shadow-2xl hover:border-indigo-500 dark:hover:border-indigo-400 hover:-translate-y-1 transition-all duration-200 flex flex-col justify-between">
+        <div>
+            <div class="flex items-center justify-between mb-4">
+                <span class="text-3xl p-3 rounded-2xl bg-indigo-50 dark:bg-indigo-950/70 border border-indigo-100 dark:border-indigo-900/40 group-hover:scale-110 transition-transform">📁</span>
+                <span class="text-xs font-semibold px-2.5 py-1 rounded-full bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300">Cloud Storage</span>
+            </div>
+            <p class="text-[11px] font-bold uppercase tracking-wider text-indigo-600 dark:text-indigo-400 mb-1">Storage & Media</p>
+            <h3 class="text-xl font-bold text-gray-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors mb-2.5 leading-snug">Secure File Uploads & Cloud Storage (S3)</h3>
+            <p class="text-sm text-gray-600 dark:text-gray-300 leading-relaxed mb-4">Handling single/multiple uploads, strict mime validation, public vs private disks, temporary signed download URLs, orphan file observers, and AWS S3/R2.</p>
+        </div>
+        <div>
+            <div class="flex flex-wrap gap-1.5 mb-4">
+                <span class="text-[10px] px-2 py-0.5 rounded-md bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 font-mono">#s3</span><span class="text-[10px] px-2 py-0.5 rounded-md bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 font-mono">#storage</span><span class="text-[10px] px-2 py-0.5 rounded-md bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 font-mono">#uploads</span>
+            </div>
+            <div class="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400 pt-3 border-t border-gray-100 dark:border-gray-800">
+                <span class="flex items-center space-x-1"><span>⏱️</span> <span>25 min</span></span>
+                <span class="text-indigo-600 dark:text-indigo-400 font-semibold group-hover:translate-x-1 transition-transform inline-flex items-center space-x-1">
+                    <span>Explore Guide</span>
+                    <span>→</span>
+                </span>
+            </div>
+        </div>
+    </a>
+        </div>
+
+        <!-- Empty State -->
+        <div id="no-results" class="hidden text-center py-16">
+            <div class="text-4xl mb-3">🔍</div>
+            <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-1">No tutorials found</h3>
+            <p class="text-sm text-gray-500 dark:text-gray-400">Try a different search term or click "All" to reset filters.</p>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-gray-200 dark:border-gray-800 bg-white dark:bg-[#0b0f19] py-8 mt-16 transition-colors">
+        <div class="max-w-[1780px] w-full mx-auto px-4 sm:px-6 lg:px-8 xl:px-10 flex flex-col sm:flex-row items-center justify-between text-sm text-gray-500 dark:text-gray-400">
+            <p>© 2026 Laravel Master Tutorials Repository • 15 Complete Step-by-Step Blueprints</p>
+            <p class="mt-2 sm:mt-0 font-medium">Standalone HTML &amp; Zero Build Dependencies</p>
+        </div>
+    </footer>
+
+    <!-- Client-side Search and Filter Script -->
+    <script>
+        // Dark Mode Logic
+        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+            document.getElementById('theme-icon').textContent = '☀️';
+        } else {
+            document.documentElement.classList.remove('dark');
+            document.getElementById('theme-icon').textContent = '🌙';
+        }
+
+        function toggleDarkMode() {
+            const isDark = document.documentElement.classList.toggle('dark');
+            localStorage.theme = isDark ? 'dark' : 'light';
+            document.getElementById('theme-icon').textContent = isDark ? '☀️' : '🌙';
+        }
+
+        let currentCategory = 'All';
+
+        function filterCategory(cat) {
+            currentCategory = cat;
+            document.querySelectorAll('.cat-pill').forEach(btn => {
+                if (btn.textContent.startsWith(cat)) {
+                    btn.className = 'cat-pill active-pill px-4 py-2 rounded-xl text-xs font-semibold bg-indigo-600 text-white shadow-sm transition';
+                } else {
+                    btn.className = 'cat-pill px-4 py-2 rounded-xl text-xs font-semibold bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:border-indigo-500 transition';
+                }
+            });
+            handleSearch();
+        }
+
+        function handleSearch() {
+            const query = (document.getElementById('tutorial-search').value || '').toLowerCase().trim();
+            const cards = document.querySelectorAll('.tutorial-card');
+            let visibleCount = 0;
+
+            cards.forEach(card => {
+                const searchData = card.getAttribute('data-search') || '';
+                const cardCat = card.getAttribute('data-category') || '';
+                const matchesCat = (currentCategory === 'All' || cardCat === currentCategory);
+                const matchesQuery = !query || searchData.includes(query);
+
+                if (matchesCat && matchesQuery) {
+                    card.classList.remove('hidden');
+                    visibleCount++;
+                } else {
+                    card.classList.add('hidden');
+                }
+            });
+
+            const counter = document.getElementById('result-count');
+            const noResults = document.getElementById('no-results');
+            if (counter) counter.textContent = `Showing ${visibleCount} of 15 tutorials`;
+            if (noResults) {
+                if (visibleCount === 0) {
+                    noResults.classList.remove('hidden');
+                } else {
+                    noResults.classList.add('hidden');
+                }
+            }
+        }
+    </script>
+</body>
+</html>

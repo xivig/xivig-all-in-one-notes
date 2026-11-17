@@ -1,0 +1,800 @@
+================================================================================
+          LARAVEL 13 MULTI-AUTH: ADMIN LOGIN & DASHBOARD TUTORIAL
+                 (Jetstream / Fortify Multi-Guard Setup)
+================================================================================
+
+This tutorial provides a complete, modern guide to implementing a dedicated
+Admin Authentication system with its own guard ('admin'), model ('Admin'),
+table ('admins'), login form, and dashboard in Laravel 13 (compatible with Laravel 11/12/13).
+
+--------------------------------------------------------------------------------
+KEY LARAVEL 13 ARCHITECTURAL UPDATES IN THIS TUTORIAL:
+--------------------------------------------------------------------------------
+1. NO RouteServiceProvider: Laravel 11+ completely removed RouteServiceProvider.
+   All route middleware, redirects, and route groups are configured via 
+   `bootstrap/app.php` and `routes/web.php`.
+2. NO app/Http/Kernel.php: Middleware aliases are registered directly in 
+   `bootstrap/app.php` via `$middleware->alias([...])`.
+3. Model Casts Method: Attribute casting uses the modern `protected function casts(): array`
+   instead of the deprecated `$casts` property.
+4. Model Factory Docblock: Uses modern PHP 8.2+ `/** @use HasFactory<AdminFactory> */`.
+5. Correct Directory Paths: Correct paths are used (`database/seeders/`, 
+   `database/factories/`, `bootstrap/app.php`, `config/auth.php`).
+6. Config Publishing: How to publish `config/auth.php` if missing in fresh installs.
+
+
+--------------------------------------------------------------------------------
+TABLE OF CONTENTS
+--------------------------------------------------------------------------------
+Step 1: Generate Admin Model, Migration, Controller, Factory & Seeder
+Step 2: Define Admins Database Migration Schema
+Step 3: Define Admin Eloquent Model (Laravel 13 Architecture)
+Step 4: Configure AdminFactory and AdminSeeder
+Step 5: Publish & Configure Multi-Auth Guards in config/auth.php
+Step 6: Run Migrations and Seed Admin Account
+Step 7: Bind Guard in FortifyServiceProvider (bootstrap/providers.php)
+Step 8: Create Fortify Actions (AttemptToAuthenticate & RedirectIfTwoFactorAuthenticatable)
+Step 9: Create AdminController with Fortify Pipeline
+Step 10: Create Admin Middlewares (Authenticate & RedirectIfAuthenticated)
+Step 11: Register Middlewares in bootstrap/app.php
+Step 12: Define Admin Routes in routes/web.php
+Step 13: Update Login View (resources/views/auth/login.blade.php)
+Step 14: Create Admin Dashboard View (resources/views/admin/dashboard.blade.php)
+Step 15: Clear Cache and Test the Setup
+
+
+================================================================================
+STEP 1: GENERATE ADMIN MODEL, MIGRATION, CONTROLLER, FACTORY & SEEDER
+================================================================================
+Run the following artisan command in your terminal:
+
+php artisan make:model Admin -mcr -f -s
+
+Flags breakdown:
+-m : Create migration (database/migrations/xxxx_create_admins_table.php)
+-c : Create controller (app/Http/Controllers/AdminController.php)
+-r : Make controller resource-based
+-f : Create model factory (database/factories/AdminFactory.php)
+-s : Create database seeder (database/seeders/AdminSeeder.php)
+
+
+================================================================================
+STEP 2: DEFINE ADMINS DATABASE MIGRATION SCHEMA
+================================================================================
+Open `database/migrations/xxxx_xx_xx_xxxxxx_create_admins_table.php`.
+Update the `up()` method to include the required authentication columns:
+
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::create('admins', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+            $table->string('email')->unique();
+            $table->timestamp('email_verified_at')->nullable();
+            $table->string('password');
+            $table->text('two_factor_secret')->nullable();
+            $table->text('two_factor_recovery_codes')->nullable();
+            $table->timestamp('two_factor_confirmed_at')->nullable();
+            $table->rememberToken();
+            $table->foreignId('current_team_id')->nullable();
+            $table->string('profile_photo_path', 2048)->nullable();
+            $table->timestamps();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('admins');
+    }
+};
+
+
+================================================================================
+STEP 3: DEFINE ADMIN ELOQUENT MODEL (LARAVEL 13 ARCHITECTURE)
+================================================================================
+Open `app/Models/Admin.php`.
+Make it extend `Illuminate\Foundation\Auth\User as Authenticatable` and include
+the required Jetstream / Fortify traits:
+
+<?php
+
+namespace App\Models;
+
+use Database\Factories\AdminFactory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
+use Laravel\Fortify\TwoFactorAuthenticatable;
+use Laravel\Jetstream\HasProfilePhoto;
+use Laravel\Sanctum\HasApiTokens;
+
+class Admin extends Authenticatable
+{
+    /** @use HasFactory<AdminFactory> */
+    use HasFactory;
+    use HasApiTokens;
+    use HasProfilePhoto;
+    use Notifiable;
+    use TwoFactorAuthenticatable;
+
+    /**
+     * The table associated with the model.
+     *
+     * @var string
+     */
+    protected $table = 'admins';
+
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array<int, string>
+     */
+    protected $fillable = [
+        'name',
+        'email',
+        'password',
+    ];
+
+    /**
+     * The attributes that should be hidden for serialization.
+     *
+     * @var array<int, string>
+     */
+    protected $hidden = [
+        'password',
+        'remember_token',
+        'two_factor_recovery_codes',
+        'two_factor_secret',
+    ];
+
+    /**
+     * The accessors to append to the model's array form.
+     *
+     * @var array<int, string>
+     */
+    protected $appends = [
+        'profile_photo_url',
+    ];
+
+    /**
+     * Get the attributes that should be cast (Laravel 13 syntax).
+     *
+     * @return array<string, string>
+     */
+    protected function casts(): array
+    {
+        return [
+            'email_verified_at' => 'datetime',
+            'password' => 'hashed',
+        ];
+    }
+}
+
+
+================================================================================
+STEP 4: CONFIGURE ADMINFACTORY AND ADMINSEEDER
+================================================================================
+
+1. Open `database/factories/AdminFactory.php`:
+--------------------------------------------------------------------------------
+<?php
+
+namespace Database\Factories;
+
+use App\Models\Admin;
+use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
+
+/**
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Admin>
+ */
+class AdminFactory extends Factory
+{
+    protected $model = Admin::class;
+
+    protected static ?string $password;
+
+    public function definition(): array
+    {
+        return [
+            'name' => fake()->name(),
+            'email' => fake()->unique()->safeEmail(),
+            'email_verified_at' => now(),
+            'password' => static::$password ??= Hash::make('password'),
+            'two_factor_secret' => null,
+            'two_factor_recovery_codes' => null,
+            'remember_token' => Str::random(10),
+            'profile_photo_path' => null,
+            'current_team_id' => null,
+        ];
+    }
+}
+
+
+2. Open `database/seeders/AdminSeeder.php`:
+--------------------------------------------------------------------------------
+<?php
+
+namespace Database\Seeders;
+
+use App\Models\Admin;
+use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
+
+class AdminSeeder extends Seeder
+{
+    public function run(): void
+    {
+        // Create default Super Admin
+        Admin::updateOrCreate(
+            ['email' => 'admin@example.com'],
+            [
+                'name' => 'Super Admin',
+                'password' => Hash::make('password'),
+                'email_verified_at' => now(),
+            ]
+        );
+
+        // Optional: Create 5 additional fake admins
+        // Admin::factory(5)->create();
+    }
+}
+
+
+3. Open `database/seeders/DatabaseSeeder.php`:
+--------------------------------------------------------------------------------
+<?php
+
+namespace Database\Seeders;
+
+use App\Models\User;
+use Illuminate\Database\Seeder;
+
+class DatabaseSeeder extends Seeder
+{
+    public function run(): void
+    {
+        // Call Admin seeder
+        $this->call([
+            AdminSeeder::class,
+        ]);
+
+        // Seed normal test user
+        User::factory()->create([
+            'name' => 'Test User',
+            'email' => 'user@example.com',
+            'password' => bcrypt('password'),
+        ]);
+    }
+}
+
+
+================================================================================
+STEP 5: PUBLISH & CONFIGURE MULTI-AUTH GUARDS IN config/auth.php
+================================================================================
+In Laravel 11/12/13, `config/auth.php` may not be present in a fresh project.
+Publish it first:
+php artisan config:publish auth
+
+Now open `config/auth.php` and configure the 'admin' guard, 'admins' provider,
+and 'admins' password reset broker:
+
+--------------------------------------------------------------------------------
+1. Add 'admin' Guard under 'guards':
+--------------------------------------------------------------------------------
+    'guards' => [
+        'web' => [
+            'driver' => 'session',
+            'provider' => 'users',
+        ],
+
+        'admin' => [
+            'driver' => 'session',
+            'provider' => 'admins',
+        ],
+    ],
+
+--------------------------------------------------------------------------------
+2. Add 'admins' Provider under 'providers':
+--------------------------------------------------------------------------------
+    'providers' => [
+        'users' => [
+            'driver' => 'eloquent',
+            'model' => env('AUTH_MODEL', App\Models\User::class),
+        ],
+
+        'admins' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Admin::class,
+        ],
+    ],
+
+--------------------------------------------------------------------------------
+3. Add 'admins' Passwords Broker under 'passwords':
+--------------------------------------------------------------------------------
+    'passwords' => [
+        'users' => [
+            'provider' => 'users',
+            'table' => env('AUTH_PASSWORD_RESET_TOKEN_TABLE', 'password_reset_tokens'),
+            'expire' => 60,
+            'throttle' => 60,
+        ],
+
+        'admins' => [
+            'provider' => 'admins',
+            'table' => env('AUTH_PASSWORD_RESET_TOKEN_TABLE', 'password_reset_tokens'),
+            'expire' => 60,
+            'throttle' => 60,
+        ],
+    ],
+
+
+================================================================================
+STEP 6: RUN MIGRATIONS AND SEED ADMIN ACCOUNT
+================================================================================
+Run the migration and seeder:
+
+php artisan migrate:fresh --seed
+
+
+================================================================================
+STEP 7: BIND GUARD IN FortifyServiceProvider (bootstrap/providers.php)
+================================================================================
+Fortify uses contextual dependency injection for `StatefulGuard`.
+In Laravel 13, ensure `FortifyServiceProvider` is registered in `bootstrap/providers.php`.
+
+Open `app/Providers/FortifyServiceProvider.php` and update the `register()` method:
+
+--------------------------------------------------------------------------------
+<?php
+
+namespace App\Providers;
+
+use App\Http\Controllers\Admin\AdminController;
+use App\Actions\Fortify\AttemptToAuthenticate;
+use App\Actions\Fortify\RedirectIfTwoFactorAuthenticatable;
+use Illuminate\Contracts\Auth\StatefulGuard;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\ServiceProvider;
+
+class FortifyServiceProvider extends ServiceProvider
+{
+    /**
+     * Register any application services.
+     */
+    public function register(): void
+    {
+        // Contextually bind StatefulGuard for Admin authentication
+        $this->app->when([
+            AdminController::class,
+            AttemptToAuthenticate::class,
+            RedirectIfTwoFactorAuthenticatable::class,
+        ])
+        ->needs(StatefulGuard::class)
+        ->give(function () {
+            return Auth::guard('admin');
+        });
+    }
+
+    /**
+     * Bootstrap any application services.
+     */
+    public function boot(): void
+    {
+        // Normal Fortify boot configuration...
+    }
+}
+
+
+================================================================================
+STEP 8: CREATE FORTIFY ACTIONS FOR ADMIN GUARD
+================================================================================
+Create custom Fortify actions under `app/Actions/Fortify/` to support the admin pipeline:
+
+1. Create `app/Actions/Fortify/AttemptToAuthenticate.php`:
+--------------------------------------------------------------------------------
+<?php
+
+namespace App\Actions\Fortify;
+
+use Illuminate\Contracts\Auth\StatefulGuard;
+use Illuminate\Validation\ValidationException;
+use Laravel\Fortify\Fortify;
+use Laravel\Fortify\LoginRateLimiter;
+
+class AttemptToAuthenticate
+{
+    protected StatefulGuard $guard;
+    protected LoginRateLimiter $limiter;
+
+    public function __construct(StatefulGuard $guard, LoginRateLimiter $limiter)
+    {
+        $this->guard = $guard;
+        $this->limiter = $limiter;
+    }
+
+    public function handle($request, $next)
+    {
+        if (Fortify::$authenticateUsingCallback) {
+            return $this->handleCallback($request, $next);
+        }
+
+        if ($this->guard->attempt(
+            $request->only(Fortify::username(), 'password'),
+            $request->boolean('remember')
+        )) {
+            return $next($request);
+        }
+
+        $this->throwFailedAuthenticationException($request);
+    }
+
+    protected function handleCallback($request, $next)
+    {
+        $user = call_user_func(Fortify::$authenticateUsingCallback, $request);
+
+        if (! $user) {
+            $this->throwFailedAuthenticationException($request);
+        }
+
+        $this->guard->login($user, $request->boolean('remember'));
+
+        return $next($request);
+    }
+
+    protected function throwFailedAuthenticationException($request)
+    {
+        $this->limiter->increment($request);
+
+        throw ValidationException::withMessages([
+            Fortify::username() => [trans('auth.failed')],
+        ]);
+    }
+}
+
+
+2. Create `app/Actions/Fortify/RedirectIfTwoFactorAuthenticatable.php`:
+--------------------------------------------------------------------------------
+<?php
+
+namespace App\Actions\Fortify;
+
+use App\Models\Admin;
+use Illuminate\Contracts\Auth\StatefulGuard;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\ValidationException;
+use Laravel\Fortify\Events\TwoFactorAuthenticationChallenged;
+use Laravel\Fortify\Fortify;
+use Laravel\Fortify\LoginRateLimiter;
+
+class RedirectIfTwoFactorAuthenticatable
+{
+    protected StatefulGuard $guard;
+    protected LoginRateLimiter $limiter;
+
+    public function __construct(StatefulGuard $guard, LoginRateLimiter $limiter)
+    {
+        $this->guard = $guard;
+        $this->limiter = $limiter;
+    }
+
+    public function handle($request, $next)
+    {
+        $admin = Admin::where(Fortify::username(), $request->{Fortify::username()})->first();
+
+        if (optional($admin)->two_factor_secret &&
+            Hash::check($request->password, $admin->password)) {
+            return $this->twoFactorChallengeResponse($request, $admin);
+        }
+
+        return $next($request);
+    }
+
+    protected function twoFactorChallengeResponse($request, $user)
+    {
+        $request->session()->put([
+            'login.id' => $user->getKey(),
+            'login.remember' => $request->boolean('remember'),
+        ]);
+
+        TwoFactorAuthenticationChallenged::dispatch($user);
+
+        return $request->wantsJson()
+                    ? response()->json(['two_factor' => true])
+                    : redirect()->route('two-factor.login');
+    }
+}
+
+
+================================================================================
+STEP 9: CREATE AdminController WITH FORTIFY PIPELINE
+================================================================================
+Create or replace `app/Http/Controllers/Admin/AdminController.php`:
+
+<?php
+
+namespace App\Http\Controllers\Admin;
+
+use App\Actions\Fortify\AttemptToAuthenticate;
+use App\Actions\Fortify\RedirectIfTwoFactorAuthenticatable;
+use Illuminate\Contracts\Auth\StatefulGuard;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Routing\Controller;
+use Illuminate\Routing\Pipeline;
+use Illuminate\Support\Facades\Auth;
+use Laravel\Fortify\Actions\CanonicalizeUsername;
+use Laravel\Fortify\Actions\EnsureLoginIsNotThrottled;
+use Laravel\Fortify\Actions\PrepareAuthenticatedSession;
+use Laravel\Fortify\Contracts\LogoutResponse;
+use Laravel\Fortify\Features;
+use Laravel\Fortify\Fortify;
+use Laravel\Fortify\Http\Requests\LoginRequest;
+
+class AdminController extends Controller
+{
+    protected StatefulGuard $guard;
+
+    public function __construct(StatefulGuard $guard)
+    {
+        $this->guard = $guard;
+    }
+
+    /**
+     * Show the Admin Login View.
+     */
+    public function loginForm(): View
+    {
+        return view('auth.login', ['guard' => 'admin']);
+    }
+
+    /**
+     * Attempt to authenticate admin session via Fortify pipeline.
+     */
+    public function store(LoginRequest $request): RedirectResponse
+    {
+        return $this->loginPipeline($request)->then(function ($request) {
+            $request->session()->regenerate();
+            return redirect()->intended(route('admin.dashboard'));
+        });
+    }
+
+    /**
+     * Get the authentication pipeline instance.
+     */
+    protected function loginPipeline(LoginRequest $request): Pipeline
+    {
+        if (Fortify::$authenticateThroughCallback) {
+            return (new Pipeline(app()))->send($request)->through(array_filter(
+                call_user_func(Fortify::$authenticateThroughCallback, $request)
+            ));
+        }
+
+        if (is_array(config('fortify.pipelines.login'))) {
+            return (new Pipeline(app()))->send($request)->through(array_filter(
+                config('fortify.pipelines.login')
+            ));
+        }
+
+        return (new Pipeline(app()))->send($request)->through(array_filter([
+            config('fortify.limiters.login') ? null : EnsureLoginIsNotThrottled::class,
+            config('fortify.lowercase_usernames') ? CanonicalizeUsername::class : null,
+            Features::enabled(Features::twoFactorAuthentication()) ? RedirectIfTwoFactorAuthenticatable::class : null,
+            AttemptToAuthenticate::class,
+            PrepareAuthenticatedSession::class,
+        ]));
+    }
+
+    /**
+     * Destroy the authenticated admin session.
+     */
+    public function destroy(Request $request): RedirectResponse
+    {
+        $this->guard->logout();
+
+        if ($request->hasSession()) {
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+        }
+
+        return redirect()->route('admin.login');
+    }
+}
+
+
+================================================================================
+STEP 10: CREATE ADMIN MIDDLEWARES (AUTHENTICATE & REDIRECT)
+================================================================================
+
+1. Create `app/Http/Middleware/AdminAuthenticate.php`:
+Protects admin dashboard and admin pages (checks if admin is logged in):
+--------------------------------------------------------------------------------
+<?php
+
+namespace App\Http\Middleware;
+
+use Closure;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Symfony\Component\HttpFoundation\Response;
+
+class AdminAuthenticate
+{
+    public function handle(Request $request, Closure $next): Response
+    {
+        if (! Auth::guard('admin')->check()) {
+            return redirect()->route('admin.login');
+        }
+
+        return $next($request);
+    }
+}
+
+
+2. Create `app/Http/Middleware/AdminRedirectIfAuthenticated.php`:
+Redirects logged-in admins away from the login page:
+--------------------------------------------------------------------------------
+<?php
+
+namespace App\Http\Middleware;
+
+use Closure;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Symfony\Component\HttpFoundation\Response;
+
+class AdminRedirectIfAuthenticated
+{
+    public function handle(Request $request, Closure $next): Response
+    {
+        if (Auth::guard('admin')->check()) {
+            return redirect()->route('admin.dashboard');
+        }
+
+        return $next($request);
+    }
+}
+
+
+================================================================================
+STEP 11: REGISTER MIDDLEWARES IN bootstrap/app.php
+================================================================================
+In Laravel 13, all middleware aliases are registered in `bootstrap/app.php`.
+Open `bootstrap/app.php` and configure:
+
+<?php
+
+use Illuminate\Foundation\Application;
+use Illuminate\Foundation\Configuration\Exceptions;
+use Illuminate\Foundation\Configuration\Middleware;
+
+return Application::configure(basePath: dirname(__DIR__))
+    ->withRouting(
+        web: __DIR__.'/../routes/web.php',
+        api: __DIR__.'/../routes/api.php',
+        commands: __DIR__.'/../routes/console.php',
+        health: '/up',
+    )
+    ->withMiddleware(function (Middleware $middleware) {
+        // Register Admin middleware aliases
+        $middleware->alias([
+            'admin.auth'  => \App\Http\Middleware\AdminAuthenticate::class,
+            'admin.guest' => \App\Http\Middleware\AdminRedirectIfAuthenticated::class,
+        ]);
+    })
+    ->withExceptions(function (Exceptions $exceptions) {
+        //
+    })->create();
+
+
+================================================================================
+STEP 12: DEFINE ADMIN ROUTES IN routes/web.php
+================================================================================
+Open `routes/web.php` and add the admin route groups:
+
+use App\Http\Controllers\Admin\AdminController;
+use Illuminate\Support\Facades\Route;
+
+// -----------------------------------------------------------------------------
+// Guest Admin Routes (Login Form & Submission)
+// -----------------------------------------------------------------------------
+Route::prefix('admin')->middleware(['web', 'admin.guest'])->group(function () {
+    Route::get('/login', [AdminController::class, 'loginForm'])->name('admin.login');
+    Route::post('/login', [AdminController::class, 'store'])->name('admin.login.store');
+});
+
+// -----------------------------------------------------------------------------
+// Authenticated Admin Routes (Dashboard & Logout)
+// -----------------------------------------------------------------------------
+Route::prefix('admin')->middleware(['web', 'admin.auth'])->group(function () {
+    Route::get('/dashboard', function () {
+        return view('admin.dashboard');
+    })->name('admin.dashboard');
+
+    Route::post('/logout', [AdminController::class, 'destroy'])->name('admin.logout');
+});
+
+
+================================================================================
+STEP 13: UPDATE LOGIN VIEW (resources/views/auth/login.blade.php)
+================================================================================
+To reuse your existing Jetstream/Fortify Blade login view for both User and Admin:
+
+Open `resources/views/auth/login.blade.php`.
+Find the `<form>` opening tag:
+<form method="POST" action="{{ route('login') }}">
+
+Replace it with:
+<form method="POST" action="{{ isset($guard) && $guard === 'admin' ? route('admin.login.store') : route('login') }}">
+
+* This dynamically posts credentials to `/admin/login` when accessed via admin route,
+  or standard `/login` for normal users.
+
+
+================================================================================
+STEP 14: CREATE ADMIN DASHBOARD VIEW (resources/views/admin/dashboard.blade.php)
+================================================================================
+Create a new file `resources/views/admin/dashboard.blade.php`:
+
+<x-app-layout>
+    <x-slot name="header">
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            {{ __('Admin Dashboard') }}
+        </h2>
+    </x-slot>
+
+    <div class="py-12">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg p-6">
+                <h3 class="text-lg font-bold mb-4 text-green-600">
+                    Welcome to the Admin Panel, {{ Auth::guard('admin')->user()->name }}!
+                </h3>
+                <p class="text-gray-600 mb-4">
+                    Logged in as: <strong>{{ Auth::guard('admin')->user()->email }}</strong>
+                </p>
+
+                <!-- Admin Logout Button -->
+                <form method="POST" action="{{ route('admin.logout') }}">
+                    @csrf
+                    <button type="submit" class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
+                        Logout from Admin
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</x-app-layout>
+
+
+================================================================================
+STEP 15: CLEAR CACHE AND TEST THE SETUP
+================================================================================
+1. Clear all application caches:
+php artisan optimize:clear
+
+2. Start the local server:
+php artisan serve
+
+3. Open your browser and test:
+- User Login:  http://127.0.0.1:8000/login  (user@example.com / password)
+- Admin Login: http://127.0.0.1:8000/admin/login (admin@example.com / password)
+- Admin Dashboard: http://127.0.0.1:8000/admin/dashboard
+
+Both sessions are completely isolated thanks to the separate 'web' and 'admin' session guards!
+================================================================================

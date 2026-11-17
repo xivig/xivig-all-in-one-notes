@@ -1,0 +1,1140 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RESTful API Development &amp; Sanctum Tokens - Laravel Master Docs</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: '#f9322c',
+                        darkbg: '#0b0f19',
+                        darkpanel: '#111827',
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" />
+    <style>
+        /* Custom scrollbar */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 5px;
+            height: 5px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: rgba(156, 163, 175, 0.25);
+            border-radius: 9999px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: rgba(156, 163, 175, 0.45);
+        }
+        /* Ensure maximum readable width for code & tables */
+        .prose {
+            max-width: 100% !important;
+        }
+        .prose p, .prose li {
+            line-height: 1.8;
+        }
+        pre[class*="language-"] {
+            margin: 0;
+            background: transparent;
+        }
+        code[class*="language-"] {
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-900 dark:bg-[#0b0f19] dark:text-gray-100 min-h-screen flex flex-col font-sans transition-colors duration-200 antialiased">
+    <!-- Top Reading Progress Indicator -->
+    <div id="scroll-progress" class="fixed top-0 left-0 h-[3px] bg-gradient-to-r from-red-500 via-indigo-500 to-cyan-400 z-50 transition-all duration-75" style="width: 0%"></div>
+
+    <!-- Header / Navbar -->
+    <header class="sticky top-0 z-40 bg-white/90 dark:bg-[#0b0f19]/90 backdrop-blur-md border-b border-gray-200 dark:border-gray-800 transition-colors">
+        <div class="max-w-[1780px] w-full mx-auto px-4 sm:px-6 lg:px-8 xl:px-10 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <button onclick="toggleSidebar()" class="lg:hidden p-2 rounded-lg text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800 transition" aria-label="Toggle navigation">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+                </button>
+                <a href="index.html" class="flex items-center space-x-3">
+                    <span class="text-2xl drop-shadow-sm">🔴</span>
+                    <span class="font-extrabold text-lg sm:text-xl tracking-tight bg-gradient-to-r from-red-600 via-pink-600 to-indigo-600 bg-clip-text text-transparent">Laravel Master Docs</span>
+                </a>
+                <span class="hidden sm:inline-flex items-center px-2.5 py-0.5 text-xs font-semibold rounded-full bg-red-100 text-red-700 dark:bg-red-950/80 dark:text-red-300 border border-red-200 dark:border-red-900/40">Laravel 13</span>
+            </div>
+
+            <div class="flex items-center space-x-4">
+                <a href="index.html" class="text-xs sm:text-sm font-medium text-gray-600 hover:text-indigo-600 dark:text-gray-300 dark:hover:text-indigo-400 flex items-center space-x-1.5 transition">
+                    <span>📚</span>
+                    <span class="hidden md:inline">Browse All</span> <span>Tutorials</span>
+                </a>
+                <!-- Dark Mode Toggle -->
+                <button onclick="toggleDarkMode()" class="p-2 rounded-xl bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 transition" title="Toggle Dark/Light Mode">
+                    <span id="theme-icon">🌙</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Elite Wide Container -->
+    <div class="max-w-[1780px] w-full mx-auto px-4 sm:px-6 lg:px-8 xl:px-10 flex-1 flex gap-8 xl:gap-10">
+        <!-- Sidebar Navigation (Desktop & Mobile Drawer) -->
+        <aside id="sidebar" class="fixed inset-y-0 left-0 z-30 w-72 bg-white dark:bg-[#0b0f19] border-r border-gray-200 dark:border-gray-800 transform -translate-x-full lg:translate-x-0 lg:static lg:w-72 pt-20 lg:pt-6 pb-10 transition-transform duration-200 ease-in-out overflow-y-auto shrink-0 custom-scrollbar">
+            <div class="px-3 mb-6">
+                <div class="flex items-center justify-between px-3 mb-3">
+                    <p class="text-[11px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider">Tutorial Chapters (15)</p>
+                    <span class="text-[10px] px-2 py-0.5 rounded-full bg-indigo-50 dark:bg-indigo-950 text-indigo-600 dark:text-indigo-400 font-semibold">100% Complete</span>
+                </div>
+                <div class="space-y-1">
+                    
+        <a href="01-create-laravel-project.html" class="flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs sm:text-sm transition-all duration-150 text-gray-600 dark:text-gray-400 hover:bg-gray-100/80 dark:hover:bg-gray-800/60 hover:text-gray-900 dark:hover:text-white">
+            <span class="text-base shrink-0">🚀</span>
+            <span class="truncate">Laravel Project Creation & Setup Guide</span>
+        </a>
+
+        <a href="02-workflow-command-playbook.html" class="flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs sm:text-sm transition-all duration-150 text-gray-600 dark:text-gray-400 hover:bg-gray-100/80 dark:hover:bg-gray-800/60 hover:text-gray-900 dark:hover:text-white">
+            <span class="text-base shrink-0">⚡</span>
+            <span class="truncate">Full-Cycle Command Playbook</span>
+        </a>
+
+        <a href="03-laravel-100-tips.html" class="flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs sm:text-sm transition-all duration-150 text-gray-600 dark:text-gray-400 hover:bg-gray-100/80 dark:hover:bg-gray-800/60 hover:text-gray-900 dark:hover:text-white">
+            <span class="text-base shrink-0">💡</span>
+            <span class="truncate">Laravel 100 Pro Tips Masterclass</span>
+        </a>
+
+        <a href="04-admin-multi-auth-fortify.html" class="flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs sm:text-sm transition-all duration-150 text-gray-600 dark:text-gray-400 hover:bg-gray-100/80 dark:hover:bg-gray-800/60 hover:text-gray-900 dark:hover:text-white">
+            <span class="text-base shrink-0">🛡️</span>
+            <span class="truncate">Admin Multi-Auth (Fortify & Jetstream)</span>
+        </a>
+
+        <a href="05-admin-login-step-by-step.html" class="flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs sm:text-sm transition-all duration-150 text-gray-600 dark:text-gray-400 hover:bg-gray-100/80 dark:hover:bg-gray-800/60 hover:text-gray-900 dark:hover:text-white">
+            <span class="text-base shrink-0">🔐</span>
+            <span class="truncate">Admin Login & Dashboard (16 Steps)</span>
+        </a>
+
+        <a href="06-multi-auth-master-system.html" class="flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs sm:text-sm transition-all duration-150 text-gray-600 dark:text-gray-400 hover:bg-gray-100/80 dark:hover:bg-gray-800/60 hover:text-gray-900 dark:hover:text-white">
+            <span class="text-base shrink-0">👥</span>
+            <span class="truncate">Multi-Authentication Master System & OTP</span>
+        </a>
+
+        <a href="07-dynamic-menu-crud.html" class="flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs sm:text-sm transition-all duration-150 text-gray-600 dark:text-gray-400 hover:bg-gray-100/80 dark:hover:bg-gray-800/60 hover:text-gray-900 dark:hover:text-white">
+            <span class="text-base shrink-0">📋</span>
+            <span class="truncate">Dynamic Menu Builder & Admin CRUD</span>
+        </a>
+
+        <a href="08-scaffolding-breeze-cms.html" class="flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs sm:text-sm transition-all duration-150 text-gray-600 dark:text-gray-400 hover:bg-gray-100/80 dark:hover:bg-gray-800/60 hover:text-gray-900 dark:hover:text-white">
+            <span class="text-base shrink-0">🏗️</span>
+            <span class="truncate">App Scaffolding, Breeze & Dynamic CMS</span>
+        </a>
+
+        <a href="09-qa-deployment-checklist.html" class="flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs sm:text-sm transition-all duration-150 text-gray-600 dark:text-gray-400 hover:bg-gray-100/80 dark:hover:bg-gray-800/60 hover:text-gray-900 dark:hover:text-white">
+            <span class="text-base shrink-0">✅</span>
+            <span class="truncate">Project QA & Production Checklist</span>
+        </a>
+
+        <a href="10-math-captcha-security.html" class="flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs sm:text-sm transition-all duration-150 text-gray-600 dark:text-gray-400 hover:bg-gray-100/80 dark:hover:bg-gray-800/60 hover:text-gray-900 dark:hover:text-white">
+            <span class="text-base shrink-0">🧮</span>
+            <span class="truncate">Secure Math CAPTCHA & Anti-Spam Defense</span>
+        </a>
+
+        <a href="11-seo-metadata-schema.html" class="flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs sm:text-sm transition-all duration-150 text-gray-600 dark:text-gray-400 hover:bg-gray-100/80 dark:hover:bg-gray-800/60 hover:text-gray-900 dark:hover:text-white">
+            <span class="text-base shrink-0">📈</span>
+            <span class="truncate">Production Technical SEO & Schema Markup</span>
+        </a>
+
+        <a href="12-restful-api-sanctum-resources.html" class="flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs sm:text-sm transition-all duration-150 bg-indigo-50 dark:bg-indigo-950/70 text-indigo-600 dark:text-indigo-400 font-semibold border-r-2 border-indigo-600 shadow-sm">
+            <span class="text-base shrink-0">🌐</span>
+            <span class="truncate">RESTful API Development & Sanctum Tokens</span>
+        </a>
+
+        <a href="13-eloquent-relationships-transactions.html" class="flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs sm:text-sm transition-all duration-150 text-gray-600 dark:text-gray-400 hover:bg-gray-100/80 dark:hover:bg-gray-800/60 hover:text-gray-900 dark:hover:text-white">
+            <span class="text-base shrink-0">🗄️</span>
+            <span class="truncate">Advanced Eloquent Relationships & Transactions</span>
+        </a>
+
+        <a href="14-queues-jobs-events-scheduling.html" class="flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs sm:text-sm transition-all duration-150 text-gray-600 dark:text-gray-400 hover:bg-gray-100/80 dark:hover:bg-gray-800/60 hover:text-gray-900 dark:hover:text-white">
+            <span class="text-base shrink-0">⏱️</span>
+            <span class="truncate">Queues, Asynchronous Jobs & Task Scheduling</span>
+        </a>
+
+        <a href="15-file-storage-uploads-media.html" class="flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs sm:text-sm transition-all duration-150 text-gray-600 dark:text-gray-400 hover:bg-gray-100/80 dark:hover:bg-gray-800/60 hover:text-gray-900 dark:hover:text-white">
+            <span class="text-base shrink-0">📁</span>
+            <span class="truncate">Secure File Uploads & Cloud Storage (S3)</span>
+        </a>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Article Container: WIDE & UNCONSTRAINED -->
+        <main class="flex-1 min-w-0 py-8 lg:px-4 w-full max-w-none">
+            <!-- Breadcrumbs -->
+            <nav class="flex items-center space-x-2 text-xs text-gray-500 dark:text-gray-400 mb-6">
+                <a href="index.html" class="hover:text-indigo-600 dark:hover:text-indigo-400 transition">Docs</a>
+                <span>/</span>
+                <span class="text-gray-800 dark:text-gray-200 font-medium truncate">RESTful API Development &amp; Sanctum Tokens</span>
+            </nav>
+
+            <header class="mb-10 pb-6 border-b border-gray-200 dark:border-gray-800">
+                <div class="flex flex-wrap items-center gap-2 mb-3">
+                    <span class="px-3 py-1 rounded-full bg-indigo-100 text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300 text-xs font-bold uppercase tracking-wider">Step-by-Step Blueprint</span>
+                    <span class="px-3 py-1 rounded-full bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300 text-xs font-medium">Laravel 13 Verified</span>
+                </div>
+                <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-gray-900 dark:text-white mb-4 leading-tight">RESTful API Development &amp; Sanctum Tokens</h1>
+                <p class="text-base sm:text-lg text-gray-600 dark:text-gray-300 max-w-4xl leading-relaxed">Complete production-ready walkthrough with high-resolution code snippets, database schemas, architectural patterns, and troubleshooting steps.</p>
+            </header>
+
+            <article class="prose dark:prose-invert max-w-none text-base">
+                <p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">LARAVEL RESTFUL API DEVELOPMENT, SANCTUM AUTHENTICATION &amp; API RESOURCES</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">This tutorial provides a complete, production-ready guide to building high-performance,</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">secure RESTful APIs in Laravel 11/12/13.</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">It covers installing Laravel Sanctum for API token issuance and revocation, token abilities/scopes,</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">API Form Request validation with standardized JSON error formatting, Eloquent API Resources</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">and Resource Collections, consistent JSON response envelopes, dynamic pagination, and API rate limiting.</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">1. INSTALLING &amp; CONFIGURING LARAVEL SANCTUM (LARAVEL 11+ API SCAFFOLDING)</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">In Laravel 11+, API routes are not installed by default. Install Sanctum and publish</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">the <code class="px-1.5 py-0.5 rounded text-xs font-mono bg-indigo-50 text-indigo-700 dark:bg-slate-800 dark:text-pink-400 font-semibold border border-indigo-100 dark:border-slate-700/60">routes/api.php</code> file using:</p>
+
+    <div class="relative my-6 group rounded-xl overflow-hidden border border-slate-800 shadow-2xl bg-[#0c1017]">
+        <div class="flex items-center justify-between px-4 py-2.5 bg-[#161b22] border-b border-slate-800/80 text-xs text-slate-400 font-mono select-none">
+            <div class="flex items-center space-x-2">
+                <span class="w-3 h-3 rounded-full bg-[#ff5f56] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#ffbd2e] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#27c93f] inline-block shadow-sm"></span>
+                <span class="ml-2 uppercase font-semibold text-indigo-400 tracking-wider text-[11px]">bash</span>
+            </div>
+            <button onclick="copyCode(this)" class="px-2.5 py-1 rounded-md bg-slate-800/90 hover:bg-slate-700 text-slate-200 transition flex items-center space-x-1.5 shadow-sm font-sans text-xs">
+                <svg class="w-3.5 h-3.5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                <span>Copy</span>
+            </button>
+        </div>
+        <pre class="p-4 sm:p-5 overflow-x-auto text-[13.5px] leading-relaxed custom-scrollbar"><code class="language-bash text-slate-100">php artisan install:api</code></pre>
+    </div>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">This command:</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">1. Publishes and runs the <code class="px-1.5 py-0.5 rounded text-xs font-mono bg-indigo-50 text-indigo-700 dark:bg-slate-800 dark:text-pink-400 font-semibold border border-indigo-100 dark:border-slate-700/60">create_personal_access_tokens_table</code> migration.</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">2. Creates <code class="px-1.5 py-0.5 rounded text-xs font-mono bg-indigo-50 text-indigo-700 dark:bg-slate-800 dark:text-pink-400 font-semibold border border-indigo-100 dark:border-slate-700/60">routes/api.php</code>.</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">3. Registers the <code class="px-1.5 py-0.5 rounded text-xs font-mono bg-indigo-50 text-indigo-700 dark:bg-slate-800 dark:text-pink-400 font-semibold border border-indigo-100 dark:border-slate-700/60">api</code> route group and middleware in <code class="px-1.5 py-0.5 rounded text-xs font-mono bg-indigo-50 text-indigo-700 dark:bg-slate-800 dark:text-pink-400 font-semibold border border-indigo-100 dark:border-slate-700/60">bootstrap/app.php</code>.</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">Verify <code class="px-1.5 py-0.5 rounded text-xs font-mono bg-indigo-50 text-indigo-700 dark:bg-slate-800 dark:text-pink-400 font-semibold border border-indigo-100 dark:border-slate-700/60">User</code> model (<code class="px-1.5 py-0.5 rounded text-xs font-mono bg-indigo-50 text-indigo-700 dark:bg-slate-800 dark:text-pink-400 font-semibold border border-indigo-100 dark:border-slate-700/60">app/Models/User.php</code>) includes <code class="px-1.5 py-0.5 rounded text-xs font-mono bg-indigo-50 text-indigo-700 dark:bg-slate-800 dark:text-pink-400 font-semibold border border-indigo-100 dark:border-slate-700/60">HasApiTokens</code>:</p>
+
+    <div class="relative my-6 group rounded-xl overflow-hidden border border-slate-800 shadow-2xl bg-[#0c1017]">
+        <div class="flex items-center justify-between px-4 py-2.5 bg-[#161b22] border-b border-slate-800/80 text-xs text-slate-400 font-mono select-none">
+            <div class="flex items-center space-x-2">
+                <span class="w-3 h-3 rounded-full bg-[#ff5f56] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#ffbd2e] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#27c93f] inline-block shadow-sm"></span>
+                <span class="ml-2 uppercase font-semibold text-indigo-400 tracking-wider text-[11px]">php</span>
+            </div>
+            <button onclick="copyCode(this)" class="px-2.5 py-1 rounded-md bg-slate-800/90 hover:bg-slate-700 text-slate-200 transition flex items-center space-x-1.5 shadow-sm font-sans text-xs">
+                <svg class="w-3.5 h-3.5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                <span>Copy</span>
+            </button>
+        </div>
+        <pre class="p-4 sm:p-5 overflow-x-auto text-[13.5px] leading-relaxed custom-scrollbar"><code class="language-php text-slate-100">&lt;?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
+
+class User extends Authenticatable
+{
+    /** @use HasFactory&lt;\Database\Factories\UserFactory&gt; */
+    use HasApiTokens, HasFactory, Notifiable;
+
+    protected $fillable = [
+        &#x27;name&#x27;,
+        &#x27;email&#x27;,
+        &#x27;password&#x27;,
+    ];
+
+    protected $hidden = [
+        &#x27;password&#x27;,
+        &#x27;remember_token&#x27;,
+    ];
+
+    protected function casts(): array
+    {
+        return [
+            &#x27;email_verified_at&#x27; =&gt; &#x27;datetime&#x27;,
+            &#x27;password&#x27; =&gt; &#x27;hashed&#x27;,
+        ];
+    }
+}</code></pre>
+    </div>
+
+                <div id="section-2-standardized-api-response-trait-apiresponseenvelope" class="scroll-mt-24 pt-10 pb-4 border-b border-gray-200 dark:border-gray-800">
+                    <div class="flex items-center space-x-3">
+                        <span class="px-2.5 py-1 text-xs font-bold rounded-md bg-red-100 text-red-700 dark:bg-red-950/80 dark:text-red-300 uppercase tracking-wider">Module 2</span>
+                        <h2 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white tracking-tight">STANDARDIZED API RESPONSE TRAIT (ApiResponseEnvelope)</h2>
+                    </div>
+                </div>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">Every production API must return a consistent JSON response envelope.</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">Create <code class="px-1.5 py-0.5 rounded text-xs font-mono bg-indigo-50 text-indigo-700 dark:bg-slate-800 dark:text-pink-400 font-semibold border border-indigo-100 dark:border-slate-700/60">app/Traits/ApiResponse.php</code>:</p>
+
+    <div class="relative my-6 group rounded-xl overflow-hidden border border-slate-800 shadow-2xl bg-[#0c1017]">
+        <div class="flex items-center justify-between px-4 py-2.5 bg-[#161b22] border-b border-slate-800/80 text-xs text-slate-400 font-mono select-none">
+            <div class="flex items-center space-x-2">
+                <span class="w-3 h-3 rounded-full bg-[#ff5f56] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#ffbd2e] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#27c93f] inline-block shadow-sm"></span>
+                <span class="ml-2 uppercase font-semibold text-indigo-400 tracking-wider text-[11px]">php</span>
+            </div>
+            <button onclick="copyCode(this)" class="px-2.5 py-1 rounded-md bg-slate-800/90 hover:bg-slate-700 text-slate-200 transition flex items-center space-x-1.5 shadow-sm font-sans text-xs">
+                <svg class="w-3.5 h-3.5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                <span>Copy</span>
+            </button>
+        </div>
+        <pre class="p-4 sm:p-5 overflow-x-auto text-[13.5px] leading-relaxed custom-scrollbar"><code class="language-php text-slate-100">&lt;?php
+
+namespace App\Traits;
+
+use Illuminate\Http\JsonResponse;
+
+trait ApiResponse
+{
+    /**
+     * Return a standardized success JSON response.
+     */
+    protected function success(mixed $data = null, string $message = &#x27;Success&#x27;, int $statusCode = 200): JsonResponse
+    {
+        return response()-&gt;json([
+            &#x27;status&#x27; =&gt; &#x27;success&#x27;,
+            &#x27;code&#x27; =&gt; $statusCode,
+            &#x27;message&#x27; =&gt; $message,
+            &#x27;data&#x27; =&gt; $data,
+        ], $statusCode);
+    }
+
+    /**
+     * Return a standardized error JSON response.
+     */
+    protected function error(string $message = &#x27;Error&#x27;, int $statusCode = 400, mixed $errors = null): JsonResponse
+    {
+        $response = [
+            &#x27;status&#x27; =&gt; &#x27;error&#x27;,
+            &#x27;code&#x27; =&gt; $statusCode,
+            &#x27;message&#x27; =&gt; $message,
+        ];
+
+        if ($errors !== null) {
+            $response[&#x27;errors&#x27;] = $errors;
+        }
+
+        return response()-&gt;json($response, $statusCode);
+    }
+}</code></pre>
+    </div>
+
+                <div id="section-3-api-authentication-controller-register-login-token-logout" class="scroll-mt-24 pt-10 pb-4 border-b border-gray-200 dark:border-gray-800">
+                    <div class="flex items-center space-x-3">
+                        <span class="px-2.5 py-1 text-xs font-bold rounded-md bg-red-100 text-red-700 dark:bg-red-950/80 dark:text-red-300 uppercase tracking-wider">Module 3</span>
+                        <h2 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white tracking-tight">API AUTHENTICATION CONTROLLER (REGISTER, LOGIN, TOKEN &amp; LOGOUT)</h2>
+                    </div>
+                </div>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">Create <code class="px-1.5 py-0.5 rounded text-xs font-mono bg-indigo-50 text-indigo-700 dark:bg-slate-800 dark:text-pink-400 font-semibold border border-indigo-100 dark:border-slate-700/60">app/Http/Controllers/Api/AuthController.php</code>:</p>
+
+    <div class="relative my-6 group rounded-xl overflow-hidden border border-slate-800 shadow-2xl bg-[#0c1017]">
+        <div class="flex items-center justify-between px-4 py-2.5 bg-[#161b22] border-b border-slate-800/80 text-xs text-slate-400 font-mono select-none">
+            <div class="flex items-center space-x-2">
+                <span class="w-3 h-3 rounded-full bg-[#ff5f56] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#ffbd2e] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#27c93f] inline-block shadow-sm"></span>
+                <span class="ml-2 uppercase font-semibold text-indigo-400 tracking-wider text-[11px]">bash</span>
+            </div>
+            <button onclick="copyCode(this)" class="px-2.5 py-1 rounded-md bg-slate-800/90 hover:bg-slate-700 text-slate-200 transition flex items-center space-x-1.5 shadow-sm font-sans text-xs">
+                <svg class="w-3.5 h-3.5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                <span>Copy</span>
+            </button>
+        </div>
+        <pre class="p-4 sm:p-5 overflow-x-auto text-[13.5px] leading-relaxed custom-scrollbar"><code class="language-bash text-slate-100">php artisan make:controller Api/AuthController</code></pre>
+    </div>
+
+    <div class="relative my-6 group rounded-xl overflow-hidden border border-slate-800 shadow-2xl bg-[#0c1017]">
+        <div class="flex items-center justify-between px-4 py-2.5 bg-[#161b22] border-b border-slate-800/80 text-xs text-slate-400 font-mono select-none">
+            <div class="flex items-center space-x-2">
+                <span class="w-3 h-3 rounded-full bg-[#ff5f56] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#ffbd2e] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#27c93f] inline-block shadow-sm"></span>
+                <span class="ml-2 uppercase font-semibold text-indigo-400 tracking-wider text-[11px]">php</span>
+            </div>
+            <button onclick="copyCode(this)" class="px-2.5 py-1 rounded-md bg-slate-800/90 hover:bg-slate-700 text-slate-200 transition flex items-center space-x-1.5 shadow-sm font-sans text-xs">
+                <svg class="w-3.5 h-3.5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                <span>Copy</span>
+            </button>
+        </div>
+        <pre class="p-4 sm:p-5 overflow-x-auto text-[13.5px] leading-relaxed custom-scrollbar"><code class="language-php text-slate-100">&lt;?php
+
+namespace App\Http\Controllers\Api;
+
+use App\Http\Controllers\Controller;
+use App\Models\User;
+use App\Traits\ApiResponse;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\ValidationException;
+
+class AuthController extends Controller
+{
+    use ApiResponse;
+
+    /**
+     * Register a new user and issue an API token.
+     */
+    public function register(Request $request): JsonResponse
+    {
+        $validated = $request-&gt;validate([
+            &#x27;name&#x27; =&gt; [&#x27;required&#x27;, &#x27;string&#x27;, &#x27;max:100&#x27;],
+            &#x27;email&#x27; =&gt; [&#x27;required&#x27;, &#x27;string&#x27;, &#x27;email&#x27;, &#x27;max:255&#x27;, &#x27;unique:users,email&#x27;],
+            &#x27;password&#x27; =&gt; [&#x27;required&#x27;, &#x27;string&#x27;, &#x27;min:8&#x27;, &#x27;confirmed&#x27;],
+            &#x27;device_name&#x27; =&gt; [&#x27;nullable&#x27;, &#x27;string&#x27;, &#x27;max:100&#x27;],
+        ]);
+
+        $user = User::create([
+            &#x27;name&#x27; =&gt; $validated[&#x27;name&#x27;],
+            &#x27;email&#x27; =&gt; $validated[&#x27;email&#x27;],
+            &#x27;password&#x27; =&gt; Hash::make($validated[&#x27;password&#x27;]),
+        ]);
+
+        $deviceName = $request-&gt;input(&#x27;device_name&#x27;, &#x27;default_device&#x27;);
+        $token = $user-&gt;createToken($deviceName, [&#x27;products:read&#x27;, &#x27;products:create&#x27;])-&gt;plainTextToken;
+
+        return $this-&gt;success([
+            &#x27;user&#x27; =&gt; [
+                &#x27;id&#x27; =&gt; $user-&gt;id,
+                &#x27;name&#x27; =&gt; $user-&gt;name,
+                &#x27;email&#x27; =&gt; $user-&gt;email,
+                &#x27;created_at&#x27; =&gt; $user-&gt;created_at-&gt;toISOString(),
+            ],
+            &#x27;token_type&#x27; =&gt; &#x27;Bearer&#x27;,
+            &#x27;access_token&#x27; =&gt; $token,
+        ], &#x27;User registered successfully&#x27;, 201);
+    }
+
+    /**
+     * Authenticate user credentials and return a bearer token.
+     */
+    public function login(Request $request): JsonResponse
+    {
+        $request-&gt;validate([
+            &#x27;email&#x27; =&gt; [&#x27;required&#x27;, &#x27;email&#x27;],
+            &#x27;password&#x27; =&gt; [&#x27;required&#x27;, &#x27;string&#x27;],
+            &#x27;device_name&#x27; =&gt; [&#x27;nullable&#x27;, &#x27;string&#x27;, &#x27;max:100&#x27;],
+        ]);
+
+        $user = User::where(&#x27;email&#x27;, $request-&gt;email)-&gt;first();
+
+        if (!$user || !Hash::check($request-&gt;password, $user-&gt;password)) {
+            return $this-&gt;error(&#x27;The provided credentials do not match our records.&#x27;, 401);
+        }
+
+        $deviceName = $request-&gt;input(&#x27;device_name&#x27;, &#x27;auth_token&#x27;);
+        // Define token abilities (e.g., read, write)
+        $abilities = $user-&gt;is_admin ? [&#x27;*&#x27;] : [&#x27;products:read&#x27;, &#x27;products:create&#x27;, &#x27;products:update&#x27;];
+        $token = $user-&gt;createToken($deviceName, $abilities)-&gt;plainTextToken;
+
+        return $this-&gt;success([
+            &#x27;user&#x27; =&gt; [
+                &#x27;id&#x27; =&gt; $user-&gt;id,
+                &#x27;name&#x27; =&gt; $user-&gt;name,
+                &#x27;email&#x27; =&gt; $user-&gt;email,
+            ],
+            &#x27;token_type&#x27; =&gt; &#x27;Bearer&#x27;,
+            &#x27;access_token&#x27; =&gt; $token,
+        ], &#x27;Logged in successfully&#x27;);
+    }
+
+    /**
+     * Return authenticated user profile.
+     */
+    public function profile(Request $request): JsonResponse
+    {
+        return $this-&gt;success($request-&gt;user(), &#x27;Profile retrieved successfully&#x27;);
+    }
+
+    /**
+     * Revoke current access token (logout).
+     */
+    public function logout(Request $request): JsonResponse
+    {
+        // Revoke only the token used in the current request
+        $request-&gt;user()-&gt;currentAccessToken()-&gt;delete();
+
+        return $this-&gt;success(null, &#x27;Token revoked successfully&#x27;);
+    }
+
+    /**
+     * Revoke all access tokens across all devices.
+     */
+    public function logoutAllDevices(Request $request): JsonResponse
+    {
+        $request-&gt;user()-&gt;tokens()-&gt;delete();
+
+        return $this-&gt;success(null, &#x27;All session tokens revoked successfully&#x27;);
+    }
+}</code></pre>
+    </div>
+
+                <div id="section-4-creating-form-requests-with-standardized-json-error-responses" class="scroll-mt-24 pt-10 pb-4 border-b border-gray-200 dark:border-gray-800">
+                    <div class="flex items-center space-x-3">
+                        <span class="px-2.5 py-1 text-xs font-bold rounded-md bg-red-100 text-red-700 dark:bg-red-950/80 dark:text-red-300 uppercase tracking-wider">Module 4</span>
+                        <h2 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white tracking-tight">CREATING FORM REQUESTS WITH STANDARDIZED JSON ERROR RESPONSES</h2>
+                    </div>
+                </div>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">When building APIs, validation errors should always return HTTP 422 JSON rather</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">than redirecting back with session flash messages.</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">Create <code class="px-1.5 py-0.5 rounded text-xs font-mono bg-indigo-50 text-indigo-700 dark:bg-slate-800 dark:text-pink-400 font-semibold border border-indigo-100 dark:border-slate-700/60">app/Http/Requests/Api/StoreProductRequest.php</code>:</p>
+
+    <div class="relative my-6 group rounded-xl overflow-hidden border border-slate-800 shadow-2xl bg-[#0c1017]">
+        <div class="flex items-center justify-between px-4 py-2.5 bg-[#161b22] border-b border-slate-800/80 text-xs text-slate-400 font-mono select-none">
+            <div class="flex items-center space-x-2">
+                <span class="w-3 h-3 rounded-full bg-[#ff5f56] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#ffbd2e] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#27c93f] inline-block shadow-sm"></span>
+                <span class="ml-2 uppercase font-semibold text-indigo-400 tracking-wider text-[11px]">bash</span>
+            </div>
+            <button onclick="copyCode(this)" class="px-2.5 py-1 rounded-md bg-slate-800/90 hover:bg-slate-700 text-slate-200 transition flex items-center space-x-1.5 shadow-sm font-sans text-xs">
+                <svg class="w-3.5 h-3.5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                <span>Copy</span>
+            </button>
+        </div>
+        <pre class="p-4 sm:p-5 overflow-x-auto text-[13.5px] leading-relaxed custom-scrollbar"><code class="language-bash text-slate-100">php artisan make:request Api/StoreProductRequest</code></pre>
+    </div>
+
+    <div class="relative my-6 group rounded-xl overflow-hidden border border-slate-800 shadow-2xl bg-[#0c1017]">
+        <div class="flex items-center justify-between px-4 py-2.5 bg-[#161b22] border-b border-slate-800/80 text-xs text-slate-400 font-mono select-none">
+            <div class="flex items-center space-x-2">
+                <span class="w-3 h-3 rounded-full bg-[#ff5f56] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#ffbd2e] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#27c93f] inline-block shadow-sm"></span>
+                <span class="ml-2 uppercase font-semibold text-indigo-400 tracking-wider text-[11px]">php</span>
+            </div>
+            <button onclick="copyCode(this)" class="px-2.5 py-1 rounded-md bg-slate-800/90 hover:bg-slate-700 text-slate-200 transition flex items-center space-x-1.5 shadow-sm font-sans text-xs">
+                <svg class="w-3.5 h-3.5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                <span>Copy</span>
+            </button>
+        </div>
+        <pre class="p-4 sm:p-5 overflow-x-auto text-[13.5px] leading-relaxed custom-scrollbar"><code class="language-php text-slate-100">&lt;?php
+
+namespace App\Http\Requests\Api;
+
+use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\Exceptions\HttpResponseException;
+
+class StoreProductRequest extends FormRequest
+{
+    public function authorize(): bool
+    {
+        return true;
+    }
+
+    public function rules(): array
+    {
+        return [
+            &#x27;name&#x27; =&gt; [&#x27;required&#x27;, &#x27;string&#x27;, &#x27;min:3&#x27;, &#x27;max:255&#x27;],
+            &#x27;sku&#x27; =&gt; [&#x27;required&#x27;, &#x27;string&#x27;, &#x27;max:50&#x27;, &#x27;unique:products,sku&#x27;],
+            &#x27;price&#x27; =&gt; [&#x27;required&#x27;, &#x27;numeric&#x27;, &#x27;min:0&#x27;],
+            &#x27;stock&#x27; =&gt; [&#x27;required&#x27;, &#x27;integer&#x27;, &#x27;min:0&#x27;],
+            &#x27;description&#x27; =&gt; [&#x27;nullable&#x27;, &#x27;string&#x27;, &#x27;max:2000&#x27;],
+            &#x27;category_id&#x27; =&gt; [&#x27;required&#x27;, &#x27;integer&#x27;, &#x27;exists:categories,id&#x27;],
+        ];
+    }
+
+    /**
+     * Override failedValidation to return structured JSON response envelope.
+     */
+    protected function failedValidation(Validator $validator): void
+    {
+        throw new HttpResponseException(response()-&gt;json([
+            &#x27;status&#x27; =&gt; &#x27;error&#x27;,
+            &#x27;code&#x27; =&gt; 422,
+            &#x27;message&#x27; =&gt; &#x27;Validation errors occurred.&#x27;,
+            &#x27;errors&#x27; =&gt; $validator-&gt;errors(),
+        ], 422));
+    }
+}</code></pre>
+    </div>
+
+                <div id="section-5-eloquent-api-resources-resource-collections" class="scroll-mt-24 pt-10 pb-4 border-b border-gray-200 dark:border-gray-800">
+                    <div class="flex items-center space-x-3">
+                        <span class="px-2.5 py-1 text-xs font-bold rounded-md bg-red-100 text-red-700 dark:bg-red-950/80 dark:text-red-300 uppercase tracking-wider">Module 5</span>
+                        <h2 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white tracking-tight">ELOQUENT API RESOURCES &amp; RESOURCE COLLECTIONS</h2>
+                    </div>
+                </div>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">API Resources act as a transformation layer between your Eloquent models and the</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">JSON responses returned to clients, ensuring internal database columns aren&#x27;t leaked.</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">Create <code class="px-1.5 py-0.5 rounded text-xs font-mono bg-indigo-50 text-indigo-700 dark:bg-slate-800 dark:text-pink-400 font-semibold border border-indigo-100 dark:border-slate-700/60">app/Http/Resources/ProductResource.php</code>:</p>
+
+    <div class="relative my-6 group rounded-xl overflow-hidden border border-slate-800 shadow-2xl bg-[#0c1017]">
+        <div class="flex items-center justify-between px-4 py-2.5 bg-[#161b22] border-b border-slate-800/80 text-xs text-slate-400 font-mono select-none">
+            <div class="flex items-center space-x-2">
+                <span class="w-3 h-3 rounded-full bg-[#ff5f56] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#ffbd2e] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#27c93f] inline-block shadow-sm"></span>
+                <span class="ml-2 uppercase font-semibold text-indigo-400 tracking-wider text-[11px]">bash</span>
+            </div>
+            <button onclick="copyCode(this)" class="px-2.5 py-1 rounded-md bg-slate-800/90 hover:bg-slate-700 text-slate-200 transition flex items-center space-x-1.5 shadow-sm font-sans text-xs">
+                <svg class="w-3.5 h-3.5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                <span>Copy</span>
+            </button>
+        </div>
+        <pre class="p-4 sm:p-5 overflow-x-auto text-[13.5px] leading-relaxed custom-scrollbar"><code class="language-bash text-slate-100">php artisan make:resource ProductResource</code></pre>
+    </div>
+
+    <div class="relative my-6 group rounded-xl overflow-hidden border border-slate-800 shadow-2xl bg-[#0c1017]">
+        <div class="flex items-center justify-between px-4 py-2.5 bg-[#161b22] border-b border-slate-800/80 text-xs text-slate-400 font-mono select-none">
+            <div class="flex items-center space-x-2">
+                <span class="w-3 h-3 rounded-full bg-[#ff5f56] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#ffbd2e] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#27c93f] inline-block shadow-sm"></span>
+                <span class="ml-2 uppercase font-semibold text-indigo-400 tracking-wider text-[11px]">php</span>
+            </div>
+            <button onclick="copyCode(this)" class="px-2.5 py-1 rounded-md bg-slate-800/90 hover:bg-slate-700 text-slate-200 transition flex items-center space-x-1.5 shadow-sm font-sans text-xs">
+                <svg class="w-3.5 h-3.5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                <span>Copy</span>
+            </button>
+        </div>
+        <pre class="p-4 sm:p-5 overflow-x-auto text-[13.5px] leading-relaxed custom-scrollbar"><code class="language-php text-slate-100">&lt;?php
+
+namespace App\Http\Resources;
+
+use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\JsonResource;
+
+class ProductResource extends JsonResource
+{
+    /**
+     * Transform the resource into an array.
+     */
+    public function toArray(Request $request): array
+    {
+        return [
+            &#x27;id&#x27; =&gt; $this-&gt;id,
+            &#x27;name&#x27; =&gt; $this-&gt;name,
+            &#x27;sku&#x27; =&gt; $this-&gt;sku,
+            &#x27;price&#x27; =&gt; (float) $this-&gt;price,
+            &#x27;formatted_price&#x27; =&gt; &#x27;$&#x27; . number_format($this-&gt;price, 2),
+            &#x27;stock&#x27; =&gt; (int) $this-&gt;stock,
+            &#x27;in_stock&#x27; =&gt; $this-&gt;stock &gt; 0,
+            &#x27;description&#x27; =&gt; $this-&gt;description,
+            &#x27;category&#x27; =&gt; [
+                &#x27;id&#x27; =&gt; $this-&gt;category_id,
+                &#x27;name&#x27; =&gt; $this-&gt;whenLoaded(&#x27;category&#x27;, fn() =&gt; $this-&gt;category?-&gt;name),
+            ],
+            &#x27;created_at&#x27; =&gt; $this-&gt;created_at?-&gt;toISOString(),
+            &#x27;updated_at&#x27; =&gt; $this-&gt;updated_at?-&gt;toISOString(),
+        ];
+    }
+}</code></pre>
+    </div>
+
+                <div id="section-6-full-crud-restful-api-controller" class="scroll-mt-24 pt-10 pb-4 border-b border-gray-200 dark:border-gray-800">
+                    <div class="flex items-center space-x-3">
+                        <span class="px-2.5 py-1 text-xs font-bold rounded-md bg-red-100 text-red-700 dark:bg-red-950/80 dark:text-red-300 uppercase tracking-wider">Module 6</span>
+                        <h2 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white tracking-tight">FULL CRUD RESTFUL API CONTROLLER</h2>
+                    </div>
+                </div>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">Create <code class="px-1.5 py-0.5 rounded text-xs font-mono bg-indigo-50 text-indigo-700 dark:bg-slate-800 dark:text-pink-400 font-semibold border border-indigo-100 dark:border-slate-700/60">app/Http/Controllers/Api/ProductApiController.php</code>:</p>
+
+    <div class="relative my-6 group rounded-xl overflow-hidden border border-slate-800 shadow-2xl bg-[#0c1017]">
+        <div class="flex items-center justify-between px-4 py-2.5 bg-[#161b22] border-b border-slate-800/80 text-xs text-slate-400 font-mono select-none">
+            <div class="flex items-center space-x-2">
+                <span class="w-3 h-3 rounded-full bg-[#ff5f56] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#ffbd2e] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#27c93f] inline-block shadow-sm"></span>
+                <span class="ml-2 uppercase font-semibold text-indigo-400 tracking-wider text-[11px]">bash</span>
+            </div>
+            <button onclick="copyCode(this)" class="px-2.5 py-1 rounded-md bg-slate-800/90 hover:bg-slate-700 text-slate-200 transition flex items-center space-x-1.5 shadow-sm font-sans text-xs">
+                <svg class="w-3.5 h-3.5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                <span>Copy</span>
+            </button>
+        </div>
+        <pre class="p-4 sm:p-5 overflow-x-auto text-[13.5px] leading-relaxed custom-scrollbar"><code class="language-bash text-slate-100">php artisan make:controller Api/ProductApiController</code></pre>
+    </div>
+
+    <div class="relative my-6 group rounded-xl overflow-hidden border border-slate-800 shadow-2xl bg-[#0c1017]">
+        <div class="flex items-center justify-between px-4 py-2.5 bg-[#161b22] border-b border-slate-800/80 text-xs text-slate-400 font-mono select-none">
+            <div class="flex items-center space-x-2">
+                <span class="w-3 h-3 rounded-full bg-[#ff5f56] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#ffbd2e] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#27c93f] inline-block shadow-sm"></span>
+                <span class="ml-2 uppercase font-semibold text-indigo-400 tracking-wider text-[11px]">php</span>
+            </div>
+            <button onclick="copyCode(this)" class="px-2.5 py-1 rounded-md bg-slate-800/90 hover:bg-slate-700 text-slate-200 transition flex items-center space-x-1.5 shadow-sm font-sans text-xs">
+                <svg class="w-3.5 h-3.5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                <span>Copy</span>
+            </button>
+        </div>
+        <pre class="p-4 sm:p-5 overflow-x-auto text-[13.5px] leading-relaxed custom-scrollbar"><code class="language-php text-slate-100">&lt;?php
+
+namespace App\Http\Controllers\Api;
+
+use App\Http\Controllers\Controller;
+use App\Http\Requests\Api\StoreProductRequest;
+use App\Http\Resources\ProductResource;
+use App\Models\Product;
+use App\Traits\ApiResponse;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+
+class ProductApiController extends Controller
+{
+    use ApiResponse;
+
+    /**
+     * Display a paginated listing of the resource.
+     */
+    public function index(Request $request): JsonResponse
+    {
+        $perPage = min((int) $request-&gt;input(&#x27;per_page&#x27;, 15), 100);
+        
+        $products = Product::with(&#x27;category&#x27;)
+            -&gt;when($request-&gt;search, fn($q, $s) =&gt; $q-&gt;where(&#x27;name&#x27;, &#x27;like&#x27;, &quot;%{$s}%&quot;))
+            -&gt;latest(&#x27;id&#x27;)
+            -&gt;paginate($perPage);
+
+        return response()-&gt;json([
+            &#x27;status&#x27; =&gt; &#x27;success&#x27;,
+            &#x27;code&#x27; =&gt; 200,
+            &#x27;message&#x27; =&gt; &#x27;Products retrieved successfully&#x27;,
+            &#x27;data&#x27; =&gt; ProductResource::collection($products),
+            &#x27;pagination&#x27; =&gt; [
+                &#x27;total&#x27; =&gt; $products-&gt;total(),
+                &#x27;count&#x27; =&gt; $products-&gt;count(),
+                &#x27;per_page&#x27; =&gt; $products-&gt;perPage(),
+                &#x27;current_page&#x27; =&gt; $products-&gt;currentPage(),
+                &#x27;total_pages&#x27; =&gt; $products-&gt;lastPage(),
+            ],
+        ], 200);
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store(StoreProductRequest $request): JsonResponse
+    {
+        $product = Product::create($request-&gt;validated());
+
+        return $this-&gt;success(
+            new ProductResource($product-&gt;load(&#x27;category&#x27;)),
+            &#x27;Product created successfully&#x27;,
+            201
+        );
+    }
+
+    /**
+     * Display the specified resource.
+     */
+    public function show(int $id): JsonResponse
+    {
+        $product = Product::with(&#x27;category&#x27;)-&gt;find($id);
+
+        if (!$product) {
+            return $this-&gt;error(&#x27;Product not found.&#x27;, 404);
+        }
+
+        return $this-&gt;success(new ProductResource($product), &#x27;Product retrieved successfully&#x27;);
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, int $id): JsonResponse
+    {
+        $product = Product::find($id);
+
+        if (!$product) {
+            return $this-&gt;error(&#x27;Product not found.&#x27;, 404);
+        }
+
+        $validated = $request-&gt;validate([
+            &#x27;name&#x27; =&gt; [&#x27;sometimes&#x27;, &#x27;string&#x27;, &#x27;min:3&#x27;, &#x27;max:255&#x27;],
+            &#x27;price&#x27; =&gt; [&#x27;sometimes&#x27;, &#x27;numeric&#x27;, &#x27;min:0&#x27;],
+            &#x27;stock&#x27; =&gt; [&#x27;sometimes&#x27;, &#x27;integer&#x27;, &#x27;min:0&#x27;],
+            &#x27;description&#x27; =&gt; [&#x27;nullable&#x27;, &#x27;string&#x27;, &#x27;max:2000&#x27;],
+        ]);
+
+        $product-&gt;update($validated);
+
+        return $this-&gt;success(new ProductResource($product), &#x27;Product updated successfully&#x27;);
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(int $id): JsonResponse
+    {
+        $product = Product::find($id);
+
+        if (!$product) {
+            return $this-&gt;error(&#x27;Product not found.&#x27;, 404);
+        }
+
+        $product-&gt;delete();
+
+        return $this-&gt;success(null, &#x27;Product deleted successfully&#x27;, 200);
+    }
+}</code></pre>
+    </div>
+
+                <div id="section-7-route-definitions-in-routes-api-php" class="scroll-mt-24 pt-10 pb-4 border-b border-gray-200 dark:border-gray-800">
+                    <div class="flex items-center space-x-3">
+                        <span class="px-2.5 py-1 text-xs font-bold rounded-md bg-red-100 text-red-700 dark:bg-red-950/80 dark:text-red-300 uppercase tracking-wider">Module 7</span>
+                        <h2 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white tracking-tight">ROUTE DEFINITIONS IN routes/api.php</h2>
+                    </div>
+                </div>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">In <code class="px-1.5 py-0.5 rounded text-xs font-mono bg-indigo-50 text-indigo-700 dark:bg-slate-800 dark:text-pink-400 font-semibold border border-indigo-100 dark:border-slate-700/60">routes/api.php</code>:</p>
+
+    <div class="relative my-6 group rounded-xl overflow-hidden border border-slate-800 shadow-2xl bg-[#0c1017]">
+        <div class="flex items-center justify-between px-4 py-2.5 bg-[#161b22] border-b border-slate-800/80 text-xs text-slate-400 font-mono select-none">
+            <div class="flex items-center space-x-2">
+                <span class="w-3 h-3 rounded-full bg-[#ff5f56] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#ffbd2e] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#27c93f] inline-block shadow-sm"></span>
+                <span class="ml-2 uppercase font-semibold text-indigo-400 tracking-wider text-[11px]">php</span>
+            </div>
+            <button onclick="copyCode(this)" class="px-2.5 py-1 rounded-md bg-slate-800/90 hover:bg-slate-700 text-slate-200 transition flex items-center space-x-1.5 shadow-sm font-sans text-xs">
+                <svg class="w-3.5 h-3.5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                <span>Copy</span>
+            </button>
+        </div>
+        <pre class="p-4 sm:p-5 overflow-x-auto text-[13.5px] leading-relaxed custom-scrollbar"><code class="language-php text-slate-100">&lt;?php
+
+use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\ProductApiController;
+use Illuminate\Support\Facades\Route;
+
+// Public Authentication Endpoints
+Route::prefix(&#x27;v1/auth&#x27;)-&gt;group(function () {
+    Route::post(&#x27;/register&#x27;, [AuthController::class, &#x27;register&#x27;]);
+    Route::post(&#x27;/login&#x27;, [AuthController::class, &#x27;login&#x27;]);
+});
+
+// Protected API Endpoints (Requires valid Sanctum Bearer Token)
+Route::prefix(&#x27;v1&#x27;)-&gt;middleware(&#x27;auth:sanctum&#x27;)-&gt;group(function () {
+    // Current user profile &amp; logout
+    Route::get(&#x27;/user&#x27;, [AuthController::class, &#x27;profile&#x27;]);
+    Route::post(&#x27;/auth/logout&#x27;, [AuthController::class, &#x27;logout&#x27;]);
+    Route::post(&#x27;/auth/logout-all&#x27;, [AuthController::class, &#x27;logoutAllDevices&#x27;]);
+
+    // Products RESTful API with token ability checks
+    Route::get(&#x27;/products&#x27;, [ProductApiController::class, &#x27;index&#x27;])-&gt;middleware(&#x27;ability:products:read&#x27;);
+    Route::post(&#x27;/products&#x27;, [ProductApiController::class, &#x27;store&#x27;])-&gt;middleware(&#x27;ability:products:create&#x27;);
+    Route::get(&#x27;/products/{id}&#x27;, [ProductApiController::class, &#x27;show&#x27;])-&gt;middleware(&#x27;ability:products:read&#x27;);
+    Route::put(&#x27;/products/{id}&#x27;, [ProductApiController::class, &#x27;update&#x27;])-&gt;middleware(&#x27;ability:products:update&#x27;);
+    Route::delete(&#x27;/products/{id}&#x27;, [ProductApiController::class, &#x27;destroy&#x27;])-&gt;middleware(&#x27;ability:products:delete&#x27;);
+});</code></pre>
+    </div>
+
+                <div id="section-8-custom-api-rate-limiting-throttling" class="scroll-mt-24 pt-10 pb-4 border-b border-gray-200 dark:border-gray-800">
+                    <div class="flex items-center space-x-3">
+                        <span class="px-2.5 py-1 text-xs font-bold rounded-md bg-red-100 text-red-700 dark:bg-red-950/80 dark:text-red-300 uppercase tracking-wider">Module 8</span>
+                        <h2 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white tracking-tight">CUSTOM API RATE LIMITING &amp; THROTTLING</h2>
+                    </div>
+                </div>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">In Laravel 11/12/13, rate limiters are configured in <code class="px-1.5 py-0.5 rounded text-xs font-mono bg-indigo-50 text-indigo-700 dark:bg-slate-800 dark:text-pink-400 font-semibold border border-indigo-100 dark:border-slate-700/60">bootstrap/app.php</code>.</p>
+
+    <div class="relative my-6 group rounded-xl overflow-hidden border border-slate-800 shadow-2xl bg-[#0c1017]">
+        <div class="flex items-center justify-between px-4 py-2.5 bg-[#161b22] border-b border-slate-800/80 text-xs text-slate-400 font-mono select-none">
+            <div class="flex items-center space-x-2">
+                <span class="w-3 h-3 rounded-full bg-[#ff5f56] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#ffbd2e] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#27c93f] inline-block shadow-sm"></span>
+                <span class="ml-2 uppercase font-semibold text-indigo-400 tracking-wider text-[11px]">php</span>
+            </div>
+            <button onclick="copyCode(this)" class="px-2.5 py-1 rounded-md bg-slate-800/90 hover:bg-slate-700 text-slate-200 transition flex items-center space-x-1.5 shadow-sm font-sans text-xs">
+                <svg class="w-3.5 h-3.5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                <span>Copy</span>
+            </button>
+        </div>
+        <pre class="p-4 sm:p-5 overflow-x-auto text-[13.5px] leading-relaxed custom-scrollbar"><code class="language-php text-slate-100">use Illuminate\Cache\RateLimiting\Limit;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\RateLimiter;
+
+-&gt;withMiddleware(function (Middleware $middleware) {
+    // Configure API Rate Limiting (60 requests per minute per IP or authenticated user)
+    RateLimiter::for(&#x27;api&#x27;, function (Request $request) {
+        return Limit::perMinute(60)-&gt;by($request-&gt;user()?-&gt;id ?: $request-&gt;ip());
+    });
+})</code></pre>
+    </div>
+
+                <div id="section-9-testing-the-api-with-curl-automated-tests" class="scroll-mt-24 pt-10 pb-4 border-b border-gray-200 dark:border-gray-800">
+                    <div class="flex items-center space-x-3">
+                        <span class="px-2.5 py-1 text-xs font-bold rounded-md bg-red-100 text-red-700 dark:bg-red-950/80 dark:text-red-300 uppercase tracking-wider">Module 9</span>
+                        <h2 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white tracking-tight">TESTING THE API WITH CURL &amp; AUTOMATED TESTS</h2>
+                    </div>
+                </div>
+
+                <div id="section-1-register-user-via-curl" class="scroll-mt-24 pt-10 pb-4 border-b border-gray-200 dark:border-gray-800">
+                    <div class="flex items-center space-x-3">
+                        <span class="px-2.5 py-1 text-xs font-bold rounded-md bg-red-100 text-red-700 dark:bg-red-950/80 dark:text-red-300 uppercase tracking-wider">Module 1</span>
+                        <h2 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white tracking-tight">Register user via cURL:</h2>
+                    </div>
+                </div>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">curl -X POST http://127.0.0.1:8000/api/v1/auth/register \</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">-H &quot;Accept: application/json&quot; \</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">-H &quot;Content-Type: application/json&quot; \</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">-d &#x27;{&quot;name&quot;:&quot;John Doe&quot;,&quot;email&quot;:&quot;john@example.com&quot;,&quot;password&quot;:&quot;secretpassword&quot;,&quot;password_confirmation&quot;:&quot;secretpassword&quot;}&#x27;</p>
+
+                <div id="section-2-make-an-authenticated-request" class="scroll-mt-24 pt-10 pb-4 border-b border-gray-200 dark:border-gray-800">
+                    <div class="flex items-center space-x-3">
+                        <span class="px-2.5 py-1 text-xs font-bold rounded-md bg-red-100 text-red-700 dark:bg-red-950/80 dark:text-red-300 uppercase tracking-wider">Module 2</span>
+                        <h2 class="text-xl md:text-2xl font-bold text-gray-900 dark:text-white tracking-tight">Make an Authenticated Request:</h2>
+                    </div>
+                </div>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">curl -X GET http://127.0.0.1:8000/api/v1/products \</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">-H &quot;Accept: application/json&quot; \</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">-H &quot;Authorization: Bearer 1|abcdef1234567890...&quot;</p>
+<p class="my-3 text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base">3. Automated Feature Test in <code class="px-1.5 py-0.5 rounded text-xs font-mono bg-indigo-50 text-indigo-700 dark:bg-slate-800 dark:text-pink-400 font-semibold border border-indigo-100 dark:border-slate-700/60">tests/Feature/ProductApiTest.php</code>:</p>
+
+    <div class="relative my-6 group rounded-xl overflow-hidden border border-slate-800 shadow-2xl bg-[#0c1017]">
+        <div class="flex items-center justify-between px-4 py-2.5 bg-[#161b22] border-b border-slate-800/80 text-xs text-slate-400 font-mono select-none">
+            <div class="flex items-center space-x-2">
+                <span class="w-3 h-3 rounded-full bg-[#ff5f56] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#ffbd2e] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#27c93f] inline-block shadow-sm"></span>
+                <span class="ml-2 uppercase font-semibold text-indigo-400 tracking-wider text-[11px]">bash</span>
+            </div>
+            <button onclick="copyCode(this)" class="px-2.5 py-1 rounded-md bg-slate-800/90 hover:bg-slate-700 text-slate-200 transition flex items-center space-x-1.5 shadow-sm font-sans text-xs">
+                <svg class="w-3.5 h-3.5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                <span>Copy</span>
+            </button>
+        </div>
+        <pre class="p-4 sm:p-5 overflow-x-auto text-[13.5px] leading-relaxed custom-scrollbar"><code class="language-bash text-slate-100">php artisan make:test ProductApiTest</code></pre>
+    </div>
+
+    <div class="relative my-6 group rounded-xl overflow-hidden border border-slate-800 shadow-2xl bg-[#0c1017]">
+        <div class="flex items-center justify-between px-4 py-2.5 bg-[#161b22] border-b border-slate-800/80 text-xs text-slate-400 font-mono select-none">
+            <div class="flex items-center space-x-2">
+                <span class="w-3 h-3 rounded-full bg-[#ff5f56] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#ffbd2e] inline-block shadow-sm"></span>
+                <span class="w-3 h-3 rounded-full bg-[#27c93f] inline-block shadow-sm"></span>
+                <span class="ml-2 uppercase font-semibold text-indigo-400 tracking-wider text-[11px]">php</span>
+            </div>
+            <button onclick="copyCode(this)" class="px-2.5 py-1 rounded-md bg-slate-800/90 hover:bg-slate-700 text-slate-200 transition flex items-center space-x-1.5 shadow-sm font-sans text-xs">
+                <svg class="w-3.5 h-3.5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                <span>Copy</span>
+            </button>
+        </div>
+        <pre class="p-4 sm:p-5 overflow-x-auto text-[13.5px] leading-relaxed custom-scrollbar"><code class="language-php text-slate-100">&lt;?php
+
+namespace Tests\Feature;
+
+use App\Models\Category;
+use App\Models\Product;
+use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Laravel\Sanctum\Sanctum;
+use Tests\TestCase;
+
+class ProductApiTest extends TestCase
+{
+    use RefreshDatabase;
+
+    public function test_authenticated_user_can_list_products(): void
+    {
+        $user = User::factory()-&gt;create();
+        Sanctum::actingAs($user, [&#x27;products:read&#x27;]);
+
+        $category = Category::factory()-&gt;create();
+        Product::factory()-&gt;count(3)-&gt;create([&#x27;category_id&#x27; =&gt; $category-&gt;id]);
+
+        $response = $this-&gt;getJson(&#x27;/api/v1/products&#x27;);
+
+        $response-&gt;assertStatus(200)
+            -&gt;assertJsonStructure([
+                &#x27;status&#x27;,
+                &#x27;code&#x27;,
+                &#x27;message&#x27;,
+                &#x27;data&#x27; =&gt; [
+                    &#x27;*&#x27; =&gt; [&#x27;id&#x27;, &#x27;name&#x27;, &#x27;price&#x27;, &#x27;in_stock&#x27;]
+                ],
+                &#x27;pagination&#x27;
+            ]);
+    }
+
+    public function test_unauthenticated_request_is_rejected(): void
+    {
+        $response = $this-&gt;getJson(&#x27;/api/v1/products&#x27;);
+        $response-&gt;assertStatus(401);
+    }
+}</code></pre>
+    </div>
+            </article>
+
+            <!-- Bottom Navigation -->
+            <div class="mt-16 pt-8 border-t border-gray-200 dark:border-gray-800 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4">
+                <a href="11-seo-metadata-schema.html" class="group flex items-center space-x-3 px-5 py-3 rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-800/50 text-sm font-medium text-gray-700 dark:text-gray-300 hover:border-indigo-500 dark:hover:border-indigo-500 hover:shadow-md transition-all">
+        <span class="text-indigo-600 dark:text-indigo-400 group-hover:-translate-x-1 transition-transform">←</span>
+        <div>
+            <div class="text-[10px] uppercase tracking-wider text-gray-400">Previous</div>
+            <div class="font-semibold text-gray-900 dark:text-white truncate max-w-[200px] sm:max-w-xs">Production Technical SEO & Schema Markup</div>
+        </div>
+    </a>
+                <a href="13-eloquent-relationships-transactions.html" class="group flex items-center space-x-3 px-5 py-3 rounded-xl border border-indigo-600 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium shadow-md hover:shadow-xl transition-all">
+        <div class="text-right">
+            <div class="text-[10px] uppercase tracking-wider text-indigo-200">Next</div>
+            <div class="font-semibold truncate max-w-[200px] sm:max-w-xs">Advanced Eloquent Relationships & Transactions</div>
+        </div>
+        <span class="group-hover:translate-x-1 transition-transform">→</span>
+    </a>
+            </div>
+        </main>
+
+        <!-- Right TOC Sidebar (Desktop) with ScrollSpy -->
+        <aside class="hidden xl:block w-72 shrink-0 py-8 pl-4">
+            <div class="sticky top-24">
+                <div class="flex items-center space-x-2 mb-3 px-1">
+                    <span class="w-2 h-2 rounded-full bg-indigo-500 animate-pulse"></span>
+                    <h3 class="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">On This Page</h3>
+                </div>
+                <div id="toc-nav" class="space-y-1 border-l-2 border-gray-200 dark:border-gray-800 pl-3 max-h-[75vh] overflow-y-auto custom-scrollbar">
+                    
+        <a href="#section-2-standardized-api-response-trait-apiresponseenvelope" class="toc-link block py-1.5 text-xs text-gray-500 hover:text-indigo-600 dark:text-gray-400 dark:hover:text-indigo-400 truncate transition-all duration-150" data-target="section-2-standardized-api-response-trait-apiresponseenvelope">
+            2. STANDARDIZED API RESPONSE TRAIT (ApiResponseEnvelope)
+        </a>
+
+        <a href="#section-3-api-authentication-controller-register-login-token-logout" class="toc-link block py-1.5 text-xs text-gray-500 hover:text-indigo-600 dark:text-gray-400 dark:hover:text-indigo-400 truncate transition-all duration-150" data-target="section-3-api-authentication-controller-register-login-token-logout">
+            3. API AUTHENTICATION CONTROLLER (REGISTER, LOGIN, TOKEN &amp; LOGOUT)
+        </a>
+
+        <a href="#section-4-creating-form-requests-with-standardized-json-error-responses" class="toc-link block py-1.5 text-xs text-gray-500 hover:text-indigo-600 dark:text-gray-400 dark:hover:text-indigo-400 truncate transition-all duration-150" data-target="section-4-creating-form-requests-with-standardized-json-error-responses">
+            4. CREATING FORM REQUESTS WITH STANDARDIZED JSON ERROR RESPONSES
+        </a>
+
+        <a href="#section-5-eloquent-api-resources-resource-collections" class="toc-link block py-1.5 text-xs text-gray-500 hover:text-indigo-600 dark:text-gray-400 dark:hover:text-indigo-400 truncate transition-all duration-150" data-target="section-5-eloquent-api-resources-resource-collections">
+            5. ELOQUENT API RESOURCES &amp; RESOURCE COLLECTIONS
+        </a>
+
+        <a href="#section-6-full-crud-restful-api-controller" class="toc-link block py-1.5 text-xs text-gray-500 hover:text-indigo-600 dark:text-gray-400 dark:hover:text-indigo-400 truncate transition-all duration-150" data-target="section-6-full-crud-restful-api-controller">
+            6. FULL CRUD RESTFUL API CONTROLLER
+        </a>
+
+        <a href="#section-7-route-definitions-in-routes-api-php" class="toc-link block py-1.5 text-xs text-gray-500 hover:text-indigo-600 dark:text-gray-400 dark:hover:text-indigo-400 truncate transition-all duration-150" data-target="section-7-route-definitions-in-routes-api-php">
+            7. ROUTE DEFINITIONS IN routes/api.php
+        </a>
+
+        <a href="#section-8-custom-api-rate-limiting-throttling" class="toc-link block py-1.5 text-xs text-gray-500 hover:text-indigo-600 dark:text-gray-400 dark:hover:text-indigo-400 truncate transition-all duration-150" data-target="section-8-custom-api-rate-limiting-throttling">
+            8. CUSTOM API RATE LIMITING &amp; THROTTLING
+        </a>
+
+        <a href="#section-9-testing-the-api-with-curl-automated-tests" class="toc-link block py-1.5 text-xs text-gray-500 hover:text-indigo-600 dark:text-gray-400 dark:hover:text-indigo-400 truncate transition-all duration-150" data-target="section-9-testing-the-api-with-curl-automated-tests">
+            9. TESTING THE API WITH CURL &amp; AUTOMATED TESTS
+        </a>
+
+        <a href="#section-1-register-user-via-curl" class="toc-link block py-1.5 text-xs text-gray-500 hover:text-indigo-600 dark:text-gray-400 dark:hover:text-indigo-400 truncate transition-all duration-150" data-target="section-1-register-user-via-curl">
+            1. Register user via cURL:
+        </a>
+
+        <a href="#section-2-make-an-authenticated-request" class="toc-link block py-1.5 text-xs text-gray-500 hover:text-indigo-600 dark:text-gray-400 dark:hover:text-indigo-400 truncate transition-all duration-150" data-target="section-2-make-an-authenticated-request">
+            2. Make an Authenticated Request:
+        </a>
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <!-- Floating Back to Top Button -->
+    <button id="back-to-top" onclick="window.scrollTo({top: 0, behavior: 'smooth'})" class="fixed bottom-6 right-6 p-3 rounded-full bg-indigo-600 text-white shadow-2xl hover:bg-indigo-700 transition-all opacity-0 pointer-events-none translate-y-3 z-40 focus:outline-none flex items-center justify-center group" title="Back to top">
+        <svg class="w-5 h-5 group-hover:-translate-y-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 10l7-7m0 0l7 7m-7-7v18"></path></svg>
+    </button>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-php.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-json.min.js"></script>
+    <script>
+        // Dark Mode Logic
+        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+            document.getElementById('theme-icon').textContent = '☀️';
+        } else {
+            document.documentElement.classList.remove('dark');
+            document.getElementById('theme-icon').textContent = '🌙';
+        }
+
+        function toggleDarkMode() {
+            const isDark = document.documentElement.classList.toggle('dark');
+            localStorage.theme = isDark ? 'dark' : 'light';
+            document.getElementById('theme-icon').textContent = isDark ? '☀️' : '🌙';
+        }
+
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('-translate-x-full');
+        }
+
+        function copyCode(btn) {
+            const codeEl = btn.closest('.group').querySelector('code');
+            navigator.clipboard.writeText(codeEl.innerText).then(() => {
+                const span = btn.querySelector('span');
+                const orig = span.textContent;
+                span.textContent = 'Copied! ✓';
+                btn.classList.add('bg-emerald-600', 'text-white');
+                btn.classList.remove('bg-slate-800/90', 'hover:bg-slate-700');
+                setTimeout(() => {
+                    span.textContent = orig;
+                    btn.classList.remove('bg-emerald-600', 'text-white');
+                    btn.classList.add('bg-slate-800/90', 'hover:bg-slate-700');
+                }, 2000);
+            });
+        }
+
+        // Reading Progress Bar & Back-to-Top Toggle
+        const btt = document.getElementById('back-to-top');
+        const progressBar = document.getElementById('scroll-progress');
+        window.addEventListener('scroll', () => {
+            const winScroll = document.documentElement.scrollTop || document.body.scrollTop;
+            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrolled = height > 0 ? (winScroll / height) * 100 : 0;
+            if (progressBar) progressBar.style.width = scrolled + '%';
+
+            if (btt) {
+                if (winScroll > 400) {
+                    btt.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-3');
+                    btt.classList.add('opacity-100', 'translate-y-0');
+                } else {
+                    btt.classList.add('opacity-0', 'pointer-events-none', 'translate-y-3');
+                    btt.classList.remove('opacity-100', 'translate-y-0');
+                }
+            }
+        });
+
+        // Active TOC ScrollSpy using IntersectionObserver
+        const tocLinks = document.querySelectorAll('.toc-link');
+        const headingElements = document.querySelectorAll('div[id]');
+        if (tocLinks.length > 0 && headingElements.length > 0) {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const id = entry.target.getAttribute('id');
+                        if (!id) return;
+                        tocLinks.forEach(link => {
+                            if (link.getAttribute('href') === '#' + id) {
+                                link.classList.add('text-indigo-600', 'dark:text-indigo-400', 'font-bold', 'border-l-2', 'border-indigo-600', '-ml-[14px]', 'pl-3', 'bg-indigo-50/70', 'dark:bg-indigo-950/60', 'rounded-r');
+                                link.classList.remove('text-gray-500', 'dark:text-gray-400');
+                            } else {
+                                link.classList.remove('text-indigo-600', 'dark:text-indigo-400', 'font-bold', 'border-l-2', 'border-indigo-600', '-ml-[14px]', 'pl-3', 'bg-indigo-50/70', 'dark:bg-indigo-950/60', 'rounded-r');
+                                link.classList.add('text-gray-500', 'dark:text-gray-400');
+                            }
+                        });
+                    }
+                });
+            }, { rootMargin: '0px 0px -75% 0px' });
+
+            headingElements.forEach(el => observer.observe(el));
+        }
+    </script>
+</body>
+</html>

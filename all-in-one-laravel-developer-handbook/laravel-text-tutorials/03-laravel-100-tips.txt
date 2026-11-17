@@ -1,0 +1,2572 @@
+::1) Initial env setup::
+
+a)change APP_NAME=Laravel to APP_NAME="Laravel admin blog ecommerce"
+
+b)for APP_KEY= first gererate key by the following command
+generate secret keys:
+php artisan key:generate --show
+php artisan key:generate --ansi
+
+c)for product server change APP_DEBUG=true to APP_DEBUG=false
+
+d) for image to be properly displayed first change
+APP_URL=http:http://localhost   to 
+APP_URL=http://127.0.0.1:8000
+and then
+php artisan storage:link for uploading images in the public folder
+and create the symbolic link
+
+e) for database setup:
+i) goto phpMyAdmin and login with your username and password
+ii) create database named "larajet_admin_blog_ecomm"
+iii) now change 
+DB_CONNECTION=sqlite
+# DB_HOST=127.0.0.1
+# DB_PORT=3306
+# DB_DATABASE=laravel
+# DB_USERNAME=root
+# DB_PASSWORD=
+
+to 
+
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=admin_blog_ecomm
+DB_USERNAME=root
+DB_PASSWORD=654321
+
+f) Syntax error or access violation: 1071 Specified key was too long
+[SQLSTATE[42000]: Syntax error or access violation: 1071 Specified key was too long; max key length is 1000 bytes (SQL: alter table users add unique users_email_unique(email))]
+
+The solution was to add this line in the boot() method of the AppServiceProvider :
+use Illuminate\Support\Facades\Schema;
+Schema::defaultStringLength(191);
+ and copy these code for bootstrap paginator 
+Paginator::useBootstrap();
+
+g) SQLSTATE[HY000] [1045] Access denied for user 'root'@'localhost' (using password: NO) (Connection: mysql, SQL: select * from `sessions` where `id` = c4NlscyQl7rpeePfYWSS2okMtQgNGHbkdiKcg0HG limit 1)
+
+a. Add in .env
+DB_PASSWORD='your database password'
+
+b. goto config>database.php and then change your password
+i) 'default' => env('DB_CONNECTION', 'mysql'),
+ii) 'password' => env('DB_PASSWORD', 'your database password'),
+
+c.You also need to update the config/database.php file for mysql connections from 'engine' => null, to 'engine' => 'InnoDB',
+
+h)LARAVEL migration first drop all table and then seed by seeder in one step
+php artisan migrate:fresh --seed
+
+
+:: Laravel Tips :1 ::
+Don't use any route name(uri name) which is matched with any folder name in /public directory[gives not found error]
+
+:: Laravel Tips :2 ::
+Short attribute syntax for Blade Components::
+Available from Laravel 9.32.
+
+Current syntax:
+<x-profile :user-id="$userId"></x-profile>
+
+Short syntax:
+<x-profile :$userId></x-profile>
+
+:: Laravel Tips :3 ::
+php artisan make:model Category -mcr
+This will create Model named Category, migration, Controller with resource controller 
+with default methods "index, create, show, edit, update, store, destroy".
+Resource controller(for crud action) it will create all the crud methods like 
+index(), create(), store(), show(), edit(), update(), destroy()
+
+:: Laravel Tips :4 ::
+Laravel controller types
+
+1.Basic controller
+php artisan make:controller PostController
+
+2.Single action controller(for only one method in the controller)
+php artisan make:controller PostController --invokable
+
+3. Resource controller(for crud action) it will create all the crud methods like 
+index(), create(), store(), show(), edit(), update(), destroy() 
+
+php artisan make:controller PostController --resource
+and route will be Route::resource('posts', PostController::class);
+
+all in one:
+php artisan make:model Post --controller --resource
+or php artisan make:model Post -mcr
+
+:: Laravel Tips :5 ::
+nested route
+Route::resource('users.comments', CommentController::class)->shallow();
+
+Route::resource('posts', PostController::class)->only(['create','show']);
+Route::resource('posts', PostController::class)->except(['create','show']);
+
+for custom route name:
+Route::resource('posts', PostController::class)->names(['create'=>'posts.build','show'=>'posts.view']);
+
+multiple resource controller:
+
+Route::resource([
+'users'=> UserController::class,
+'posts'=> PostController::class
+]);
+
+:: Laravel Tips :6 ::
+for route list(all route defined in Laravel)
+php artisan route:list
+
+for specific route use the following command:
+php artisan route:list --name=posts
+
+:: Laravel Tips :7 ::
+created_at and updated_at can be omitted by using
+public $timestamp=false; in your model
+
+:: Laravel Tips :8 ::
+Laravel stubs(class template for all class)
+php artisan stub:publish
+
+:: Laravel Tips :9 ::
+Laravel migrations command:
+a) create tables
+php artisan make:migration create_tests_table
+php artisan make:migration "add column after password in admins table"
+
+b)migrate specific table:
+php artisan migrate --path=/database/migrations/2020_09_21_141958_create_tests_table.php
+
+c)LARAVEL migration first drop all table and then seed by seeder in one step
+php artisan migrate:fresh --seed
+
+d)for first time migration
+php artisan migrate
+
+e)php artisan migrate:reset
+
+f) php artisan migrate:rollback --step 3
+
+g) php artisan migrate:refresh
+
+:: Laravel Tips :10 ::
+php artisan vendor:publish
+You use vendor:publish to copy configurable items to your application code base such that any changes you make will not keep being lost.
+
+vendor:publish command used to copy few configuration file in your application from vendor package file.Like you are using a package where need to create a table on database and need to store few demo data.That time your packages will keep database schema and seeding and when you run vendor:publish those schema and seeding file will copy in your application.After that you just run php artisan migrate and php artisan db:seed
+
+:: Laravel Tips :11 ::
+php artisan make:policy UserPolicy -m User
+
+:: Laravel Tips :12 ::
+create factory if the model already has the traits
+"use HasFactory"
+php artisan make:factory Category
+
+if category is created earlier by
+php artisan make:model Category -m
+where -m is used to create migration
+
+This will create Category seeder
+php artisan make:seeder CategorySeeder
+
+This will seed individual database seeder named "CategorySeeder"
+php artisan db:seed CategorySeeder --force
+
+:: Laravel Tips :13 ::
+By these command 
+php artisan make:view layouts.admin-layout
+php artisan make:view layouts.user-layout
+php artisan make:view layouts.home-layout
+php artisan make:view layouts.blog-layout
+
+four blade files are created in 
+project_dir\resources\views\layouts\admin-layout.blade.php
+project_dir\resources\views\layouts\user-layout.blade.php
+project_dir\resources\views\layouts\home-layout.blade.php
+project_dir\resources\views\layouts\blog-layout.blade.php
+
+:: Laravel Tips :14 ::
+for template partials
+php artisan make:view admin.partials.head
+php artisan make:view admin.partials.header
+php artisan make:view admin.partials.sidebar
+php artisan make:view admin.partials.content
+php artisan make:view admin.partials.footer
+
+php artisan make:view user.partials.head
+php artisan make:view user.partials.header
+php artisan make:view user.partials.sidebar
+php artisan make:view user.partials.content
+php artisan make:view user.partials.footer
+
+php artisan make:view blog.partials.head
+php artisan make:view blog.partials.header
+php artisan make:view blog.partials.sidebar
+php artisan make:view blog.partials.content
+php artisan make:view blog.partials.footer
+
+php artisan make:view home.partials.head
+php artisan make:view home.partials.header
+php artisan make:view home.partials.sidebar
+php artisan make:view home.partials.content
+php artisan make:view home.partials.footer
+
+and
+php artisan make:view admin
+php artisan make:view user
+php artisan make:view blog
+php artisan make:view home
+
+:: Laravel Tips :15 ::
+In the above situation, main template file will be admin-layout.blade.php in case of admin which will contain the following:
+
+<!-- head start -->
+@include('admin.partials.head')
+<!-- head end -->
+
+<!-- header start -->
+@include('admin.partials.header')
+<!-- header end -->
+
+<!-- sidebar start -->
+@include('admin.partials.sidebar')
+<!-- sidebar end -->
+
+<!-- main content start -->
+@yield('content')
+<!-- main content end -->
+
+<!-- footer start -->
+@include('admin.partials.footer')
+<!-- footer end -->>
+
+and content part will contain the @yield('content') part
+
+
+:: Laravel Tips :16 ::
+Now, the Laravel render the view file located in 
+project_dir\resources\views\admin.blade.php
+as follows:
+
+@extends('layouts.admin-layout')
+@section('title', 'Admin Template')
+@section('content')
+Here, the text is to be injected
+@endsection
+
+Here on all the admin panel menu link follow the above template
+
+:: Laravel Tips :17 ::
+This will seed all the database seeder
+php artisan db:seed
+
+This will migrate all the migration to database along with DatabaseSeeder
+php artisan migrate:fresh --seed
+
+if database seeding is not possible then use the --force flag
+php artisan db:seed --force
+
+:: Laravel Tips :18 ::
+Model, Controller, Resource, Factory and Seeder all in one:
+php artisan make:model Author -mcr --factory -s
+
+
+examples:
+php artisan make:model Category -mcr --factory -s
+php artisan make:model Comment -mcr --factory -s
+php artisan make:model Tag -mcr --factory -s
+php artisan make:model Picture -mcr --factory -s
+php artisan make:model Author -mcr --factory -s
+php artisan make:model CommentReply -mcr --factory -s
+php artisan make:model Post -mcr --factory -s
+php artisan make:model PostTag -mcr --factory -s
+
+php artisan migrate:fresh --seed
+
+:: Laravel Tips :19 ::
+Components
+Components and slots provide similar benefits to sections, layouts, and includes; however, some may find the mental model of components and slots easier to understand. There are two approaches to writing components: class based components and anonymous components.
+
+To create a class based component, you may use the make:component Artisan command. To illustrate how to use components, we will create a simple Alert component. The make:component command will place the component in the app/View/Components directory:
+
+php artisan make:component Alert
+
+The make:component command will also create a view template for the component. The view will be placed in the resources/views/components directory. When writing components for your own application, components are automatically discovered within the app/View/Components directory and resources/views/components directory, so no further component registration is typically required.
+
+You may also create components within subdirectories:
+
+php artisan make:component Forms/Input
+
+The command above will create an Input component in the app/View/Components/Forms directory and the view will be placed in the resources/views/components/forms directory.
+
+If you would like to create an anonymous component (a component with only a Blade template and no class), you may use the --view flag when invoking the make:component command:
+
+php artisan make:component forms.input --view
+
+The command above will create a Blade file at resources/views/components/forms/input.blade.php which can be rendered as a component via <x-forms.input />.
+
+
+
+Only compoment without class
+ php artisan make:component forms.label --view
+ php artisan make:component forms.form --view
+ php artisan make:component forms.button --view
+ php artisan make:component forms.error --view
+ php artisan make:component forms.field --view
+ php artisan make:component forms.input --view
+ php artisan make:component forms.textarea --view
+ php artisan make:component forms.select --view
+ php artisan make:component forms.option --view
+
+:: Laravel Tips :20 ::
+To generate the controller inside the Admin folder (i.e., App\Http\Controllers\Admin\AuthorController), you can specify the full namespace path when using the make:model command. Here's how you can do it:
+php artisan make:model Author -mcr --factory -s --controller=Admin/AuthorController
+
+Alternatively, if you've already created the model and just want to generate the controller in the Admin namespace, you can run:
+php artisan make:controller Admin/AuthorController --resource --model=Author
+
+This will create a resource controller at app/Http/Controllers/Admin/AuthorController.php and link it to the Author model.
+
+
+:: Laravel Tips :21 ::
+You're absolutely right — in Laravel, the `--view` option for `php artisan make:component` is a **flag**, not a key-value pair. That means you should use it like this:
+
+```bash
+php artisan make:component HomeLayout --view
+```
+
+✅ This will create:
+- A Blade view at `resources/views/components/home-layout.blade.php`
+- No PHP class — it’s an **anonymous component**
+
+If you want to create a **class-based component with a custom view path**, Laravel doesn’t support that directly via the `--view` flag. Instead, you can:
+
+1. Run:
+   ```bash
+   php artisan make:component HomeLayout
+   ```
+
+2. Then manually move or rename the view file:
+   ```bash
+   mv resources/views/components/home-layout.blade.php resources/views/layouts/home.blade.php
+   ```
+
+3. And update the `render()` method in `HomeLayout.php`:
+
+   ```php
+   public function render()
+   {
+       return view('layouts.home');
+   }
+   ```
+
+Let me know if you want to turn this into a reusable layout system or register it with a custom tag like `<x-layout.home>` — I can help you wire that up too. 🧩✨
+
+:: Laravel Tips :22 ::
+Awesome — let’s wire up your `<x-layout.home>` tag so it works like a true reusable layout component in Laravel. Here's how to do it cleanly and elegantly:
+
+---
+
+### 🧱 1. Create the Layout Component
+
+```bash
+php artisan make:component Layout/HomeLayout
+```
+
+This creates:
+
+- `app/View/Components/Layout/HomeLayout.php`
+- `resources/views/components/layout/home-layout.blade.php`
+
+---
+
+### 🧠 2. Define the Layout View
+
+In `home-layout.blade.php`, add your base HTML structure and a slot:
+
+```blade
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ $title ?? 'My App' }}</title>
+    <link rel="stylesheet" href="{{ asset('css/app.css') }}">
+</head>
+<body>
+    <header>
+        <h1>My App</h1>
+        <nav>
+            <a href="/">Home</a> |
+            <a href="/about">About</a>
+        </nav>
+    </header>
+
+    <main>
+        {{ $slot }}
+    </main>
+
+    <footer>
+        <p>&copy; {{ date('Y') }} My App</p>
+    </footer>
+</body>
+</html>
+```
+
+---
+
+### 🧩 3. Use It in Any View
+
+In `resources/views/home.blade.php`:
+
+```blade
+<x-layout.home-layout>
+    <h2>Welcome to the Home Page</h2>
+    <p>This content is injected into the layout’s slot.</p>
+</x-layout.home-layout>
+```
+
+---
+
+### 🧬 4. Add Props (Optional)
+
+Want to pass a dynamic title?
+
+In `HomeLayout.php`:
+
+```php
+public string $title;
+
+public function __construct($title = 'My App')
+{
+    $this->title = $title;
+}
+```
+
+Then in your view:
+
+```blade
+<x-layout.home-layout title="Dashboard">
+    <h2>Dashboard</h2>
+</x-layout.home-layout>
+```
+
+---
+
+Now you’ve got a clean, reusable layout system with a custom tag that reads like poetry: `<x-layout.home-layout>`. Want to add nested slots, dark mode support, or Livewire compatibility next? I’m all in. 🧩✨🌙
+
+:: Laravel Tips :23 ::
+Great question — and the answer depends on your use case in Laravel. Let's break it down:
+
+---
+
+### 🔘 `@yield`: Best for Layouts
+
+- Use when you have a **layout file** (`layouts/app.blade.php`) and want child views to insert content.
+- Requires a matching `@section` in the child view.
+
+**Example:**
+
+_In `layouts/app.blade.php`:_
+
+```blade
+<body>
+    @yield('content')
+</body>
+```
+
+_In `home.blade.php`:_
+
+```blade
+@extends('layouts.app')
+
+@section('content')
+    <p>This is the homepage</p>
+@endsection
+```
+
+---
+
+### 🧩 `{{ $slot }}`: Best for Blade Components
+
+- Use inside a **Blade component**, like when using `<x-layout>` tags.
+- It's simpler, faster, and **doesn’t need section names** — just drop content inside the component.
+
+**Example:**
+
+_In `components/layout.blade.php`:_
+
+```blade
+<body>
+    {{ $slot }}
+</body>
+```
+
+_In your Blade file:_
+
+```blade
+<x-layout>
+    <p>This is the homepage</p>
+</x-layout>
+```
+
+---
+
+### 🧠 Which to Use?
+
+- **Use `@yield`** when extending traditional layouts.
+- **Use `{{ $slot }}`** when working with modern Blade components (like `<x-app-layout>`).
+
+Both are excellent tools — it’s just a matter of whether you prefer layout inheritance (`@extends/@section/@yield`) or the cleaner component approach (`<x-*>` with `$slot`).  
+
+If you're building reusable UIs or modern Laravel packages — **Blade components with slots shine** ✨. Want to explore nested slots or named slots too? I can show you some slick tricks.
+
+:: Laravel Tips :24 ::
+Let’s dive into the slick world of **named and nested slots** in Laravel Blade components — they’re like the Swiss Army knife of reusable UI design. 🧩
+
+---
+
+### 🎯 Named Slots: Targeted Content Injection
+
+Named slots let you pass multiple chunks of content into specific areas of a component.
+
+**Component (`card.blade.php`):**
+
+```blade
+<div class="card">
+    <div class="card-header">
+        {{ $header }}
+    </div>
+    <div class="card-body">
+        {{ $slot }}
+    </div>
+</div>
+```
+
+**Usage:**
+
+```blade
+<x-card>
+    <x-slot name="header">
+        <h2>Dashboard</h2>
+    </x-slot>
+
+    <p>Welcome back, user!</p>
+</x-card>
+```
+
+---
+
+### 🧬 Nested Slots: Components Inside Components
+
+You can nest components and pass slots down the tree.
+
+**Parent Component (`modal.blade.php`):**
+
+```blade
+<div class="modal">
+    <div class="modal-header">{{ $title }}</div>
+    <div class="modal-body">{{ $slot }}</div>
+</div>
+```
+
+**Child Component (`confirm-delete.blade.php`):**
+
+```blade
+<x-modal title="Delete Item">
+    <p>Are you sure you want to delete this?</p>
+</x-modal>
+```
+
+You can even pass **named slots into nested components**, like a `<x-slot name="footer">` inside a modal.
+
+---
+
+### 🧠 Bonus Trick: Default Fallbacks
+
+You can define default content for named slots:
+
+```blade
+{{ $header ?? 'Default Title' }}
+```
+
+---
+
+Want to go even deeper with **dynamic slot names**, **slot components**, or **slot macros**? I’ve got a whole toolbox ready to unpack. Just say the word. 🛠️✨
+
+:: Laravel Tips :25 ::
+Let’s unlock some next-level Blade wizardry with **dynamic slot names**, **slot components**, and **slot macros** — these are the kinds of tricks that make your Laravel UI architecture feel like magic. 🧙‍♂️✨
+
+---
+
+### 🧩 1. Dynamic Slot Names
+
+You can dynamically name a slot using `:name` and a variable:
+
+```blade
+@php $slotName = 'footer'; @endphp
+
+<x-slot :name="$slotName">
+    <p>This is the dynamic footer slot.</p>
+</x-slot>
+```
+
+In your component:
+
+```blade
+<div class="card">
+    {{ $header ?? '' }}
+    <div class="body">{{ $slot }}</div>
+    {{ $footer ?? '' }}
+</div>
+```
+
+This lets you conditionally inject content into different areas of a component — great for flexible layouts or dashboards.
+
+---
+
+### 🧬 2. Slot Components (Composable Slots)
+
+You can pass entire components into slots:
+
+```blade
+<x-modal>
+    <x-slot name="header">
+        <x-alert type="warning">Heads up!</x-alert>
+    </x-slot>
+
+    <p>This is the modal body.</p>
+</x-modal>
+```
+
+This is especially powerful when your slot content needs to be styled or interactive — like buttons, alerts, or nested modals.
+
+---
+
+### 🧠 3. Slot Macros (Reusable Slot Templates)
+
+While Blade doesn’t have native “slot macros,” you can simulate them using components or includes:
+
+```blade
+{{-- resources/views/components/slots/alert.blade.php --}}
+<div class="alert alert-{{ $type }}">
+    {{ $slot }}
+</div>
+```
+
+Then use it inside a slot:
+
+```blade
+<x-slot name="header">
+    <x-slots.alert type="info">
+        Welcome back!
+    </x-slots.alert>
+</x-slot>
+```
+
+This keeps your slot content clean, reusable, and DRY.
+
+---
+
+Want to go even further with **slot defaults**, **slot conditionals**, or **slot-driven layouts**? I’ve got a whole Blade spellbook ready to open. 🪄📘 Just say the word.
+
+:: Laravel Tips :26 ::
+Absolutely — let’s build a clean, reusable **form component system** in Laravel using Blade components. This will make your inputs, buttons, labels, and error messages consistent and DRY across your app. Here's how to set it up:
+
+---
+
+### 🧱 1. Create Blade Components
+
+Run these Artisan commands:
+
+```bash
+php artisan make:component Form/Input
+php artisan make:component Form/Label
+php artisan make:component Form/Error
+php artisan make:component Form/Button
+```
+
+---
+
+### ✨ 2. Define Each Component
+
+**`resources/views/components/form/input.blade.php`**
+
+```blade
+<input
+    {{ $attributes->merge([
+        'class' => 'border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm w-full'
+    ]) }}
+>
+```
+
+**`resources/views/components/form/label.blade.php`**
+
+```blade
+<label {{ $attributes->merge(['class' => 'block font-medium text-sm text-gray-700']) }}>
+    {{ $slot }}
+</label>
+```
+
+**`resources/views/components/form/error.blade.php`**
+
+```blade
+@error($name)
+    <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
+@enderror
+```
+
+**`resources/views/components/form/button.blade.php`**
+
+```blade
+<button {{ $attributes->merge(['class' => 'px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700']) }}>
+    {{ $slot }}
+</button>
+```
+
+---
+
+### 🧪 3. Use in Your Blade Form
+
+```blade
+<form method="POST" action="/submit">
+    @csrf
+
+    <x-form.label for="email">Email</x-form.label>
+    <x-form.input id="email" name="email" type="email" value="{{ old('email') }}" required />
+    <x-form.error name="email" />
+
+    <x-form.label for="password">Password</x-form.label>
+    <x-form.input id="password" name="password" type="password" required />
+    <x-form.error name="password" />
+
+    <x-form.button type="submit">Submit</x-form.button>
+</form>
+```
+
+---
+
+### 🧠 Bonus: Add Default Props
+
+In `Form/Error.php`, add:
+
+```php
+public string $name;
+
+public function __construct($name)
+{
+    $this->name = $name;
+}
+```
+
+This lets you pass `name="email"` and automatically bind the error message.
+
+---
+
+Now you’ve got a modular, beautiful, and maintainable form system. Want to add support for icons, validation states, or Livewire bindings next? I’ve got ideas for days. 🧩✨💡
+
+:: Laravel Tips :27 ::
+
+Let’s level up your reusable form components to support **all common form attributes** — like `placeholder`, `required`, `disabled`, `autocomplete`, `maxlength`, `min`, `max`, `step`, `pattern`, and more — while keeping them clean and flexible. Here's how to do it:
+
+---
+
+### 🧱 1. Update Your Input Component
+
+**`resources/views/components/form/input.blade.php`**
+
+```blade
+<input
+    {{ $attributes->merge([
+        'class' => 'border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm w-full'
+    ]) }}
+>
+```
+
+✅ This allows you to pass any valid HTML attribute directly:
+
+```blade
+<x-form.input
+    name="email"
+    type="email"
+    placeholder="Enter your email"
+    required
+    autocomplete="email"
+    maxlength="255"
+/>
+```
+
+---
+
+### 🧠 2. Add Support for `value` and `old()` Binding
+
+To make it smarter, you can bind the value automatically:
+
+```blade
+@props(['name'])
+
+<input
+    name="{{ $name }}"
+    value="{{ old($name) }}"
+    {{ $attributes->merge([
+        'class' => 'border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm w-full'
+    ]) }}
+>
+```
+
+Now you can just write:
+
+```blade
+<x-form.input name="username" placeholder="Username" required />
+```
+
+…and it will auto-fill with `old('username')` on validation errors.
+
+---
+
+### 🧩 3. Extend to Other Inputs
+
+You can create similar components for:
+
+- **Textarea** (`x-form.textarea`)
+- **Select** (`x-form.select`)
+- **Checkbox** (`x-form.checkbox`)
+- **Radio** (`x-form.radio`)
+- **File Upload** (`x-form.file`)
+
+Each one can use the same `{{ $attributes->merge([...]) }}` pattern to support all HTML attributes.
+
+---
+
+Would you like me to scaffold all of these components for you — with smart defaults, error handling, and Livewire compatibility? I can build you a full form kit in minutes. 🧰✨
+
+:: Laravel Tips :28 ::
+Let’s build a full **form component suite** in Laravel — reusable, elegant, and packed with smart defaults and error handling. You’ll be able to drop in inputs, selects, checkboxes, and more with minimal markup and maximum consistency. Here’s your scaffold:
+
+---
+
+### 🧱 1. Component Structure
+
+Create a folder for form components:
+
+```bash
+mkdir -p resources/views/components/form
+```
+
+Then generate these components:
+
+```bash
+php artisan make:component Form/Input
+php artisan make:component Form/Textarea
+php artisan make:component Form/Select
+php artisan make:component Form/Checkbox
+php artisan make:component Form/Radio
+php artisan make:component Form/Label
+php artisan make:component Form/Error
+php artisan make:component Form/Button
+```
+
+---
+
+### ✨ 2. Smart Input Component (`input.blade.php`)
+
+```blade
+@props(['name', 'type' => 'text'])
+
+<input
+    name="{{ $name }}"
+    id="{{ $attributes->get('id', $name) }}"
+    type="{{ $type }}"
+    value="{{ old($name) }}"
+    {{ $attributes->merge([
+        'class' => 'w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500'
+    ]) }}
+>
+```
+
+---
+
+### 🧠 3. Error Component (`error.blade.php`)
+
+```blade
+@props(['name'])
+
+@error($name)
+    <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
+@enderror
+```
+
+---
+
+### 🧩 4. Label Component (`label.blade.php`)
+
+```blade
+@props(['for'])
+
+<label for="{{ $for }}" class="block text-sm font-medium text-gray-700">
+    {{ $slot }}
+</label>
+```
+
+---
+
+### 📝 5. Textarea, Select, Checkbox, Radio, Button
+
+Each follows the same pattern — here’s a quick example for `select.blade.php`:
+
+```blade
+@props(['name', 'options' => []])
+
+<select
+    name="{{ $name }}"
+    id="{{ $attributes->get('id', $name) }}"
+    {{ $attributes->merge(['class' => 'w-full border-gray-300 rounded-md shadow-sm']) }}
+>
+    @foreach ($options as $value => $label)
+        <option value="{{ $value }}" @selected(old($name) == $value)>
+            {{ $label }}
+        </option>
+    @endforeach
+</select>
+```
+
+---
+
+### 🧪 6. Usage Example
+
+```blade
+<x-form.label for="email">Email</x-form.label>
+<x-form.input name="email" type="email" required />
+<x-form.error name="email" />
+
+<x-form.label for="role">Role</x-form.label>
+<x-form.select name="role" :options="['admin' => 'Admin', 'user' => 'User']" />
+<x-form.error name="role" />
+
+<x-form.button type="submit">Submit</x-form.button>
+```
+
+---
+
+This setup gives you a **fully modular, accessible, and error-aware form system**. Want to add Livewire support, floating labels, or Tailwind themes next? I’ve got blueprints for all of it. 🧰✨
+
+:: Laravel Tips :29 ::
+Let’s theme up your form components with **Tailwind CSS** so they’re not just reusable — they’re beautiful, consistent, and easy to customize across light/dark modes or brand palettes. Here’s how to do it right:
+
+---
+
+### 🎨 1. Use Tailwind’s `@apply` for Theming
+
+Create a base form theme in your CSS (e.g. `resources/css/components/forms.css`):
+
+```css
+.input-base {
+  @apply w-full border rounded-md shadow-sm px-3 py-2 text-sm;
+  @apply border-gray-300 focus:border-indigo-500 focus:ring-indigo-500;
+}
+
+.label-base {
+  @apply block text-sm font-medium text-gray-700;
+}
+
+.error-text {
+  @apply text-sm text-red-600 mt-1;
+}
+
+.button-primary {
+  @apply bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700;
+}
+```
+
+Then in your Blade components:
+
+```blade
+<input {{ $attributes->merge(['class' => 'input-base']) }}>
+```
+
+---
+
+### 🌗 2. Add Dark Mode Support
+
+Tailwind makes this easy:
+
+```css
+.input-base {
+  @apply bg-white text-gray-900 dark:bg-gray-800 dark:text-gray-100;
+  @apply border-gray-300 dark:border-gray-600;
+}
+```
+
+Enable dark mode in `tailwind.config.js`:
+
+```js
+module.exports = {
+  darkMode: 'class', // or 'media'
+  // ...
+}
+```
+
+Then toggle it with `<html class="dark">` or via JavaScript.
+
+---
+
+### 🧩 3. Support Multiple Themes (Optional)
+
+Use Tailwind’s `theme()` function and custom colors:
+
+```js
+// tailwind.config.js
+theme: {
+  extend: {
+    colors: {
+      brand: {
+        DEFAULT: '#4f46e5',
+        light: '#6366f1',
+        dark: '#4338ca',
+      },
+    },
+  },
+}
+```
+
+Then in your CSS:
+
+```css
+.button-primary {
+  @apply bg-brand text-white hover:bg-brand-dark;
+}
+```
+
+---
+
+### 🧠 Bonus: Extract to a Plugin or Package
+
+If you want to reuse this across projects, extract your form components and styles into a Laravel package or Tailwind plugin. I can help you scaffold that too.
+
+Want to add floating labels, input icons, or Alpine.js interactivity next? Let’s make your forms feel like magic. 🪄✨
+
+:: Laravel Tips :30 ::
+Eloquent Eager Loading & Preventing the N+1 Query Problem
+
+The N+1 problem occurs when fetching a list of models and then querying a relationship in a loop:
+// BAD: 1 query for posts + N queries for author (N+1 queries!)
+$posts = Post::all();
+foreach ($posts as $post) {
+    echo $post->author->name;
+}
+
+// GOOD: Always eager load relationships using with() (Only 2 queries!)
+$posts = Post::with('author')->get();
+
+// Eager load multiple relationships & nested relations:
+$posts = Post::with(['author', 'category', 'comments.user'])->get();
+
+// Lazy Eager Loading (if you already have the collection):
+$posts->load('author');
+
+// PRO TIP: Automatically prevent lazy loading in development:
+// Add to app/Providers/AppServiceProvider.php in boot():
+Model::preventLazyLoading(! app()->isProduction());
+
+
+:: Laravel Tips :31 ::
+Eloquent Local Scopes & Global Scopes
+
+Local Scopes allow you to define common, reusable query constraints on your model:
+// In app/Models/Post.php:
+public function scopePublished(Builder $query): void
+{
+    $query->where('is_published', true);
+}
+
+public function scopePopular(Builder $query, int $minViews = 1000): void
+{
+    $query->where('views_count', '>=', $minViews);
+}
+
+// Usage in Controllers:
+$posts = Post::published()->popular(5000)->latest()->get();
+
+Global Scopes apply constraints to all queries on the model:
+// In app/Models/User.php:
+protected static function booted(): void
+{
+    static::addGlobalScope('active', function (Builder $builder) {
+        $builder->where('is_active', true);
+    });
+}
+
+// To query without the global scope:
+$allUsers = User::withoutGlobalScope('active')->get();
+
+
+:: Laravel Tips :32 ::
+Modern Eloquent Accessors and Mutators (Attribute::make)
+
+Modern Laravel uses Attribute::make() for clean, typed accessors and mutators:
+// In app/Models/User.php:
+use Illuminate\Database\Eloquent\Casts\Attribute;
+
+protected function firstName(): Attribute
+{
+    return Attribute::make(
+        get: fn (string $value) => ucfirst($value),
+        set: fn (string $value) => strtolower(trim($value)),
+    );
+}
+
+// Combined Virtual Attribute (Full Name):
+protected function fullName(): Attribute
+{
+    return Attribute::make(
+        get: fn (mixed $value, array $attributes) => $attributes['first_name'] . ' ' . $attributes['last_name'],
+    );
+}
+
+// Cached Accessor (for expensive calculations):
+protected function heavyScore(): Attribute
+{
+    return Attribute::make(
+        get: fn () => $this->calculateHeavyScore(),
+    )->shouldCache();
+}
+
+
+:: Laravel Tips :33 ::
+Eloquent Model Events & Observers
+
+Observers group event listeners for an Eloquent model (creating, created, updating, updated, deleting, deleted):
+Command to create observer:
+php artisan make:observer PostObserver --model=Post
+
+// In app/Observers/PostObserver.php:
+public function creating(Post $post): void
+{
+    if (empty($post->slug)) {
+        $post->slug = Str::slug($post->title);
+    }
+}
+
+// In Laravel 11/12/13, register the observer directly in the Model using attributes:
+use App\Observers\PostObserver;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
+
+#[ObservedBy([PostObserver::class])]
+class Post extends Model
+{
+    // ...
+}
+
+
+:: Laravel Tips :34 ::
+Eloquent Relationships & Morph Maps
+
+Define clear relationships and enforce morph maps:
+// 1. One to Many:
+public function comments(): HasMany
+{
+    return $this->hasMany(Comment::class);
+}
+
+// 2. Many to Many with Pivot Data:
+public function roles(): BelongsToMany
+{
+    return $this->belongsToMany(Role::class)
+                ->withPivot('assigned_by')
+                ->withTimestamps();
+}
+
+// 3. Polymorphic Relations:
+public function image(): MorphOne
+{
+    return $this->morphOne(Image::class, 'imageable');
+}
+
+// BEST PRACTICE: Enforce Morph Map in AppServiceProvider::boot():
+// Prevents storing raw PHP class names in your database 'imageable_type' column:
+Relation::enforceMorphMap([
+    'post' => \App\Models\Post::class,
+    'user' => \App\Models\User::class,
+]);
+
+
+:: Laravel Tips :35 ::
+Eloquent Subquery Selects (addSelect) for High Performance
+
+Instead of joining heavy tables or looping to fetch related counts, select subqueries directly:
+// Fetch users with the title of their most recent post:
+$users = User::addSelect(['last_post_title' => Post::select('title')
+    ->whereColumn('user_id', 'users.id')
+    ->latest()
+    ->limit(1)
+])->get();
+
+foreach ($users as $user) {
+    echo $user->last_post_title; // Available as a direct attribute!
+}
+
+// Subquery Ordering:
+$users = User::orderByDesc(
+    Post::select('created_at')
+        ->whereColumn('user_id', 'users.id')
+        ->latest()
+        ->limit(1)
+)->get();
+
+
+:: Laravel Tips :36 ::
+Chunking vs Cursor vs Lazy Collections (Handling Millions of Records)
+
+When processing huge datasets, never use all() or get() to prevent memory exhaustion!
+
+1. chunk(): Loads records in batches:
+User::chunk(500, function ($users) {
+    foreach ($users as $user) {
+        $user->notify(new MonthlyNewsletter);
+    }
+});
+
+2. chunkById(): ALWAYS use chunkById() when updating rows inside the loop:
+User::where('status', 'pending')->chunkById(200, function ($users) {
+    foreach ($users as $user) {
+        $user->update(['status' => 'processed']);
+    }
+});
+
+3. cursor(): Uses PHP PDO generator; loads ONE model at a time into memory:
+foreach (Order::cursor() as $order) {
+    $order->generateInvoice();
+}
+
+
+:: Laravel Tips :37 ::
+Database Transactions (Automatic & Manual)
+
+Ensure all database operations succeed together or rollback completely if an error occurs:
+
+// Method 1: Automatic Transaction (Retries on deadlock)
+DB::transaction(function () {
+    $order = Order::create([...]);
+    $order->items()->createMany([...]);
+    $order->user->decrement('wallet_balance', $order->total);
+}, 3); // 3 attempts on deadlock
+
+// Method 2: Manual Transaction
+DB::beginTransaction();
+try {
+    $order = Order::create([...]);
+    $payment->process();
+    DB::commit();
+} catch (\Throwable $e) {
+    DB::rollBack();
+    report($e);
+    throw $e;
+}
+
+
+:: Laravel Tips :38 ::
+Eloquent Soft Deletes
+
+Safely delete records without removing them from database:
+1. In Migration:
+$table->softDeletes();
+
+2. In Model:
+use Illuminate\Database\Eloquent\SoftDeletes;
+
+class Post extends Model
+{
+    use SoftDeletes;
+}
+
+3. Querying:
+// Standard query excludes soft-deleted records:
+$posts = Post::all();
+
+// Include soft-deleted records:
+$posts = Post::withTrashed()->get();
+
+// Retrieve ONLY soft-deleted records:
+$deletedPosts = Post::onlyTrashed()->get();
+
+// Restore a soft-deleted record:
+$post->restore();
+
+// Permanently delete from database:
+$post->forceDelete();
+
+
+:: Laravel Tips :39 ::
+Eloquent Strict Mode (Catch Bugs Early in Development)
+
+In `app/Providers/AppServiceProvider.php` inside the `boot()` method:
+use Illuminate\Database\Eloquent\Model;
+
+public function boot(): void
+{
+    Model::shouldBeStrict(! $this->app->isProduction());
+}
+
+This enables three critical safeguards in local/testing:
+1. Prevents lazy loading (throws exception if N+1 query is detected).
+2. Prevents silently discarding attributes (throws exception if assigning a non-fillable field).
+3. Prevents accessing missing attributes (throws exception if trying to read a column not included in select()).
+
+
+:: Laravel Tips :40 ::
+Route Model Binding (Implicit, Custom Key, and Scoped)
+
+1. Implicit Binding:
+Route::get('/users/{user}', [UserController::class, 'show']);
+// In Controller:
+public function show(User $user) { ... }
+
+2. Binding by Custom Column (e.g. slug instead of id):
+Route::get('/posts/{post:slug}', [PostController::class, 'show']);
+
+3. Scoped Binding (Ensures child belongs to parent):
+Route::get('/users/{user}/posts/{post:slug}', [PostController::class, 'show'])->scopeBindings();
+// Throws 404 if post does not belong to user!
+
+4. Custom Missing Behavior:
+Route::get('/posts/{post:slug}', [PostController::class, 'show'])
+    ->missing(function (Request $request) {
+        return redirect()->route('posts.index')->with('error', 'Post not found.');
+    });
+
+
+:: Laravel Tips :41 ::
+Signed URLs & Temporary Signed URLs
+
+Create tamper-proof URLs for email verification, unsubscribe links, and downloads:
+// Generate a signed URL:
+$url = URL::signedRoute('unsubscribe', ['user' => $user->id]);
+
+// Generate a temporary signed URL (expires in 30 minutes):
+$url = URL::temporarySignedRoute(
+    'invoice.download',
+    now()->addMinutes(30),
+    ['order' => $order->id]
+);
+
+// Protect the route using the 'signed' middleware:
+Route::get('/invoice/download/{order}', [OrderController::class, 'download'])
+    ->name('invoice.download')
+    ->middleware('signed');
+
+// Or validate manually in controller:
+if (! $request->hasValidSignature()) {
+    abort(401, 'Invalid or expired link.');
+}
+
+
+:: Laravel Tips :42 ::
+Fallback Routes for Custom 404 & SPA Routing
+
+At the bottom of `routes/web.php`:
+// Custom 404 view:
+Route::fallback(function () {
+    return response()->view('errors.404', [], 404);
+});
+
+// Single Page Application (SPA / Vue / React) Catch-All:
+Route::fallback(function () {
+    return view('app');
+});
+
+
+:: Laravel Tips :43 ::
+Rate Limiting & Throttle Middleware
+
+Protect your application from brute-force attacks and API abuse:
+// Apply directly to routes (60 requests per 1 minute):
+Route::middleware('throttle:60,1')->group(function () {
+    Route::get('/api/search', [SearchController::class, 'index']);
+});
+
+// Define named rate limiter in AppServiceProvider::boot():
+use Illuminate\Cache\RateLimiting\Limit;
+use Illuminate\Support\Facades\RateLimiter;
+
+RateLimiter::for('api', function (Request $request) {
+    return $request->user()
+        ? Limit::perMinute(120)->by($request->user()->id)
+        : Limit::perMinute(30)->by($request->ip());
+});
+
+// Usage in Route:
+Route::middleware('throttle:api')->group(...);
+
+
+:: Laravel Tips :44 ::
+Form Request Validation & Custom Rules
+
+Generate dedicated Form Request:
+php artisan make:request StorePostRequest
+
+// In app/Http/Requests/StorePostRequest.php:
+public function authorize(): bool
+{
+    return true; // or return $this->user()->can('create', Post::class);
+}
+
+public function rules(): array
+{
+    return [
+        'title'        => ['required', 'string', 'max:255'],
+        'slug'         => ['required', 'string', 'unique:posts,slug'],
+        'category_id'  => ['required', 'exists:categories,id'],
+        'published_at' => ['nullable', 'date', 'after_or_equal:today'],
+    ];
+}
+
+// In Controller:
+public function store(StorePostRequest $request)
+{
+    $validated = $request->validated();
+    Post::create($validated);
+    return redirect()->route('posts.index')->with('success', 'Post created!');
+}
+
+
+:: Laravel Tips :45 ::
+Custom Blade Directives & Blade::if
+
+Create custom directives in `AppServiceProvider::boot()`:
+use Illuminate\Support\Facades\Blade;
+
+// 1. Currency Formatter:
+Blade::directive('money', function ($amount) {
+    return "<?php echo '$' . number_format($amount, 2); ?>";
+});
+
+// 2. Custom Conditionals (Blade::if):
+Blade::if('admin', function () {
+    return auth()->check() && auth()->user()->is_admin;
+});
+
+// Usage in Blade views:
+@money(49.99)  {{-- Output: $49.99 --}}
+
+@admin
+    <a href="/admin">Admin Dashboard</a>
+@else
+    <p>Welcome, Member</p>
+@endadmin
+
+
+:: Laravel Tips :46 ::
+Blade @forelse & @empty Loop Directives
+
+Write cleaner loops without checking count() or isEmpty():
+@forelse ($posts as $post)
+    <div class="post-card">
+        <h3>{{ $post->title }}</h3>
+        <p>{{ $post->excerpt }}</p>
+    </div>
+@empty
+    <div class="alert alert-info">
+        <p>No posts available at this time.</p>
+    </div>
+@endforelse
+
+// Powerful $loop variable inside loops:
+@foreach ($users as $user)
+    @if ($loop->first) <span>First User</span> @endif
+    @if ($loop->last) <span>Last User</span> @endif
+    <p>{{ $loop->iteration }}. {{ $user->name }} (Total: {{ $loop->count }})</p>
+@endforeach
+
+
+:: Laravel Tips :47 ::
+Blade @push and @stack for Modular Scripts and Styles
+
+Keep page-specific scripts and styles modular without bloating main layout:
+In `layouts/app.blade.php`:
+<head>
+    @stack('styles')
+</head>
+<body>
+    {{ $slot }}
+    @stack('scripts')
+</body>
+
+In child view or component:
+@push('styles')
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0/dist/css/select2.min.css" rel="stylesheet" />
+@endpush
+
+@push('scripts')
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0/dist/js/select2.min.js"></script>
+    <script>
+        $('#category-select').select2();
+    </script>
+@endpush
+
+
+:: Laravel Tips :48 ::
+Vite Asset Bundling with Laravel
+
+In `vite.config.js`:
+import { defineConfig } from 'vite';
+import laravel from 'laravel-vite-plugin';
+
+export default defineConfig({
+    plugins: [
+        laravel({
+            input: ['resources/css/app.css', 'resources/js/app.js'],
+            refresh: true,
+        }),
+    ],
+});
+
+In Blade layout:
+@vite(['resources/css/app.css', 'resources/js/app.js'])
+
+// Reference static assets with Vite:
+<img src="{{ Vite::asset('resources/images/logo.png') }}" alt="Logo">
+
+
+:: Laravel Tips :49 ::
+Cache Facade Best Practices & Atomic Locks
+
+// 1. Remember Cache (queries DB only if key expired or missing):
+$users = Cache::remember('active_users', now()->addHours(6), function () {
+    return User::where('is_active', true)->get();
+});
+
+// 2. Remember Forever:
+$settings = Cache::rememberForever('site_settings', fn () => Setting::all());
+
+// 3. Atomic Lock (Prevents Race Conditions / Duplicate processing):
+$lock = Cache::lock('process-payment-' . $order->id, 10);
+if ($lock->get()) {
+    // Process payment safely
+    $order->processPayment();
+    $lock->release();
+} else {
+    // Another process is already working on this order!
+}
+
+// 4. Cache Tags (Redis / Memcached):
+Cache::tags(['posts', 'blog'])->put('post-1', $post, 3600);
+Cache::tags('blog')->flush(); // Clears all cache tagged with 'blog'
+
+
+:: Laravel Tips :50 ::
+File Storage, Uploads, and Secure Downloads
+
+// 1. Store uploaded file in 'public' disk:
+$path = $request->file('avatar')->store('avatars', 'public');
+
+// 2. Custom filename:
+$path = $request->file('avatar')->storeAs('avatars', 'user-' . $user->id . '.jpg', 'public');
+
+// 3. Get public URL (after running php artisan storage:link):
+$url = Storage::url($path);
+
+// 4. Secure File Download:
+return Storage::disk('local')->download('invoices/invoice-101.pdf', 'Your_Invoice.pdf');
+
+// 5. Stream large file download:
+return response()->streamDownload(function () use ($pdfGenerator) {
+    echo $pdfGenerator->output();
+}, 'report.pdf');
+
+
+:: Laravel Tips :51 ::
+Temporary Cloud Storage URLs (AWS S3 / Cloudflare R2)
+
+When storing confidential documents on private S3 buckets:
+// Generate temporary download URL valid for 15 minutes:
+$signedUrl = Storage::disk('s3')->temporaryUrl(
+    'private/contracts/contract-01.pdf',
+    now()->addMinutes(15)
+);
+
+// Client-side direct presigned upload URL:
+$response = Storage::disk('s3')->temporaryUploadUrl(
+    'uploads/' . Str::uuid() . '.mp4',
+    now()->addMinutes(10)
+);
+
+
+:: Laravel Tips :52 ::
+Queues & Asynchronous Background Jobs
+
+Offload time-consuming tasks (sending emails, processing images):
+Command:
+php artisan make:job ProcessOrderInvoice
+
+// In app/Jobs/ProcessOrderInvoice.php:
+class ProcessOrderInvoice implements ShouldQueue
+{
+    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+
+    public function __construct(public Order $order) {}
+
+    public function handle(): void
+    {
+        // Heavy processing...
+    }
+}
+
+// Dispatching Jobs:
+ProcessOrderInvoice::dispatch($order);
+ProcessOrderInvoice::dispatch($order)->delay(now()->addMinutes(5));
+ProcessOrderInvoice::dispatch($order)->onQueue('high-priority');
+
+// Start Queue Worker in terminal:
+php artisan queue:work --tries=3 --timeout=90
+
+
+:: Laravel Tips :53 ::
+Queue Retries, Backoff, and Failed Jobs
+
+Configure failure handling on your job class:
+// In Job class:
+public int $tries = 5;
+public array $backoff = [10, 30, 60, 120]; // Exponential retry intervals in seconds
+
+public function failed(\Throwable $exception): void
+{
+    // Execute logic when job fails permanently:
+    Log::error('Invoice generation failed: ' . $exception->getMessage());
+}
+
+Artisan commands to inspect and retry failed jobs:
+php artisan queue:failed            // List all failed jobs
+php artisan queue:retry all         // Retry all failed jobs
+php artisan queue:retry <uuid>      // Retry specific job
+php artisan queue:flush             // Delete all failed jobs
+
+
+:: Laravel Tips :54 ::
+Job Batching (Parallel Job Processing)
+
+Run a group of jobs in parallel and track progress:
+1. Setup table:
+php artisan queue:batches-table
+php artisan migrate
+
+2. Dispatching Batch:
+use Illuminate\Bus\Batch;
+use Illuminate\Support\Facades\Bus;
+
+$batch = Bus::batch([
+    new ImportCsvChunk(1),
+    new ImportCsvChunk(2),
+    new ImportCsvChunk(3),
+])->then(function (Batch $batch) {
+    // All jobs finished successfully!
+})->catch(function (Batch $batch, Throwable $e) {
+    // First job failure in batch
+})->finally(function (Batch $batch) {
+    // Completed execution
+})->name('Import Customer CSV')->dispatch();
+
+// Check batch status:
+$batchId = $batch->id;
+
+
+:: Laravel Tips :55 ::
+Task Scheduling (Automated Cron Jobs)
+
+Add one cron entry on your production server:
+* * * * * cd /path-to-your-project && php artisan schedule:run >> /dev/null 2>&1
+
+In Laravel 11/12/13, define schedules in `routes/console.php`:
+use Illuminate\Support\Facades\Schedule;
+
+Schedule::command('backup:run')->dailyAt('01:00');
+Schedule::command('model:prune')->daily();
+Schedule::job(new GenerateDailyReport)->weekdays()->at('18:00');
+Schedule::command('queue:work --stop-when-empty')->everyFiveMinutes()->withoutOverlapping();
+
+Test locally in development:
+php artisan schedule:work
+
+
+:: Laravel Tips :56 ::
+Sending Mail & Notifications
+
+1. Mailables:
+php artisan make:mail OrderShippedMail --markdown=emails.orders.shipped
+
+// Send email:
+Mail::to($user->email)->send(new OrderShippedMail($order));
+// Queue email in background:
+Mail::to($user->email)->queue(new OrderShippedMail($order));
+
+2. Notifications (Multi-channel: Mail, Database, SMS):
+php artisan make:notification InvoicePaid
+
+// In app/Notifications/InvoicePaid.php:
+public function via($notifiable): array
+{
+    return ['mail', 'database'];
+}
+
+// Send notification:
+$user->notify(new InvoicePaid($invoice));
+// Bulk send:
+Notification::send($users, new SystemAlert('Server maintenance tonight'));
+
+
+:: Laravel Tips :57 ::
+Events and Listeners
+
+Decouple your application logic using Events and Listeners:
+php artisan make:event UserRegistered
+php artisan make:listener SendWelcomeEmail --event=UserRegistered
+
+// In app/Listeners/SendWelcomeEmail.php:
+// Make it queueable:
+class SendWelcomeEmail implements ShouldQueue
+{
+    public function handle(UserRegistered $event): void
+    {
+        Mail::to($event->user->email)->send(new WelcomeMail($event->user));
+    }
+}
+
+// Dispatch event anywhere:
+UserRegistered::dispatch($user);
+
+
+:: Laravel Tips :58 ::
+Authorization: Gates & Policies
+
+1. Policies (Resource-based authorization):
+php artisan make:policy PostPolicy --model=Post
+
+// In PostPolicy.php:
+public function update(User $user, Post $post): bool
+{
+    return $user->id === $post->user_id || $user->is_admin;
+}
+
+// In Controller:
+$this->authorize('update', $post);
+
+// In Blade:
+@can('update', $post)
+    <a href="{{ route('posts.edit', $post) }}">Edit Post</a>
+@endcan
+
+2. Gates (General authorization):
+// In AppServiceProvider::boot():
+Gate::define('access-admin', fn (User $user) => $user->is_admin);
+
+// In Controller:
+if (Gate::denies('access-admin')) {
+    abort(403);
+}
+
+
+:: Laravel Tips :59 ::
+Laravel Tinker Shell Power Tips
+
+Launch interactive PHP REPL:
+php artisan tinker
+
+Useful Tinker Commands:
+// 1. Generate fake records instantly:
+User::factory(5)->create();
+
+// 2. Encrypt passwords:
+bcrypt('my-secret-password')
+
+// 3. Test relations:
+$user = User::first();
+$user->posts()->get();
+
+// 4. Test external APIs:
+Http::get('https://jsonplaceholder.typicode.com/posts/1')->json();
+
+// 5. Test queue jobs:
+dispatch(new \App\Jobs\ProcessOrderInvoice(Order::first()));
+
+
+:: Laravel Tips :60 ::
+Custom Artisan Commands
+
+Create your own CLI tools:
+php artisan make:command SendWeeklyDigest
+
+// In app/Console/Commands/SendWeeklyDigest.php:
+protected $signature = 'digest:send {--dry-run : Simulate execution without sending}';
+protected $description = 'Send weekly digest to subscribers';
+
+public function handle(): int
+{
+    $this->info('Starting newsletter dispatch...');
+    
+    $users = User::all();
+    $bar = $this->output->createProgressBar(count($users));
+    $bar->start();
+
+    foreach ($users as $user) {
+        // Dispatch...
+        $bar->advance();
+    }
+
+    $bar->finish();
+    $this->newLine();
+    $this->info('All digests dispatched successfully!');
+    return self::SUCCESS;
+}
+
+
+:: Laravel Tips :61 ::
+Maintenance Mode with Secret Bypass Cookie
+
+Put your application into maintenance mode while allowing developers to test:
+php artisan down --secret="my-secret-dev-access-key"
+
+// How to access the site:
+Visit in browser: https://yourdomain.com/my-secret-dev-access-key
+Laravel sets a bypass cookie; you can browse the site while public visitors see 503 Maintenance!
+
+// Bring site back live:
+php artisan up
+
+
+:: Laravel Tips :62 ::
+Logging & Log Channels
+
+Log to default or specialized channels:
+Log::info('User signed in', ['user_id' => $user->id]);
+Log::warning('High memory usage detected', ['memory' => memory_get_usage()]);
+Log::critical('Payment gateway connection failed!', ['gateway' => 'stripe']);
+
+// Daily log channel (auto-rotates daily):
+// In config/logging.php, set default to 'daily' or specify channel:
+Log::channel('daily')->error('Database sync error');
+
+// Slack / Discord notification logging:
+Log::channel('slack')->critical('Site is down!');
+
+
+:: Laravel Tips :63 ::
+Advanced Seeding & Factory Relationships
+
+Create complex database test states effortlessly:
+// 1. Create User with 3 Posts:
+User::factory()->has(Post::factory()->count(3))->create();
+
+// 2. Create Post belonging to an existing User:
+Post::factory()->for($user)->create();
+
+// 3. Create nested relations:
+User::factory()
+    ->has(Post::factory()->count(2)->hasComments(5))
+    ->create();
+
+// 4. Factory Sequences (alternate values):
+User::factory()->count(10)->sequence(
+    ['role' => 'admin'],
+    ['role' => 'editor'],
+    ['role' => 'user'],
+)->create();
+
+
+:: Laravel Tips :64 ::
+Migrations: Foreign Keys with Cascading Deletions
+
+Clean foreign key definitions:
+Schema::create('posts', function (Blueprint $table) {
+    $table->id();
+    // Creates foreignId and references users(id) with cascade on delete:
+    $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+    
+    // Nullable foreign key:
+    $table->foreignId('category_id')->nullable()->constrained()->nullOnDelete();
+    
+    // Custom table name:
+    $table->foreignId('author_id')->constrained('users')->cascadeOnDelete();
+    $table->timestamps();
+});
+
+
+:: Laravel Tips :65 ::
+Migrations: Indexes & Fulltext Search
+
+Boost database query performance:
+Schema::create('articles', function (Blueprint $table) {
+    $table->id();
+    $table->string('slug')->unique();
+    
+    // Composite Index (for queries filtering by both columns):
+    $table->index(['status', 'published_at']);
+    
+    // Fulltext Index:
+    $table->string('title');
+    $table->text('body');
+    $table->fullText(['title', 'body']);
+});
+
+// Query fulltext search in Eloquent:
+$results = Article::whereFullText(['title', 'body'], 'laravel tutorial')->get();
+
+
+:: Laravel Tips :66 ::
+Preventing Mass Assignment Vulnerabilities
+
+Never pass raw $request->all() to create() or update():
+// DANGEROUS: User could pass is_admin=1 in the POST payload!
+User::create($request->all());
+
+// SECURE: Always use validated data from Form Request:
+User::create($request->validated());
+
+// Or specify fillable columns on model:
+protected $fillable = ['name', 'email', 'password'];
+
+
+:: Laravel Tips :67 ::
+Password Hashing & Automatic Rehashing
+
+In Laravel 11/12/13, cast 'password' => 'hashed' in Model casts():
+protected function casts(): array
+{
+    return [
+        'password' => 'hashed',
+    ];
+}
+// Now $user->password = 'secret'; automatically hashes the password!
+
+// Check password:
+if (Hash::check($request->password, $user->password)) {
+    // Password matches
+}
+
+// Check if hash needs upgrading:
+if (Hash::needsRehash($user->password)) {
+    $user->password = Hash::make($request->password);
+    $user->save();
+}
+
+
+:: Laravel Tips :68 ::
+String (Str) and Fluent String Helpers
+
+use Illuminate\Support\Str;
+
+// Slugs:
+Str::slug('Laravel 13 Master Class'); // 'laravel-13-master-class'
+
+// Truncating:
+Str::limit('Long article description goes here...', 20); // 'Long article descrip...'
+Str::words('Long article description goes here...', 3); // 'Long article description...'
+
+// Masking sensitive data:
+Str::mask('john.doe@example.com', '*', 3, 10); // 'joh**********ample.com'
+
+// Fluent String operations:
+Str::of('  Laravel Framework  ')
+    ->trim()
+    ->lower()
+    ->replace('framework', 'rocks')
+    ->title(); // 'Laravel Rocks'
+
+
+:: Laravel Tips :69 ::
+Collection Methods Mastery
+
+use Illuminate\Support\Collection;
+
+// 1. Pluck key-value pairs:
+$roles = User::all()->pluck('name', 'id'); // [1 => 'Alice', 2 => 'Bob']
+
+// 2. GroupBy:
+$postsByCategory = Post::all()->groupBy('category_id');
+
+// 3. Higher Order Messages:
+$titles = $posts->map->title;
+$activeUsers = $users->filter->isActive();
+
+// 4. Partition (Split collection by condition):
+[$adults, $minors] = $users->partition(fn ($user) => $user->age >= 18);
+
+
+:: Laravel Tips :70 ::
+API Resources & Clean JSON Responses
+
+Generate API resource:
+php artisan make:resource PostResource
+
+// In app/Http/Resources/PostResource.php:
+public function toArray(Request $request): array
+{
+    return [
+        'id'          => $this->id,
+        'title'       => $this->title,
+        'content'     => $this->content,
+        'author'      => new UserResource($this->whenLoaded('author')),
+        'created_at'  => $this->created_at->toISOString(),
+    ];
+}
+
+// In Controller:
+// Single Resource:
+return new PostResource($post);
+// Collection:
+return PostResource::collection($posts);
+
+
+:: Laravel Tips :71 ::
+Session Management & Flashing
+
+// Store data in session:
+session(['user_role' => 'admin']);
+session()->put('cart_id', 1234);
+
+// Retrieve data:
+$cartId = session('cart_id', 'default_value');
+
+// Flash message (only available for the NEXT HTTP request):
+session()->flash('status', 'Your profile has been updated!');
+
+// Retain flash data for an additional request:
+session()->reflash();
+session()->keep(['status']);
+
+// Remove from session:
+session()->forget('cart_id');
+session()->flush(); // Clear entire session
+
+
+:: Laravel Tips :72 ::
+Flash Notifications with Toastr / SweetAlert
+
+In Controller:
+return redirect()->route('posts.index')
+    ->with('success', 'Post published successfully!')
+    ->with('alert_type', 'success');
+
+In Blade layout (`layouts/app.blade.php`):
+@if (session('success'))
+    <script>
+        Swal.fire({
+            icon: 'success',
+            title: 'Success!',
+            text: "{{ session('success') }}",
+            timer: 3000
+        });
+    </script>
+@endif
+
+
+:: Laravel Tips :73 ::
+Pagination & Appending Query Strings
+
+In Controller:
+$posts = Post::latest()->paginate(15);
+
+In Blade view:
+{{ $posts->links() }}
+
+// Retain search filters & query parameters across pagination links:
+{{ $posts->withQueryString()->links() }}
+
+// Switch to Bootstrap 5 paginator in AppServiceProvider::boot():
+use Illuminate\Pagination\Paginator;
+
+public function boot(): void
+{
+    Paginator::useBootstrapFive(); // or Paginator::useTailwind();
+}
+
+
+:: Laravel Tips :74 ::
+Database Raw Expressions & Safe Aggregates
+
+// Safe Raw Expressions:
+$orders = Order::selectRaw('status, count(*) as total, sum(amount) as revenue')
+    ->groupBy('status')
+    ->get();
+
+// Raw Where Clause with Parameter Binding (Prevents SQL Injection):
+$users = User::whereRaw('DATEDIFF(now(), created_at) > ?', [30])->get();
+
+// Raw OrderBy:
+$products = Product::orderByRaw('price - discount DESC')->get();
+
+
+:: Laravel Tips :75 ::
+Efficient Batch Upserts (upsert)
+
+Insert or update multiple records in a single database query:
+DB::table('inventories')->upsert(
+    [
+        ['product_id' => 1, 'warehouse_id' => 1, 'quantity' => 100],
+        ['product_id' => 2, 'warehouse_id' => 1, 'quantity' => 50],
+        ['product_id' => 3, 'warehouse_id' => 2, 'quantity' => 200],
+    ],
+    ['product_id', 'warehouse_id'], // Unique identifying columns
+    ['quantity']                     // Columns to update if match exists
+);
+
+
+:: Laravel Tips :76 ::
+Model withoutEvents() and withoutTimestamps()
+
+// Execute mass updates without triggering model events or observers:
+User::withoutEvents(function () {
+    User::factory()->count(100)->create();
+});
+
+// Update record without modifying updated_at timestamp:
+$user->withoutTimestamps(function () use ($user) {
+    $user->update(['last_seen_at' => now()]);
+});
+
+
+:: Laravel Tips :77 ::
+Model replicate() to Duplicate Records
+
+Quickly clone an existing database row:
+$originalPost = Post::find(1);
+
+$clonedPost = $originalPost->replicate([
+    'slug', // Exclude columns you want to override
+]);
+
+$clonedPost->title = 'Copy of ' . $originalPost->title;
+$clonedPost->slug = Str::slug($clonedPost->title);
+$clonedPost->save();
+
+
+:: Laravel Tips :78 ::
+Using throw_if() and throw_unless() Helpers
+
+Write clean, expressive defensive code:
+// Replaces if (! $condition) { throw new Exception(); }
+throw_if($user->is_banned, UserBannedException::class, 'Your account is banned.');
+throw_unless($order->isPaid(), OrderUnpaidException::class, 'Order must be paid first.');
+
+// Abort helpers for HTTP status codes:
+abort_if(! auth()->user()->is_admin, 403, 'Unauthorized action.');
+abort_unless($post->is_published, 404, 'Post not found.');
+
+
+:: Laravel Tips :79 ::
+Custom Exceptions & Centralized Handling in Laravel 13
+
+Create custom exception:
+php artisan make:exception PaymentFailedException
+
+// In bootstrap/app.php:
+->withExceptions(function (Exceptions $exceptions) {
+    $exceptions->render(function (PaymentFailedException $e, Request $request) {
+        if ($request->is('api/*')) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage(),
+            ], 402);
+        }
+
+        return redirect()->back()->with('error', $e->getMessage());
+    });
+})
+
+
+:: Laravel Tips :80 ::
+Modern HTTP Client (Http::get, Http::post, Http::fake)
+
+use Illuminate\Support\Facades\Http;
+
+// GET with timeout & automatic retries:
+$response = Http::timeout(5)->retry(3, 100)->get('https://api.github.com/users/laravel');
+
+if ($response->successful()) {
+    $userData = $response->json();
+}
+
+// POST with Bearer Token:
+$response = Http::withToken('my-api-secret')
+    ->post('https://api.service.com/orders', [
+        'item'   => 'MacBook Pro',
+        'amount' => 1999,
+    ]);
+
+// Faking HTTP requests in Feature Tests:
+Http::fake([
+    'api.github.com/*' => Http::response(['name' => 'Laravel'], 200),
+]);
+
+
+:: Laravel Tips :81 ::
+Localization & Translation Support
+
+Store translations in JSON files under `lang/en.json` and `lang/es.json`:
+// In lang/es.json:
+{
+    "Welcome to our site": "Bienvenido a nuestro sitio web",
+    "Hello, :name": "Hola, :name"
+}
+
+// In Blade views:
+{{ __('Welcome to our site') }}
+{{ __('Hello, :name', ['name' => auth()->user()->name]) }}
+
+// Set Locale dynamically via middleware:
+app()->setLocale(session('locale', config('app.locale')));
+
+
+:: Laravel Tips :82 ::
+Creating a Custom Global Helpers File
+
+1. Create `app/Helpers/helpers.php`:
+<?php
+
+if (! function_exists('money_format_usd')) {
+    function money_format_usd($amount): string
+    {
+        return '$' . number_format($amount, 2);
+    }
+}
+
+if (! function_exists('active_route')) {
+    function active_route($routeName, $activeClass = 'active'): string
+    {
+        return request()->routeIs($routeName) ? $activeClass : '';
+    }
+}
+
+2. Register in `composer.json` under `"autoload"`:
+"autoload": {
+    "files": [
+        "app/Helpers/helpers.php"
+    ]
+}
+
+3. Run in terminal:
+composer dump-autoload
+
+
+:: Laravel Tips :83 ::
+Config Caching vs env() Safety
+
+CRITICAL RULE: Never call env() outside of config/*.php files!
+When you run `php artisan config:cache` in production, Laravel stops reading `.env` and env() returns null!
+
+// BAD (In Controller or Service):
+$apiKey = env('STRIPE_API_KEY'); // Will be NULL in production after config:cache!
+
+// GOOD:
+// In config/services.php:
+'stripe' => [
+    'api_key' => env('STRIPE_API_KEY'),
+],
+
+// In Controller or Service:
+$apiKey = config('services.stripe.api_key');
+
+
+:: Laravel Tips :84 ::
+Safe Redirections & redirect()->intended()
+
+Redirect user to the URL they originally intended to visit before being intercepted by login middleware:
+// In LoginController / AdminController:
+return redirect()->intended(route('dashboard'));
+
+// Redirect back with old input and error:
+return redirect()->back()
+    ->withInput()
+    ->withErrors(['email' => 'These credentials do not match our records.']);
+
+
+:: Laravel Tips :85 ::
+Database Query Debugging: dumpRawSql() & DB::listen
+
+// 1. Inspect SQL query with bound values embedded:
+Post::where('status', 'active')
+    ->where('views_count', '>', 500)
+    ->dumpRawSql(); // Outputs actual raw SQL string!
+
+// 2. Log all executed SQL queries during local development:
+// In AppServiceProvider::boot():
+if (! app()->isProduction()) {
+    DB::listen(function ($query) {
+        Log::info(
+            $query->sql,
+            ['bindings' => $query->bindings, 'time_ms' => $query->time]
+        );
+    });
+}
+
+
+:: Laravel Tips :86 ::
+Production Optimization Commands
+
+Run these optimization commands on your deployment server:
+php artisan config:cache    # Caches all config files into a single optimized array
+php artisan route:cache     # Compiles all routes into fast registration tree
+php artisan view:cache      # Pre-compiles all Blade views into plain PHP
+php artisan event:cache     # Caches all event and listener discoveries
+
+// To clear and reset all caches during development:
+php artisan optimize:clear
+
+
+:: Laravel Tips :87 ::
+Laravel Context API (Context::add)
+
+Capture request context (user id, trace ID, tenant) across all logs, queues, and transactions:
+use Illuminate\Support\Facades\Context;
+
+// In a middleware:
+Context::add('request_id', Str::uuid()->toString());
+Context::add('user_id', auth()->id());
+Context::add('tenant', $request->header('X-Tenant-ID'));
+
+// Any subsequent Log::info() will automatically include this context data!
+// Any queued job dispatched will inherit this context automatically!
+
+
+:: Laravel Tips :88 ::
+Laravel Concurrency (Parallel Code Execution)
+
+Run multiple tasks concurrently in parallel using Concurrency::run():
+use Illuminate\Support\Facades\Concurrency;
+
+[$usersCount, $ordersTotal, $exchangeRates] = Concurrency::run([
+    fn () => DB::table('users')->count(),
+    fn () => DB::table('orders')->sum('total'),
+    fn () => Http::get('https://api.exchangerate.host/latest')->json(),
+]);
+
+
+:: Laravel Tips :89 ::
+Laravel Health Check Endpoint (/up)
+
+In Laravel 11/12/13, `bootstrap/app.php` includes built-in health routing:
+health: '/up',
+
+Accessing `http://yourdomain.com/up` returns HTTP 200 OK with minimal overhead.
+Use this endpoint with:
+- AWS / GCP Load Balancers
+- Kubernetes Liveness & Readiness Probes
+- UptimeRobot, Pingdom, Better Uptime
+
+
+:: Laravel Tips :90 ::
+Securing File Uploads
+
+Never trust uploaded files without strict validation:
+$request->validate([
+    'document' => [
+        'required',
+        'file',
+        'mimes:pdf,docx,xlsx',
+        'max:5120', // Max 5MB
+    ],
+]);
+
+// Store outside of public folder if confidential:
+$path = $request->file('document')->store('private_documents', 'local');
+
+// Generate randomized filename:
+$safeFilename = Str::random(40) . '.' . $request->file('document')->extension();
+
+
+:: Laravel Tips :91 ::
+Eloquent firstOrCreate, updateOrCreate, and findOr
+
+// 1. Find or create if missing:
+$category = Category::firstOrCreate(
+    ['slug' => 'laravel'],
+    ['name' => 'Laravel Tutorials', 'is_active' => true]
+);
+
+// 2. Update if exists, or create new:
+UserSetting::updateOrCreate(
+    ['user_id' => $user->id],
+    ['theme' => 'dark', 'notifications_enabled' => true]
+);
+
+// 3. findOr with fallback:
+$user = User::findOr($id, fn () => User::guestAccount());
+
+
+:: Laravel Tips :92 ::
+Preventing Cross-Site Scripting (XSS)
+
+// Always use standard escaped curly braces:
+<p>{{ $userInput }}</p> {{-- Escapes HTML using htmlspecialchars() --}}
+
+// NEVER use unescaped braces with raw user input:
+<p>{!! $userInput !!}</p> {{-- DANGEROUS: Susceptible to XSS! --}}
+
+// If you must render sanitized HTML from a WYSIWYG editor, use a package like HTMLPurifier:
+<p>{!! clean($post->body) !!}</p>
+
+
+:: Laravel Tips :93 ::
+UUIDs and ULIDs as Primary Keys
+
+1. In Migration:
+$table->uuid('id')->primary(); // or $table->ulid('id')->primary();
+
+2. In Model:
+use Illuminate\Database\Eloquent\Concerns\HasUuids; // or HasUlids
+
+class Order extends Model
+{
+    use HasUuids;
+}
+
+// When creating an Order, a random UUID v4 / ULID will be auto-generated for 'id'!
+
+
+:: Laravel Tips :94 ::
+Artisan Dump Server
+
+Prevent dump() and dd() from breaking your browser layout or API JSON response:
+Run in a separate terminal:
+php artisan dump-server
+
+Now, all `dump($variable)` calls will be piped directly into your terminal screen in real time!
+
+
+:: Laravel Tips :95 ::
+Custom Middleware with Parameters
+
+php artisan make:middleware CheckUserRole
+
+// In app/Http/Middleware/CheckUserRole.php:
+public function handle(Request $request, Closure $next, ...$roles): Response
+{
+    if (! $request->user() || ! in_array($request->user()->role, $roles)) {
+        abort(403, 'Unauthorized access.');
+    }
+
+    return $next($request);
+}
+
+// In routes/web.php:
+Route::get('/reports', [ReportController::class, 'index'])
+    ->middleware('role:admin,manager');
+
+
+:: Laravel Tips :96 ::
+Automatic Eloquent Pruning for Stale Records
+
+Automatically purge old logs, expired carts, or transient data:
+use Illuminate\Database\Eloquent\MassPrunable;
+
+class ShoppingCart extends Model
+{
+    use MassPrunable;
+
+    public function prunable()
+    {
+        // Delete carts untouched for over 30 days
+        return static::where('updated_at', '<=', now()->subDays(30));
+    }
+}
+
+// In routes/console.php:
+Schedule::command('model:prune')->daily();
+
+
+:: Laravel Tips :97 ::
+PHP 8.1+ Enum Casting in Eloquent Models
+
+Create backed Enum:
+namespace App\Enums;
+
+enum OrderStatus: string
+{
+    case PENDING   = 'pending';
+    case COMPLETED = 'completed';
+    case CANCELLED = 'cancelled';
+}
+
+In Model:
+use App\Enums\OrderStatus;
+
+protected function casts(): array
+{
+    return [
+        'status' => OrderStatus::class,
+    ];
+}
+
+// Usage:
+$order->status = OrderStatus::COMPLETED;
+if ($order->status === OrderStatus::PENDING) { ... }
+
+
+:: Laravel Tips :98 ::
+Carbon Date Formatting & Helpers
+
+$createdAt = $post->created_at;
+
+// Human Readable relative time:
+echo $createdAt->diffForHumans(); // "2 hours ago", "3 days ago"
+
+// Date formatting:
+echo $createdAt->format('F j, Y, g:i a'); // "November 16, 2026, 1:15 am"
+
+// Relative checks:
+if ($createdAt->isToday()) { ... }
+if ($user->subscription_end->isPast()) { ... }
+if ($event->date->isFuture()) { ... }
+
+
+:: Laravel Tips :99 ::
+Feature Testing with Pest and PHPUnit
+
+Create test:
+php artisan make:test UserManagementTest
+
+// In tests/Feature/UserManagementTest.php:
+use Illuminate\Foundation\Testing\RefreshDatabase;
+
+class UserManagementTest extends TestCase
+{
+    use RefreshDatabase; // Resets database after each test!
+
+    public function test_authenticated_user_can_view_dashboard(): void
+    {
+        $user = User::factory()->create();
+
+        $response = $this->actingAs($user)->get('/dashboard');
+
+        $response->assertStatus(200);
+        $response->assertSee('Welcome');
+    }
+}
+
+Run test:
+php artisan test --filter=UserManagementTest
+
+
+:: Laravel Tips :100 ::
+Laravel Clean Architecture & Best Practices Checklist
+
+1. Thin Controllers, Rich Domain:
+   Controllers should only handle HTTP concerns: validate input, call an Action or Service, and return response.
+   Move complex business logic into single-responsibility Action classes (`app/Actions/CreateInvoiceAction.php`).
+
+2. Use Form Requests for all non-trivial validation instead of controller inline validation.
+
+3. Always Eager-Load Relationships (`with()`) to prevent the N+1 query performance trap.
+
+4. Never use `env()` outside of `config/` files. Always use `config('services.key')`.
+
+5. Use Database Transactions (`DB::transaction`) whenever writing to multiple related tables.
+
+6. Protect Sensitive Columns with `$hidden = ['password', 'remember_token']` and `$fillable`.
+
+7. Keep your routes organized using route groups, resource controllers, and dedicated route files.
+
+8. Run optimization commands in production (`config:cache`, `route:cache`, `view:cache`).
+
+================================================================================

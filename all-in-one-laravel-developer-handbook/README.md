@@ -1,14 +1,14 @@
-# All-in-One Laravel Developer Handbook & Tutorials
+﻿# All-in-One Laravel Developer Handbook & Tutorials
 
 [![Laravel](https://img.shields.io/badge/Laravel-12%20%7C%2013-FF2D20?style=flat-square&logo=laravel&logoColor=white)](https://laravel.com/docs)
 [![PHP](https://img.shields.io/badge/PHP-8.3%20%E2%80%93%208.5-777BB4?style=flat-square&logo=php&logoColor=white)](https://www.php.net/)
-[![Chapters](https://img.shields.io/badge/Chapters-19%20Chapters%20(3%20Tracks)-0EA5E9?style=flat-square)](./chapters)
+[![Chapters](https://img.shields.io/badge/Chapters-34%20Chapters%20(4%20Tracks)-0EA5E9?style=flat-square)](./index.html)
 [![Verified Labs](https://img.shields.io/badge/Runnable%20PHP%20Labs-Verified-10B981?style=flat-square)](./run-all-examples.php)
 [![Interactive Portal](https://img.shields.io/badge/Portal-Interactive%20Handbook-f59e0b?style=flat-square)](https://htmlpreview.github.io/?https://github.com/xivig/xivig-all-in-one-notes/blob/master/all-in-one-laravel-developer-handbook/index.html)
 
 A unified, step-by-step **Laravel 12/13 Developer Handbook** uniting **PHP 8.3–8.5 & OOP Container Internals**, **Production Blade UI, Faker, Eloquent (including Polymorphic & Locking), Multi-Guard Auth**, **Livewire 4, Inertia 2, Echo/Reverb & Ecosystem Packages**, **Server Configs & Troubleshooting**, **Batch CMS Scaffolding**, and the **EliteBlog Pro CMS Capstone**.
 
-> Open the interactive handbook anytime: 🌐 **[Launch Live ↗](https://htmlpreview.github.io/?https://github.com/xivig/xivig-all-in-one-notes/blob/master/all-in-one-laravel-developer-handbook/index.html)** · **[Local (`index.html`)](./index.html)** — includes Dark/Light theme, `/` live search, track filters, progress tracker (`0 / 19`), copyable snippets, runnable PHP lab drawers, and a **15-question Interactive Mastery Quiz**.
+> Open the interactive handbook anytime: 🌐 **[Launch Live ↗](https://htmlpreview.github.io/?https://github.com/xivig/xivig-all-in-one-notes/blob/master/all-in-one-laravel-developer-handbook/index.html)** · **[Local (`index.html`)](./index.html)** — includes Dark/Light theme, `/` live search, 4 track filters, progress tracker (`0 / 34`), copyable snippets, runnable PHP lab drawers, and a **15-question Interactive Mastery Quiz**.
 
 ---
 
@@ -16,16 +16,18 @@ A unified, step-by-step **Laravel 12/13 Developer Handbook** uniting **PHP 8.3�
 
 | Resource | Purpose |
 | :--- | :--- |
-| [`index.html`](./index.html) | Interactive single-file handbook portal (search `/`, dark/light mode, track filters, 15-question quiz, runnable lab viewers) |
+| [`index.html`](./index.html) | Interactive single-file handbook portal (search `/`, dark/light mode, 4 track filters, 15-question quiz, 34 chapters) |
 | [`CHEATSHEET.md`](./CHEATSHEET.md) | High-density daily reference for Artisan CLI, Faker, Blade, Eloquent, Composer/Vite, Multi-Auth & Deploy commands |
 | [`GLOSSARY.md`](./GLOSSARY.md) | Concise A–Z engineering glossary covering Laravel 12/13, Multi-Auth Guards, Polymorphic Relations, Observability & PHP 8.3–8.5 |
 | [`scripts/laravel_artisan_setup.sh`](./scripts/laravel_artisan_setup.sh) | Batch CMS scaffolder (`--dry-run` supported) creating layouts, role partials, form components & 7 `-mfs` domain models |
 | [`run-all-examples.php`](./run-all-examples.php) | Automated syntax & runtime verifier for all standalone PHP labs across chapters |
-| [`chapters/`](./chapters) | 19 structured step-by-step chapters across 3 progressive learning tracks |
+| [`chapters/`](./chapters) | 19 structured step-by-step deep dive chapters across Tracks 1–3 |
+| [`../laravel-html-tutorials/`](./laravel-html-tutorials/) | 15 standalone dedicated HTML production blueprints (Track 4) |
+| [`../laravel-text-tutorials/`](./laravel-text-tutorials/) | 15 dependency-free ASCII/Markdown plaintext terminal playbooks |
 
 ---
 
-## Curriculum Overview (19 Chapters across 3 Tracks)
+## Curriculum Overview (34 Chapters across 4 Tracks)
 
 ### Track 1 — PHP 8.3–8.5 & OOP Architecture for Laravel
 | # | Chapter | Core Topics & Patterns | Runnable Lab |
@@ -58,6 +60,25 @@ A unified, step-by-step **Laravel 12/13 Developer Handbook** uniting **PHP 8.3�
 | 18 | [Clean Architecture, Scaffolder, Capstone CMS & Roadmap](./chapters/18-clean-architecture-cms-capstone-and-roadmap/README.md) | Feature Action/Service layers, `scripts/laravel_artisan_setup.sh`, **EliteBlog Pro CMS** architecture & 12-week roadmap | — |
 | 19 | [Livewire 4, Inertia 2, Echo, i18n & Ecosystem Packages](./chapters/19-livewire-inertia-realtime-i18n-and-ecosystem/README.md) | Reactive **Livewire 4**, **Inertia 2** React/Vue `useForm`, **Reverb + Echo** private channels, Localization (`__()`), **Socialite**, **Cashier** & **Scout** | — |
 
+### Track 4 — Production Blueprints & Full-Stack Walkthroughs
+| # | Chapter | Core Topics & Implementation | Dedicated HTML Guide | Plaintext Terminal Guide |
+| :---: | :--- | :--- | :--- | :--- |
+| 20 | Project Creation, Installer & Setup | Composer installer, SQLite/MySQL configs, `.env` keys, Artisan server loop | [Module 01 Guide](./laravel-html-tutorials/01-create-laravel-project.html) | [01-create-laravel-project.txt](./laravel-text-tutorials/01-create-laravel-project.txt) |
+| 21 | Full-Cycle Workflow & Command Playbook | Scaffolding lifecycle (`make:model -a`), seeders, Tinker REPL, Vite bundling | [Module 02 Guide](./laravel-html-tutorials/02-workflow-command-playbook.html) | [02-workflow-command-playbook.txt](./laravel-text-tutorials/02-workflow-command-playbook.txt) |
+| 22 | Laravel 100 Pro Tips & Initial Env Setup | 100 pro architecture rules, `APP_KEY`, `storage:link`, DB migration sequence | [Module 03 Guide](./laravel-html-tutorials/03-laravel-100-tips.html) | [03-laravel-100-tips.txt](./laravel-text-tutorials/03-laravel-100-tips.txt) |
+| 23 | Admin Multi-Auth Architecture (Fortify) | Dedicated Fortify/Jetstream `admin` guard, `Admin` model & custom login pipeline | [Module 04 Guide](./laravel-html-tutorials/04-admin-multi-auth-fortify.html) | [04-admin-multi-auth-fortify.txt](./laravel-text-tutorials/04-admin-multi-auth-fortify.txt) |
+| 24 | Step-by-Step Admin Authentication & Dashboard | 16-step manual auth flow, controller redirects, session guard protection | [Module 05 Guide](./laravel-html-tutorials/05-admin-login-step-by-step.html) | [05-admin-login-step-by-step.txt](./laravel-text-tutorials/05-admin-login-step-by-step.txt) |
+| 25 | Multi-Authentication Master System & OTP | Multi-guard architecture, cryptographic OTP delivery, session isolation, RBAC | [Module 06 Guide](./laravel-html-tutorials/06-multi-auth-master-system.html) | [06-multi-auth-master-system.txt](./laravel-text-tutorials/06-multi-auth-master-system.txt) |
+| 26 | Dynamic Menu Builder & Recursive Admin CRUD | Nested parent/child hierarchy, recursive Blade rendering, drag/reorder CRUD | [Module 07 Guide](./laravel-html-tutorials/07-dynamic-menu-crud.html) | [07-dynamic-menu-crud.txt](./laravel-text-tutorials/07-dynamic-menu-crud.txt) |
+| 27 | App Scaffolding, Breeze & Dynamic CMS | Breeze scaffolding, multi-layout architecture (admin, user, blog), CMS cache | [Module 08 Guide](./laravel-html-tutorials/08-scaffolding-breeze-cms.html) | [08-scaffolding-breeze-cms.txt](./laravel-text-tutorials/08-scaffolding-breeze-cms.txt) |
+| 28 | Project QA, Security Audit & Deployment | Pre-production security audit, DB indexes, Nginx tuning, queue supervisor | [Module 09 Guide](./laravel-html-tutorials/09-qa-deployment-checklist.html) | [09-qa-deployment-checklist.txt](./laravel-text-tutorials/09-qa-deployment-checklist.txt) |
+| 29 | Pure PHP Vector SVG Math CAPTCHA | Zero-dependency pure PHP vector SVG math challenge generation & honeypots | [Module 10 Guide](./laravel-html-tutorials/10-math-captcha-security.html) | [10-math-captcha-security.txt](./laravel-text-tutorials/10-math-captcha-security.txt) |
+| 30 | Production Technical SEO & Schema Markup | OpenGraph, Twitter Cards, JSON-LD Schema (Article, Breadcrumbs), XML sitemap | [Module 11 Guide](./laravel-html-tutorials/11-seo-metadata-schema.html) | [11-seo-metadata-schema.txt](./laravel-text-tutorials/11-seo-metadata-schema.txt) |
+| 31 | RESTful APIs, Sanctum & JsonResources | `install:api`, token abilities, JsonResource pagination, rate limiting & error schemas | [Module 12 Guide](./laravel-html-tutorials/12-restful-api-sanctum-resources.html) | [12-restful-api-sanctum-resources.txt](./laravel-text-tutorials/12-restful-api-sanctum-resources.txt) |
+| 32 | Advanced Eloquent Relations, Locks & Trans. | Polymorphic relations, `DB::transaction()`, pessimistic locking, observers & N+1 | [Module 13 Guide](./laravel-html-tutorials/13-eloquent-relationships-transactions.html) | [13-eloquent-relationships-transactions.txt](./laravel-text-tutorials/13-eloquent-relationships-transactions.txt) |
+| 33 | Queues, Asynchronous Jobs & Scheduling | Database/Redis queue drivers, queued jobs with retry policies, events & cron | [Module 14 Guide](./laravel-html-tutorials/14-queues-jobs-events-scheduling.html) | [14-queues-jobs-events-scheduling.txt](./laravel-text-tutorials/14-queues-jobs-events-scheduling.txt) |
+| 34 | Secure File Uploads, Disks & AWS S3 Storage | Multi-disk configurations (public/s3), mime validation, signed URLs, media | [Module 15 Guide](./laravel-html-tutorials/15-file-storage-uploads-media.html) | [15-file-storage-uploads-media.txt](./laravel-text-tutorials/15-file-storage-uploads-media.txt) |
+
 ---
 
 ## Quickstart: Verify Standalone PHP Labs & Scaffolder
@@ -75,3 +96,4 @@ To preview the CMS scaffolder against any target directory without writing files
 ```bash
 bash scripts/laravel_artisan_setup.sh --dry-run
 ```
+

@@ -1,0 +1,985 @@
+================================================================================
+    LARAVEL MULTI-AUTHENTICATION SYSTEM: COMPLETE STEP-BY-STEP MASTER GUIDE
+                    (User & Dedicated Admin Multi-Auth)
+================================================================================
+
+This tutorial provides a complete, modern, robust multi-authentication system
+in Laravel (supporting Laravel 11, 12, and 13). It allows completely isolated
+authentication sessions for:
+1. Normal Users (Guard: 'web', Model: 'User', Table: 'users')
+   - Routes: /login, /register, /dashboard
+2. Administrators (Guard: 'admin', Model: 'Admin', Table: 'admins')
+   - Routes: /admin/login, /admin/dashboard, /admin/logout
+
+--------------------------------------------------------------------------------
+TABLE OF CONTENTS:
+--------------------------------------------------------------------------------
+PART 1: Architecture Overview & Prerequisites
+PART 2: User Authentication Setup & Email Verification
+PART 3: Admin Database Migration & Model Generation
+PART 4: Configuring Multi-Auth in config/auth.php
+PART 5: Seeding & Default Admin Account Creation
+PART 6: Admin Middlewares (Protection & Guest Redirection)
+PART 7: Registering Middlewares in bootstrap/app.php
+PART 8: AdminController Implementation (Login, Dashboard, Logout)
+PART 9: Defining Multi-Auth Routes in routes/web.php
+PART 10: Complete Blade Views (Admin Login & Dashboard)
+PART 11: Admin Password Reset (Using 'admins' Password Broker)
+PART 12: Cache Clearing, Testing, and Verification
+
+
+================================================================================
+PART 1: ARCHITECTURE OVERVIEW & PREREQUISITES
+================================================================================
+Laravel's authentication system is built around Guards and Providers:
+- Guards determine how users are authenticated for each request (e.g., 'session' driver uses cookies/sessions).
+- Providers define how users are retrieved from your persistent storage (e.g., 'eloquent' driver queries the User or Admin model).
+
+In this setup:
+- 'web' guard -> session driver -> 'users' provider -> App\Models\User
+- 'admin' guard -> session driver -> 'admins' provider -> App\Models\Admin
+
+Because they use different guards and session keys, an Admin and a User can be
+logged in simultaneously on the same browser without conflicting!
+
+
+================================================================================
+PART 2: USER AUTHENTICATION SETUP & EMAIL VERIFICATION
+================================================================================
+
+1. Enable Email Verification on User Model:
+Open `app/Models/User.php`:
+- Implement `MustVerifyEmail` contract:
+
+<?php
+
+namespace App\Models;
+
+use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
+
+class User extends Authenticatable implements MustVerifyEmail
+{
+    /** @use HasFactory<\Database\Factories\UserFactory> */
+    use HasFactory, Notifiable;
+
+    protected $fillable = [
+        'name',
+        'email',
+        'password',
+    ];
+
+    protected $hidden = [
+        'password',
+        'remember_token',
+    ];
+
+    protected function casts(): array
+    {
+        return [
+            'email_verified_at' => 'datetime',
+            'password' => 'hashed',
+        ];
+    }
+}
+
+
+2. Customize Standard User Logout Redirection:
+If using Laravel Breeze or standard auth controllers, open
+`app/Http/Controllers/Auth/AuthenticatedSessionController.php`:
+
+    public function destroy(Request $request): RedirectResponse
+    {
+        Auth::guard('web')->logout();
+
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return redirect('/login');
+    }
+
+
+================================================================================
+PART 3: ADMIN DATABASE MIGRATION & MODEL GENERATION
+================================================================================
+
+1. Run the Artisan command to create Admin model, migration, controller, factory, and seeder:
+php artisan make:model Admin -mcr -f -s
+
+Flags:
+-m: Migration
+-c: Controller (app/Http/Controllers/AdminController.php or Admin/AdminController.php)
+-r: Resource methods
+-f: Model factory (database/factories/AdminFactory.php)
+-s: Database seeder (database/seeders/AdminSeeder.php)
+
+
+2. Define the Admins Database Migration:
+Open `database/migrations/xxxx_create_admins_table.php`:
+
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    public function up(): void
+    {
+        Schema::create('admins', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+            $table->string('email')->unique();
+            $table->timestamp('email_verified_at')->nullable();
+            $table->string('password');
+            $table->string('phone')->nullable();
+            $table->string('avatar')->nullable();
+            $table->rememberToken();
+            $table->timestamps();
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::dropIfExists('admins');
+    }
+};
+
+
+3. Configure the Admin Eloquent Model:
+Open `app/Models/Admin.php`:
+
+<?php
+
+namespace App\Models;
+
+use Database\Factories\AdminFactory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
+
+class Admin extends Authenticatable
+{
+    /** @use HasFactory<AdminFactory> */
+    use HasFactory, Notifiable;
+
+    /**
+     * The table associated with the model.
+     */
+    protected $table = 'admins';
+
+    /**
+     * Default guard for this model.
+     */
+    protected $guard = 'admin';
+
+    /**
+     * The attributes that are mass assignable.
+     */
+    protected $fillable = [
+        'name',
+        'email',
+        'password',
+        'phone',
+        'avatar',
+    ];
+
+    /**
+     * The attributes that should be hidden for serialization.
+     */
+    protected $hidden = [
+        'password',
+        'remember_token',
+    ];
+
+    /**
+     * Modern attribute casting in Laravel 11/12/13.
+     */
+    protected function casts(): array
+    {
+        return [
+            'email_verified_at' => 'datetime',
+            'password' => 'hashed',
+        ];
+    }
+}
+
+
+================================================================================
+PART 4: CONFIGURING MULTI-AUTH IN config/auth.php
+================================================================================
+If `config/auth.php` does not exist in your Laravel installation, publish it:
+php artisan config:publish auth
+
+Now open `config/auth.php` and configure:
+
+1. Guards Configuration:
+    'guards' => [
+        'web' => [
+            'driver' => 'session',
+            'provider' => 'users',
+        ],
+
+        'admin' => [
+            'driver' => 'session',
+            'provider' => 'admins',
+        ],
+    ],
+
+2. Providers Configuration:
+    'providers' => [
+        'users' => [
+            'driver' => 'eloquent',
+            'model' => env('AUTH_MODEL', App\Models\User::class),
+        ],
+
+        'admins' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Admin::class,
+        ],
+    ],
+
+3. Passwords Configuration (Reset Brokers):
+    'passwords' => [
+        'users' => [
+            'provider' => 'users',
+            'table' => env('AUTH_PASSWORD_RESET_TOKEN_TABLE', 'password_reset_tokens'),
+            'expire' => 60,
+            'throttle' => 60,
+        ],
+
+        'admins' => [
+            'provider' => 'admins',
+            'table' => env('AUTH_PASSWORD_RESET_TOKEN_TABLE', 'password_reset_tokens'),
+            'expire' => 60,
+            'throttle' => 60,
+        ],
+    ],
+
+
+================================================================================
+PART 5: SEEDING & DEFAULT ADMIN ACCOUNT CREATION
+================================================================================
+
+1. Configure `database/factories/AdminFactory.php`:
+<?php
+
+namespace Database\Factories;
+
+use App\Models\Admin;
+use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
+
+class AdminFactory extends Factory
+{
+    protected $model = Admin::class;
+
+    public function definition(): array
+    {
+        return [
+            'name' => fake()->name(),
+            'email' => fake()->unique()->safeEmail(),
+            'email_verified_at' => now(),
+            'password' => Hash::make('password'),
+            'phone' => fake()->phoneNumber(),
+            'avatar' => null,
+            'remember_token' => Str::random(10),
+        ];
+    }
+}
+
+
+2. Configure `database/seeders/AdminSeeder.php`:
+<?php
+
+namespace Database\Seeders;
+
+use App\Models\Admin;
+use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
+
+class AdminSeeder extends Seeder
+{
+    public function run(): void
+    {
+        Admin::updateOrCreate(
+            ['email' => 'admin@example.com'],
+            [
+                'name' => 'Super Admin',
+                'password' => Hash::make('password'),
+                'email_verified_at' => now(),
+                'phone' => '1234567890',
+            ]
+        );
+    }
+}
+
+
+3. Call AdminSeeder in `database/seeders/DatabaseSeeder.php`:
+<?php
+
+namespace Database\Seeders;
+
+use App\Models\User;
+use Illuminate\Database\Seeder;
+
+class DatabaseSeeder extends Seeder
+{
+    public function run(): void
+    {
+        $this->call([
+            AdminSeeder::class,
+        ]);
+
+        User::factory()->create([
+            'name' => 'Test User',
+            'email' => 'user@example.com',
+            'password' => bcrypt('password'),
+        ]);
+    }
+}
+
+
+4. Run Migrations & Seed Data:
+php artisan migrate:fresh --seed
+
+
+================================================================================
+PART 6: ADMIN MIDDLEWARES (PROTECTION & GUEST REDIRECTION)
+================================================================================
+
+We need TWO dedicated middlewares:
+1. `AdminAuthenticate`: Protects admin dashboard from unauthenticated guests.
+2. `AdminRedirectIfAuthenticated`: Prevents already logged-in admins from viewing the login form.
+
+1. Generate Middlewares:
+php artisan make:middleware AdminAuthenticate
+php artisan make:middleware AdminRedirectIfAuthenticated
+
+
+2. Open `app/Http/Middleware/AdminAuthenticate.php`:
+<?php
+
+namespace App\Http\Middleware;
+
+use Closure;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Symfony\Component\HttpFoundation\Response;
+
+class AdminAuthenticate
+{
+    public function handle(Request $request, Closure $next): Response
+    {
+        if (! Auth::guard('admin')->check()) {
+            return redirect()->route('admin.login')
+                ->with('error', 'Please login to access the admin panel.');
+        }
+
+        return $next($request);
+    }
+}
+
+
+3. Open `app/Http/Middleware/AdminRedirectIfAuthenticated.php`:
+<?php
+
+namespace App\Http\Middleware;
+
+use Closure;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Symfony\Component\HttpFoundation\Response;
+
+class AdminRedirectIfAuthenticated
+{
+    public function handle(Request $request, Closure $next): Response
+    {
+        if (Auth::guard('admin')->check()) {
+            return redirect()->route('admin.dashboard');
+        }
+
+        return $next($request);
+    }
+}
+
+
+================================================================================
+PART 7: REGISTERING MIDDLEWARES IN bootstrap/app.php
+================================================================================
+In Laravel 11/12/13, register the middleware aliases in `bootstrap/app.php`:
+
+<?php
+
+use Illuminate\Foundation\Application;
+use Illuminate\Foundation\Configuration\Exceptions;
+use Illuminate\Foundation\Configuration\Middleware;
+
+return Application::configure(basePath: dirname(__DIR__))
+    ->withRouting(
+        web: __DIR__.'/../routes/web.php',
+        api: __DIR__.'/../routes/api.php',
+        commands: __DIR__.'/../routes/console.php',
+        health: '/up',
+    )
+    ->withMiddleware(function (Middleware $middleware) {
+        $middleware->alias([
+            'admin.auth'  => \App\Http\Middleware\AdminAuthenticate::class,
+            'admin.guest' => \App\Http\Middleware\AdminRedirectIfAuthenticated::class,
+        ]);
+    })
+    ->withExceptions(function (Exceptions $exceptions) {
+        //
+    })->create();
+
+
+================================================================================
+PART 8: AdminController IMPLEMENTATION (Login, Dashboard, Logout)
+================================================================================
+Create or replace `app/Http/Controllers/Admin/AdminController.php`:
+
+<?php
+
+namespace App\Http\Controllers\Admin;
+
+use App\Http\Controllers\Controller;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\View\View;
+
+class AdminController extends Controller
+{
+    /**
+     * Show Admin Login Form.
+     */
+    public function login(): View
+    {
+        return view('admin.login');
+    }
+
+    /**
+     * Handle Admin Login Submission.
+     */
+    public function loginSubmit(Request $request): RedirectResponse
+    {
+        $credentials = $request->validate([
+            'email'    => ['required', 'email'],
+            'password' => ['required', 'string'],
+        ]);
+
+        $remember = $request->boolean('remember');
+
+        if (Auth::guard('admin')->attempt($credentials, $remember)) {
+            $request->session()->regenerate();
+
+            return redirect()->intended(route('admin.dashboard'))
+                ->with('success', 'Welcome to Admin Dashboard!');
+        }
+
+        return back()
+            ->withInput($request->only('email', 'remember'))
+            ->withErrors([
+                'email' => 'The provided credentials do not match our admin records.',
+            ]);
+    }
+
+    /**
+     * Show Admin Dashboard.
+     */
+    public function dashboard(): View
+    {
+        $admin = Auth::guard('admin')->user();
+        return view('admin.dashboard', compact('admin'));
+    }
+
+    /**
+     * Handle Admin Logout.
+     */
+    public function logout(Request $request): RedirectResponse
+    {
+        Auth::guard('admin')->logout();
+
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return redirect()->route('admin.login')
+            ->with('success', 'You have been logged out successfully.');
+    }
+}
+
+
+================================================================================
+PART 9: DEFINING MULTI-AUTH ROUTES IN routes/web.php
+================================================================================
+Open `routes/web.php` and define user routes and admin routes:
+
+<?php
+
+use App\Http\Controllers\Admin\AdminController;
+use Illuminate\Support\Facades\Route;
+
+// -----------------------------------------------------------------------------
+// Public / User Routes
+// -----------------------------------------------------------------------------
+Route::get('/', function () {
+    return view('welcome');
+});
+
+Route::middleware(['auth:web', 'verified'])->group(function () {
+    Route::get('/dashboard', function () {
+        return view('dashboard');
+    })->name('dashboard');
+});
+
+// -----------------------------------------------------------------------------
+// Admin Guest Routes (Login Page & Submission)
+// -----------------------------------------------------------------------------
+Route::prefix('admin')->name('admin.')->group(function () {
+    Route::middleware(['web', 'admin.guest'])->group(function () {
+        Route::get('/login', [AdminController::class, 'login'])->name('login');
+        Route::post('/login', [AdminController::class, 'loginSubmit'])->name('login.submit');
+    });
+
+    // -------------------------------------------------------------------------
+    // Admin Authenticated Routes (Dashboard, Logout)
+    // -------------------------------------------------------------------------
+    Route::middleware(['web', 'admin.auth'])->group(function () {
+        Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
+        Route::post('/logout', [AdminController::class, 'logout'])->name('logout');
+    });
+});
+
+
+================================================================================
+PART 10: COMPLETE BLADE VIEWS (ADMIN LOGIN & DASHBOARD)
+================================================================================
+
+1. Create Admin Login View: `resources/views/admin/login.blade.php`:
+--------------------------------------------------------------------------------
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+    <div class="w-full max-w-md bg-white rounded-lg shadow-md p-8">
+        <div class="text-center mb-6">
+            <h1 class="text-2xl font-bold text-gray-800">Admin Portal</h1>
+            <p class="text-gray-500 text-sm">Sign in to your administration account</p>
+        </div>
+
+        {{-- Flash Error Message --}}
+        @if (session('error'))
+            <div class="mb-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded text-sm">
+                {{ session('error') }}
+            </div>
+        @endif
+
+        {{-- Flash Success Message --}}
+        @if (session('success'))
+            <div class="mb-4 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded text-sm">
+                {{ session('success') }}
+            </div>
+        @endif
+
+        <form method="POST" action="{{ route('admin.login.submit') }}">
+            @csrf
+
+            {{-- Email Input --}}
+            <div class="mb-4">
+                <label for="email" class="block text-gray-700 text-sm font-semibold mb-2">Email Address</label>
+                <input id="email" type="email" name="email" value="{{ old('email') }}" required autofocus
+                       class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 @error('email') border-red-500 @enderror">
+                @error('email')
+                    <span class="text-red-500 text-xs mt-1 block">{{ $message }}</span>
+                @enderror
+            </div>
+
+            {{-- Password Input --}}
+            <div class="mb-4">
+                <label for="password" class="block text-gray-700 text-sm font-semibold mb-2">Password</label>
+                <input id="password" type="password" name="password" required
+                       class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 @error('password') border-red-500 @enderror">
+                @error('password')
+                    <span class="text-red-500 text-xs mt-1 block">{{ $message }}</span>
+                @enderror
+            </div>
+
+            {{-- Remember Me --}}
+            <div class="flex items-center justify-between mb-6">
+                <label class="flex items-center text-sm text-gray-600">
+                    <input type="checkbox" name="remember" class="rounded text-blue-600 focus:ring-blue-500">
+                    <span class="ml-2">Remember me</span>
+                </label>
+            </div>
+
+            {{-- Submit Button --}}
+            <button type="submit"
+                    class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-md shadow focus:outline-none focus:ring-2 focus:ring-blue-500">
+                Sign In as Admin
+            </button>
+        </form>
+    </div>
+</body>
+</html>
+
+
+2. Create Admin Dashboard View: `resources/views/admin/dashboard.blade.php`:
+--------------------------------------------------------------------------------
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100">
+    {{-- Navigation Bar --}}
+    <nav class="bg-gray-800 text-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center">
+                    <span class="font-bold text-xl tracking-wide">Laravel Admin Panel</span>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <span class="text-sm text-gray-300">Welcome, {{ $admin->name }}</span>
+                    <form method="POST" action="{{ route('admin.logout') }}" class="inline">
+                        @csrf
+                        <button type="submit" class="bg-red-600 hover:bg-red-700 text-xs px-3 py-1.5 rounded font-semibold text-white">
+                            Logout
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    {{-- Main Content --}}
+    <main class="max-w-7xl mx-auto py-10 px-4 sm:px-6 lg:px-8">
+        {{-- Flash message --}}
+        @if (session('success'))
+            <div class="mb-6 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded">
+                {{ session('success') }}
+            </div>
+        @endif
+
+        <div class="bg-white rounded-lg shadow p-6">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">Administration Dashboard</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                <div class="bg-blue-50 border-l-4 border-blue-500 p-4 rounded">
+                    <h3 class="font-semibold text-blue-700">Admin Guard</h3>
+                    <p class="text-gray-600 text-sm">Authenticated via <code>admin</code> session guard</p>
+                </div>
+                <div class="bg-purple-50 border-l-4 border-purple-500 p-4 rounded">
+                    <h3 class="font-semibold text-purple-700">Admin Email</h3>
+                    <p class="text-gray-600 text-sm">{{ $admin->email }}</p>
+                </div>
+                <div class="bg-green-50 border-l-4 border-green-500 p-4 rounded">
+                    <h3 class="font-semibold text-green-700">Account Status</h3>
+                    <p class="text-gray-600 text-sm">Active Super Administrator</p>
+                </div>
+            </div>
+
+            <p class="text-gray-600 leading-relaxed">
+                This area is strictly restricted to authenticated administrators. Normal users logging into
+                <code>/login</code> will not be able to view this page, and administrators cannot access user dashboard
+                unless they hold a separate user account.
+            </p>
+        </div>
+    </main>
+</body>
+</html>
+
+
+================================================================================
+PART 11: ADMIN PASSWORD RESET (USING 'admins' PASSWORD BROKER)
+================================================================================
+If your application requires separate password reset emails for Admins:
+
+1. Request password reset link in Controller:
+use Illuminate\Support\Facades\Password;
+
+$status = Password::broker('admins')->sendResetLink(
+    $request->only('email')
+);
+
+2. Reset Admin Password in Controller:
+$status = Password::broker('admins')->reset(
+    $request->only('email', 'password', 'password_confirmation', 'token'),
+    function ($admin, $password) {
+        $admin->forceFill([
+            'password' => Hash::make($password)
+        ])->setRememberToken(Str::random(60));
+
+        $admin->save();
+    }
+);
+
+
+================================================================================
+PART 12: CACHE CLEARING, TESTING, AND VERIFICATION
+================================================================================
+1. Clear all application caches:
+php artisan optimize:clear
+
+2. Start development server:
+php artisan serve
+
+3. Test User vs Admin Session Isolation:
+- Visit User Login:    http://127.0.0.1:8000/login
+  Credentials: user@example.com / password
+- Visit Admin Login:   http://127.0.0.1:8000/admin/login
+  Credentials: admin@example.com / password
+- Test Admin Dashboard: http://127.0.0.1:8000/admin/dashboard
+- Test Admin Logout: Click Logout button (triggers POST /admin/logout)
+- Try accessing `/admin/dashboard` while logged out: automatically redirected back to `/admin/login`.
+
+Both authentication sessions operate in total isolation!
+================================================================================
+
+
+================================================================================
+PART 13: OPTIONAL EMAIL OTP TWO-FACTOR AUTHENTICATION FOR ADMINS
+================================================================================
+For high-security enterprise applications, you can enforce an email-based One-Time
+Password (OTP) verification step whenever an Administrator logs in.
+
+1. Add OTP columns to admins table:
+php artisan make:migration add_otp_columns_to_admins_table --table=admins
+
+Update migration:
+```php
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    public function up(): void
+    {
+        Schema::table('admins', function (Blueprint $table) {
+            $table->string('email_otp', 6)->nullable()->after('password');
+            $table->timestamp('otp_expires_at')->nullable()->after('email_otp');
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::table('admins', function (Blueprint $table) {
+            $table->dropColumn(['email_otp', 'otp_expires_at']);
+        });
+    }
+};
+```
+Run migration:
+php artisan migrate
+
+2. Generate OTP Mailable:
+php artisan make:mail AdminOtpMail
+
+In `app/Mail/AdminOtpMail.php`:
+```php
+<?php
+
+namespace App\Mail;
+
+use Illuminate\Bus\Queueable;
+use Illuminate\Mail\Mailable;
+use Illuminate\Mail\Mailables\Content;
+use Illuminate\Mail\Mailables\Envelope;
+use Illuminate\Queue\SerializesModels;
+
+class AdminOtpMail extends Mailable
+{
+    use Queueable, SerializesModels;
+
+    public function __construct(public string $otp) {}
+
+    public function envelope(): Envelope
+    {
+        return new Envelope(subject: 'Your Admin Login Verification Code');
+    }
+
+    public function content(): Content
+    {
+        return new Content(view: 'emails.admin-otp');
+    }
+}
+```
+
+3. Create Email Blade Template in `resources/views/emails/admin-otp.blade.php`:
+```html
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+</head>
+<body style="font-family: Arial, sans-serif; background-color: #f8fafc; padding: 20px;">
+    <div style="max-width: 500px; margin: 0 auto; background: #ffffff; padding: 30px; border-radius: 8px; border: 1px solid #e2e8f0;">
+        <h2 style="color: #1e293b; margin-top: 0;">Admin Login Verification</h2>
+        <p style="color: #475569; font-size: 15px;">Your one-time security passcode (OTP) for admin dashboard access is:</p>
+        <div style="text-align: center; margin: 25px 0;">
+            <span style="font-size: 32px; font-weight: bold; letter-spacing: 6px; color: #4f46e5; background: #eef2ff; padding: 10px 24px; border-radius: 6px; display: inline-block;">
+                {{ $otp }}
+            </span>
+        </div>
+        <p style="color: #64748b; font-size: 13px;">This code will expire in 10 minutes. If you did not request this login, please secure your credentials immediately.</p>
+    </div>
+</body>
+</html>
+```
+
+4. Create `AdminOtpController`:
+php artisan make:controller Admin/AdminOtpController
+
+In `app/Http/Controllers/Admin/AdminOtpController.php`:
+```php
+<?php
+
+namespace App\Http\Controllers\Admin;
+
+use App\Http\Controllers\Controller;
+use App\Mail\AdminOtpMail;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
+
+class AdminOtpController extends Controller
+{
+    public function showVerifyForm()
+    {
+        if (!session()->has('admin_otp_pending')) {
+            return redirect()->route('admin.login');
+        }
+
+        return view('admin.auth.verify-otp');
+    }
+
+    public function verify(Request $request)
+    {
+        $request->validate([
+            'otp' => ['required', 'string', 'size:6'],
+        ]);
+
+        $adminId = session('admin_otp_pending');
+        $admin = \App\Models\Admin::find($adminId);
+
+        if (!$admin || $admin->email_otp !== $request->otp) {
+            return back()->withErrors(['otp' => 'The entered verification code is incorrect.']);
+        }
+
+        if (now()->isAfter($admin->otp_expires_at)) {
+            return back()->withErrors(['otp' => 'The verification code has expired. Please request a new one.']);
+        }
+
+        // Clear OTP & mark authenticated
+        $admin->update([
+            'email_otp' => null,
+            'otp_expires_at' => null,
+        ]);
+
+        session()->forget('admin_otp_pending');
+        Auth::guard('admin')->login($admin);
+        $request->session()->regenerate();
+
+        return redirect()->intended(route('admin.dashboard'));
+    }
+
+    public function resend(Request $request)
+    {
+        $adminId = session('admin_otp_pending');
+        $admin = \App\Models\Admin::find($adminId);
+
+        if (!$admin) {
+            return redirect()->route('admin.login');
+        }
+
+        $otp = sprintf("%06d", random_int(100000, 999999));
+        $admin->update([
+            'email_otp' => $otp,
+            'otp_expires_at' => now()->addMinutes(10),
+        ]);
+
+        Mail::to($admin->email)->send(new AdminOtpMail($otp));
+
+        return back()->with('status', 'A new verification code has been sent to your email.');
+    }
+}
+```
+
+5. Create OTP Blade View in `resources/views/admin/auth/verify-otp.blade.php`:
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Two-Factor Verification</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-900 text-gray-100 flex items-center justify-center min-h-screen px-4">
+    <div class="max-w-md w-full bg-gray-800 rounded-xl p-8 border border-gray-700 shadow-2xl">
+        <div class="text-center mb-6">
+            <span class="text-4xl">🛡️</span>
+            <h2 class="text-2xl font-bold mt-2">Security Verification</h2>
+            <p class="text-sm text-gray-400 mt-1">Enter the 6-digit code sent to your registered admin email address.</p>
+        </div>
+
+        @if (session('status'))
+            <div class="mb-4 p-3 bg-green-900/50 border border-green-700 text-green-200 text-sm rounded-lg text-center">
+                {{ session('status') }}
+            </div>
+        @endif
+
+        @if ($errors->any())
+            <div class="mb-4 p-3 bg-red-900/50 border border-red-700 text-red-200 text-sm rounded-lg">
+                {{ $errors->first() }}
+            </div>
+        @endif
+
+        <form action="{{ route('admin.otp.verify') }}" method="POST" class="space-y-5">
+            @csrf
+            <div>
+                <label for="otp" class="block text-xs uppercase tracking-wider font-semibold text-gray-300 mb-2 text-center">6-Digit Passcode</label>
+                <input type="text" id="otp" name="otp" maxlength="6" autofocus required
+                       placeholder="••••••"
+                       class="w-full text-center tracking-[0.5em] text-2xl font-mono py-3 bg-gray-900 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
+            </div>
+
+            <button type="submit" class="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-lg transition duration-200 shadow-lg">
+                Verify Passcode & Enter
+            </button>
+        </form>
+
+        <form action="{{ route('admin.otp.resend') }}" method="POST" class="mt-4 text-center">
+            @csrf
+            <button type="submit" class="text-xs text-indigo-400 hover:text-indigo-300 underline">
+                Didn't receive code? Resend Email
+            </button>
+        </form>
+    </div>
+</body>
+</html>
+```
+
+6. Register OTP Routes in `routes/web.php`:
+```php
+Route::prefix('admin')->name('admin.')->group(function () {
+    // OTP verification routes
+    Route::get('/verify-otp', [\App\Http\Controllers\Admin\AdminOtpController::class, 'showVerifyForm'])->name('otp.verify.form');
+    Route::post('/verify-otp', [\App\Http\Controllers\Admin\AdminOtpController::class, 'verify'])->name('otp.verify');
+    Route::post('/resend-otp', [\App\Http\Controllers\Admin\AdminOtpController::class, 'resend'])->name('otp.resend');
+});
+```
+================================================================================

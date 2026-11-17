@@ -1,0 +1,359 @@
+================================================================================
+   LARAVEL QUEUES, ASYNCHRONOUS JOBS, EVENTS, LISTENERS & CRON TASK SCHEDULING
+================================================================================
+
+This tutorial provides a complete, production-ready masterclass on asynchronous processing,
+background queue workers, chained & batched jobs, failed job management, event-driven
+architecture, and automated cron task scheduling in Laravel 11/12/13.
+
+--------------------------------------------------------------------------------
+TABLE OF CONTENTS
+--------------------------------------------------------------------------------
+1. Queue Architecture & Driver Selection (Database vs Redis)
+2. Creating Queue Migrations & Worker Infrastructure
+3. Creating Resilient Queued Jobs (Tries, Backoff, Timeouts & Error Handling)
+4. Advanced Job Dispatching (Delays, Chaining & Batches)
+5. Running Queue Workers & Production Supervisor Daemon Configuration
+6. Failed Jobs Monitoring, Alerting & Recovery
+7. Event-Driven Architecture (Events & Asynchronous Listeners)
+8. Task Scheduling & Cron Automation (routes/console.php)
+9. Testing Queued Jobs & Event Dispatches (Pest/PHPUnit)
+
+
+================================================================================
+1. QUEUE ARCHITECTURE & DRIVER SELECTION
+================================================================================
+By default, Laravel processes tasks synchronously (`QUEUE_CONNECTION=sync`), meaning
+time-consuming operations (like sending emails or converting files) freeze the HTTP request.
+
+In production, change the driver in `.env`:
+```env
+# For simple-to-medium loads (uses your existing MySQL/PostgreSQL database):
+QUEUE_CONNECTION=database
+
+# For high-concurrency enterprise applications:
+# QUEUE_CONNECTION=redis
+```
+
+
+================================================================================
+2. CREATING QUEUE MIGRATIONS & WORKER INFRASTRUCTURE
+================================================================================
+If using the `database` queue driver, scaffold the required tables:
+
+php artisan queue:table
+php artisan queue:batches-table
+php artisan queue:failed-table
+
+Run the migrations:
+php artisan migrate
+
+This creates three essential database tables:
+- `jobs`: Stores pending asynchronous jobs waiting for workers.
+- `job_batches`: Manages distributed batch operations.
+- `failed_jobs`: Records any jobs that exceeded their retry limit with full stack traces.
+
+
+================================================================================
+3. CREATING RESILIENT QUEUED JOBS (TRIES, BACKOFF & TIMEOUTS)
+================================================================================
+Create a job class:
+php artisan make:job ProcessOrderInvoice
+
+In `app/Jobs/ProcessOrderInvoice.php`:
+```php
+<?php
+
+namespace App\Jobs;
+
+use App\Models\Order;
+use App\Services\PdfGeneratorService;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Foundation\Queue\Queueable;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
+use Throwable;
+
+class ProcessOrderInvoice implements ShouldQueue
+{
+    use InteractsWithQueue, Queueable, SerializesModels;
+
+    /**
+     * The number of times the job may be attempted.
+     */
+    public int $tries = 3;
+
+    /**
+     * The number of seconds to wait before retrying a failed job.
+     * Backoff array: wait 15s after 1st failure, 60s after 2nd, 180s after 3rd.
+     */
+    public array $backoff = [15, 60, 180];
+
+    /**
+     * The number of seconds the job can run before timing out.
+     */
+    public int $timeout = 120;
+
+    /**
+     * Delete the job if its models no longer exist.
+     */
+    public bool $deleteWhenMissingModels = true;
+
+    public function __construct(public Order $order) {}
+
+    public function handle(PdfGeneratorService $pdfService): void
+    {
+        Log::info("Generating invoice PDF for Order #{$this->order->id}");
+
+        // Generate PDF
+        $pdfPath = $pdfService->generateInvoice($this->order);
+
+        // Update database status
+        $this->order->update([
+            'invoice_pdf_path' => $pdfPath,
+            'status' => 'invoice_generated',
+        ]);
+
+        // Send email with PDF attachment
+        Mail::to($this->order->customer_email)->send(
+            new \App\Mail\OrderInvoiceMail($this->order, $pdfPath)
+        );
+
+        Log::info("Invoice for Order #{$this->order->id} generated and emailed.");
+    }
+
+    /**
+     * Handle a job failure after exhausting all retry attempts.
+     */
+    public function failed(?Throwable $exception): void
+    {
+        Log::critical("Failed to generate invoice for Order #{$this->order->id}: " . $exception?->getMessage());
+
+        $this->order->update(['status' => 'invoice_failed']);
+
+        // Alert engineering or operations team
+        // Notification::route('slack', env('SLACK_ALERT_WEBHOOK'))->notify(new JobFailedAlert($this->order));
+    }
+}
+```
+
+
+================================================================================
+4. ADVANCED JOB DISPATCHING (DELAYS, CHAINING & BATCHES)
+================================================================================
+1. Basic Immediate Dispatch:
+```php
+ProcessOrderInvoice::dispatch($order);
+```
+
+2. Delayed Dispatch:
+```php
+ProcessOrderInvoice::dispatch($order)->delay(now()->addMinutes(5));
+```
+
+3. Specifying Specific Queue Connection / Queue Name:
+```php
+ProcessOrderInvoice::dispatch($order)->onQueue('high-priority');
+```
+
+4. Chaining Sequential Jobs (Run B only if A succeeds):
+```php
+use Illuminate\Support\Facades\Bus;
+
+Bus::chain([
+    new ProcessOrderInvoice($order),
+    new ChargeCreditCard($order),
+    new SendShippingNotification($order),
+])->dispatch();
+```
+
+5. Batching Jobs (Executing hundreds of jobs in parallel with progress tracking):
+```php
+use Illuminate\Bus\Batch;
+use Illuminate\Support\Facades\Bus;
+
+$batch = Bus::batch([
+    new ImportCustomerChunk($chunk1),
+    new ImportCustomerChunk($chunk2),
+    new ImportCustomerChunk($chunk3),
+])->then(function (Batch $batch) {
+    // Executed when all jobs completed successfully
+    Log::info("Batch {$batch->id} completed successfully!");
+})->catch(function (Batch $batch, Throwable $e) {
+    // First batch failure detected
+    Log::error("Batch {$batch->id} failed: " . $e->getMessage());
+})->finally(function (Batch $batch) {
+    // Always runs after batch finishes
+})->name('Customer Import Batch')->dispatch();
+
+echo "Batch ID: " . $batch->id;
+```
+
+
+================================================================================
+5. RUNNING QUEUE WORKERS & SUPERVISOR DAEMON
+================================================================================
+In Local Development:
+Run the worker process in your terminal:
+php artisan queue:work --tries=3 --timeout=90
+
+In Production (Ubuntu/Debian Supervisor Daemon):
+Never run `queue:work` directly in a detached SSH terminal. Use Supervisor to keep
+workers alive permanently across crashes and server reboots.
+
+Install Supervisor:
+sudo apt-get install supervisor
+
+Create configuration at `/etc/supervisor/conf.d/laravel-worker.conf`:
+```ini
+[program:laravel-worker]
+process_name=%(program_name)s_%(process_num)02d
+command=php /var/www/html/artisan queue:work database --sleep=3 --tries=3 --max-time=3600 --timeout=90
+autostart=true
+autorestart=true
+stopasgroup=true
+killasgroup=true
+user=www-data
+numprocs=4
+redirect_stderr=true
+stdout_logfile=/var/www/html/storage/logs/worker.log
+stopwaitsecs=3600
+```
+
+Start and manage the worker processes:
+sudo supervisorctl reread
+sudo supervisorctl update
+sudo supervisorctl start laravel-worker:*
+
+When deploying new code, always restart the workers so they load updated PHP classes into memory:
+php artisan queue:restart
+
+
+================================================================================
+6. FAILED JOBS MONITORING & RECOVERY
+================================================================================
+Inspect failed jobs:
+php artisan queue:failed
+
+Retry a specific failed job:
+php artisan queue:retry <job-uuid>
+
+Retry all failed jobs:
+php artisan queue:retry all
+
+Delete all failed jobs:
+php artisan queue:flush
+
+
+================================================================================
+7. EVENT-DRIVEN ARCHITECTURE (EVENTS & ASYNC LISTENERS)
+================================================================================
+Events decouple your application. When an order is placed, the controller simply
+fires an event; separate listeners handle inventory reduction, notifications,
+and analytics asynchronously.
+
+1. Generate Event & Listener:
+php artisan make:event OrderPlaced
+php artisan make:listener SendOrderEmailNotification --event=OrderPlaced
+
+2. In `app/Events/OrderPlaced.php`:
+```php
+<?php
+
+namespace App\Events;
+
+use App\Models\Order;
+use Illuminate\Foundation\Events\Dispatchable;
+use Illuminate\Queue\SerializesModels;
+
+class OrderPlaced
+{
+    use Dispatchable, SerializesModels;
+
+    public function __construct(public Order $order) {}
+}
+```
+
+3. In `app/Listeners/SendOrderEmailNotification.php`:
+Notice `implements ShouldQueue` — this ensures the listener runs in the background!
+
+```php
+<?php
+
+namespace App\Listeners;
+
+use App\Events\OrderPlaced;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Support\Facades\Mail;
+
+class SendOrderEmailNotification implements ShouldQueue
+{
+    use InteractsWithQueue;
+
+    public function handle(OrderPlaced $event): void
+    {
+        Mail::to($event->order->customer_email)->send(
+            new \App\Mail\OrderConfirmationMail($event->order)
+        );
+    }
+}
+```
+
+4. Dispatching the Event in Controller:
+```php
+use App\Events\OrderPlaced;
+
+public function checkout(Request $request)
+{
+    // ... create $order
+    OrderPlaced::dispatch($order);
+
+    return redirect()->route('order.thankyou', $order->id);
+}
+```
+
+
+================================================================================
+8. TASK SCHEDULING & CRON AUTOMATION (routes/console.php)
+================================================================================
+In Laravel 11/12/13, scheduled cron jobs are registered directly in `routes/console.php`
+using the `Schedule` facade.
+
+In `routes/console.php`:
+```php
+<?php
+
+use Illuminate\Support\Facades\Schedule;
+
+// Run database backup every night at 02:00
+Schedule::command('backup:run')
+    ->dailyAt('02:00')
+    ->withoutOverlapping()
+    ->onOneServer()
+    ->appendOutputTo(storage_path('logs/backup.log'));
+
+// Clear expired password reset tokens daily
+Schedule::command('auth:clear-resets')->daily();
+
+// Prune deleted soft-deleted records older than 30 days every Sunday
+Schedule::command('model:prune')->weekly();
+
+// Execute a background queued job every 15 minutes
+Schedule::job(new \App\Jobs\SyncInventoryStock)->everyFifteenMinutes();
+
+// Execute arbitrary closure every morning at 08:00
+Schedule::call(function () {
+    \App\Services\MetricsService::sendDailySlackDigest();
+})->weekdays()->dailyAt('08:00');
+```
+
+Server Cron Configuration:
+On your production Linux server, add a single cron entry via `crontab -e`:
+```bash
+* * * * * cd /var/www/html && php artisan schedule:run >> /dev/null 2>&1
+```
+Laravel handles the rest down to the minute!
+================================================================================
